@@ -1,0 +1,24 @@
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Exclude all .tfvars files to prevent sensitive data from being committed.
+# Only *.auto.tfvars are automatically loaded.
+*.tfvars
+*.tfvars.json
+
+# Ignore override files as they are usually used for local testing
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# In-progress terraform plan
+.terraform.tfplan.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc

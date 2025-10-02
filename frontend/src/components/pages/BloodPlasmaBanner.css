@@ -1,0 +1,41 @@
+
+.blood-plasma-banner {
+  width: 100%;
+  background: linear-gradient(90deg, #d6001c 0%, #005baa 100%);
+  color: #fff;
+  text-align: center;
+  padding: 1.2rem 0rem 3rem 0rem;
+  margin-bottom: 2rem;
+  margin-top: -1.2rem;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 8px 32px 0 rgba(214,0,28,0.12), 0 1.5px 8px 0 rgba(0,91,170,0.08);
+}
+
+
+.blood-plasma-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1.1rem;
+}
+
+
+.blood-plasma-description {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .blood-plasma-banner {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    border-radius: 0 0 10px 10px;
+  }
+  .blood-plasma-title {
+    font-size: 2rem;
+    margin-bottom: 0.7rem;
+  }
+  .blood-plasma-description {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,73 @@
+
+.App {
+  background-color: rgba(235, 235, 235, 0.667);
+}
+
+.app-content-wrapper {
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+  --content-max-width: 100vw;
+}
+
+@media (min-width: 1704px) {
+  .app-content-wrapper {
+    max-width: 90%;
+    --content-max-width: 90%;
+  }
+}
+@media (min-width: 1804px) {
+  .app-content-wrapper {
+    max-width: 80%;
+    --content-max-width: 80%;
+  }
+}
+
+.main-content {
+  padding-top: 0px;
+  /* Removed left and right padding to allow banner to reach card edges */
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+/* Utility class for inner content padding */
+.main-inner-content {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (min-width: 1704px) {
+  .main-content {
+    max-width: 90%;
+    margin: 0 auto;
+    border-radius: 0 0 15px 15px;
+    background: #ffffff;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07),
+                -40px 0 40px -40px #f22626,
+                40px 0 40px -40px #f22626;
+  }
+  .main-content::before,
+  .main-content::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 48px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .main-content::before {
+    left: -48px;
+    background: linear-gradient(to right, transparent 100%);
+  }
+  .main-content::after {
+    right: -48px;
+    background: linear-gradient(to left, transparent 100%);
+  }
+}
+@media (min-width: 1804px) {
+  .main-content {
+    max-width: 80%;
+  }
+}
