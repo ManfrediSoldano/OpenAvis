@@ -26,16 +26,16 @@
 .carousel-container {
   position: relative;
   width: 100%;
-  height: 40vh;
+  height: 50vh;
   overflow: hidden;
   margin: 0;
   max-width: none;
   padding: 0;
 }
 
-@media (min-width: 1804px) {
+@media (min-width: 1904px) {
   .carousel-container {
-    height: 40vh; /* Matches the banner height on desktop */
+    height: 50vh; /* Matches the banner height on desktop */
   }
 }
 /* Desktop: Reduced height and side margins */

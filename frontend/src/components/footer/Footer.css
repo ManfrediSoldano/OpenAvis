@@ -1,0 +1,124 @@
+.footer {
+  width: 100%;
+  background: linear-gradient(90deg, #0075BF 0%, #005baa 100%);
+  color: #fff;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 2.5rem 0 2rem 0;
+  font-family: "Poppins", sans-serif;
+  flex-wrap: wrap;
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 8px 32px 0 rgba(0,117,191,0.12), 0 1.5px 8px 0 rgba(0,91,170,0.08);
+}
+
+@media (min-width: 1704px) {
+  .footer {
+    max-width: 95%;
+    --content-max-width: 95%;
+    margin: auto;
+  }
+}
+@media (min-width: 1904px) {
+  .footer {
+    max-width: 90%;
+    --content-max-width: 90%;
+    margin: auto;
+  }
+}
+.footer-section {
+  flex: 1 1 300px;
+  margin: 0 2rem;
+  min-width: 250px;
+}
+
+.footer-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-avis-logo {
+  width: 110px;
+  margin-bottom: 1.2rem;
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.3rem 0.7rem;
+}
+
+.footer-links,
+.footer-links-utili ul,
+.footer-contacts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+}
+
+.footer-links li,
+.footer-links-utili ul li,
+.footer-contacts ul li {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+}
+
+.footer-links a,
+.footer-links-utili a,
+.footer-contacts a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+.footer-links a:hover,
+.footer-links-utili a:hover,
+.footer-contacts a:hover {
+  color: #e30613;
+  text-decoration: underline;
+}
+
+.footer-section h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.footer-social {
+  margin-top: 1.2rem;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin-right: 0.7rem;
+  background: #5bb0e6;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  font-size: 1.5rem;
+  transition: background 0.2s;
+}
+
+.footer-social a:hover {
+  background: #003e6b;
+}
+
+@media (max-width: 900px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0 1.5rem 0;
+  }
+  .footer-section {
+    margin: 1rem 0;
+    min-width: 200px;
+  }
+  .footer-avis-logo {
+    width: 90px;
+  }
+}

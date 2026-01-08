@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gsap } from 'gsap';
 import './StaggeredMenu.css';
 
@@ -365,6 +366,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     animateText(target);
   }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
 
+  const navigate = useNavigate();
   return (
     <div
       className={(className ? className + ' ' : '') + 'staggered-menu-wrapper'}
@@ -376,8 +378,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       <nav className="sm-desktop-links-bar">
         <a href="#home" className="sm-header-link">Chi Siamo</a>
         <a href="#about" className="sm-header-link">Convenzioni</a>
-        <a href="#contact" className="sm-header-link">Provinciale</a>
-        <button className="sm-header-clear">Diventa donatore</button>
+        <a href="#contact" className="sm-header-link">Sospensione</a>
+        <button className="sm-header-clear" onClick={() => navigate('/diventa-donatore')}>Diventa donatore</button>
       </nav>
       <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">
         {(() => {

@@ -1,0 +1,33 @@
+.homepage-donator-btn {
+  display: flex;
+  justify-content: center;
+  margin: 2.5rem 0 1.5rem 0;
+}
+
+
+.homepage-donator-btn button {
+  background: #e30613;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 2rem;
+  padding: 1.2rem 3.5rem;
+  box-shadow: 0 2px 12px 0 rgba(227,6,19,0.10);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.03em;
+}
+
+@media (max-width: 900px) {
+  .homepage-donator-btn button {
+    font-size: 1.1rem;
+    padding: 0.8rem 2rem;
+  }
+}
+
+.homepage-donator-btn button:hover {
+  background: #b8000f;
+  box-shadow: 0 4px 18px 0 rgba(227,6,19,0.18);
+}

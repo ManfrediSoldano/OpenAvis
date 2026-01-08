@@ -12,14 +12,14 @@
 
 @media (min-width: 1704px) {
   .app-content-wrapper {
-    max-width: 90%;
-    --content-max-width: 90%;
+    max-width: 95%;
+    --content-max-width: 95%;
   }
 }
-@media (min-width: 1804px) {
+@media (min-width: 1904px) {
   .app-content-wrapper {
-    max-width: 80%;
-    --content-max-width: 80%;
+    max-width: 90%;
+    --content-max-width: 90%;
   }
 }
 
@@ -40,9 +40,8 @@
 
 @media (min-width: 1704px) {
   .main-content {
-    max-width: 90%;
+    max-width: 95%;
     margin: 0 auto;
-    border-radius: 0 0 15px 15px;
     background: #ffffff;
     box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07),
                 -40px 0 40px -40px #f22626,
@@ -66,8 +65,8 @@
     background: linear-gradient(to left, transparent 100%);
   }
 }
-@media (min-width: 1804px) {
+@media (min-width: 1904px) {
   .main-content {
-    max-width: 80%;
+    max-width: 90%;
   }
 }

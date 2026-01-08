@@ -20,12 +20,12 @@
 
 @media (min-width: 1704px) {
   .site-header {
-    max-width: 90%;
+    max-width: 95%;
   }
 }
 
-@media (min-width: 1804px) {
+@media (min-width: 1904px) {
   .site-header, .header-content {
-    max-width: 80%;
+    max-width: 90%;
   }
 }

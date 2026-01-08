@@ -1,0 +1,116 @@
+.donor-signup-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.07);
+  padding: 2.5rem 2rem 2rem 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  /* Ensure general text content is centered */
+  text-align: center; 
+}
+
+.donor-step-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0075bf;
+  margin-bottom: 0.7rem;
+  /* Override general centering for title to ensure good alignment, though text-align: center may already do this */
+  text-align: center;
+}
+
+.donor-step-desc {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  /* Override general centering for description to ensure good alignment */
+  text-align: center;
+}
+
+.donor-step-actions {
+  display: flex;
+  justify-content: center; /* Changed to center to align actions with other content */
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.donor-step-banner {
+  background: #eaf6ff;
+  color: #0075bf;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  /* Reset alignment for the banner content itself */
+  text-align: left; 
+}
+
+.donor-step-banner i {
+  color: #e30613;
+  font-size: 1.5rem;
+}
+
+.donor-step-form-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+  text-align: left; 
+}
+
+
+@media (max-width: 1200px) {
+  .donor-signup-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 700px) {
+  .donor-signup-container {
+    padding: 1.2rem 0.5rem;
+  }
+
+  .donor-step-form-row {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .donor-step-form-row > span {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .donor-step-form-row > span > .p-float-label {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .donor-step-form-row > span > .p-float-label input,
+  .donor-step-form-row > span > .p-float-label .p-input-number {
+    width: 100% !important;
+    max-width: 90vw;
+  }
+
+  .donor-step-form-row > span .p-input-icon-left {
+    width: 100%;
+  }
+
+  .donor-step-form-row > span .p-input-icon-left input {
+    width: 100% !important;
+  }
+
+  .donor-step-form-row > span:has(.p-radiobutton) {
+    align-items: center;
+  }
+}
+
