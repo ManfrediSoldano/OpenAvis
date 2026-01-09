@@ -89,8 +89,8 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ steps.get_token_beta.outputs.token }}
           action: "upload"
-          app_location: "/frontend"
-          app_artifact_location: "build"
+          app_location: "frontend/build"
+          app_artifact_location: ""
           skip_app_build: true
 
   deploy-production:
@@ -168,6 +168,6 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ steps.get_token_prod.outputs.token }}
           action: "upload"
-          app_location: "/frontend"
-          app_artifact_location: "build"
+          app_location: "frontend/build"
+          app_artifact_location: ""
           skip_app_build: true
