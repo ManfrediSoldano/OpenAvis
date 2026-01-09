@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import client from "../../api/client";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -11,6 +12,8 @@ import BloodPlasmaBanner from "./BloodPlasmaBanner";
 import "./DonorSignup.css";
 import { FloatLabel } from "primereact/floatlabel";
 import { Fieldset } from 'primereact/fieldset';
+import { IconField } from "primereact/iconfield";
+import { InputIcon } from "primereact/inputicon";
 
 
 const exclusionPdf = "https://lineeguida.avis.it/wp-content/uploads/2025/01/Approfondimento-4.-Criteri-di-esclusione-temporanea-e-permanente-dalla-donazione.pdf";
@@ -35,8 +38,8 @@ interface FormState {
   birthDate: Date | null;
   birthPlace: string;
   taxCode: string;
-  residence: string;
   address: string;
+  town: string;
   phone: string;
   email: string;
   education: string;
@@ -66,10 +69,10 @@ interface StepProps {
 
 
 const InputWithIcon: React.FC<{ icon: string; children: React.ReactNode }> = ({ icon, children }) => (
-  <span className="p-input-icon-left" style={{ width: '100%' }}>
-    <i className={icon} />
+  <IconField iconPosition="left" style={{ width: '100%' }}>
+    <InputIcon className={icon} />
     {children}
-  </span>
+  </IconField>
 );
 
 
@@ -85,30 +88,30 @@ const Step1: React.FC<StepProps> = ({ form, setForm, setStep }) => (
       <span>
         <FloatLabel>
           <label htmlFor="age-check">Età</label>
-          <InputNumber 
-            id="age-check" 
-            value={form.age} 
-            onValueChange={e => setForm(f => ({ ...f, age: e.value ?? null }))} 
-            min={18} 
-            max={70} 
-            showButtons 
-            suffix=" anni" 
-            inputStyle={{ width: 250 }} 
+          <InputNumber
+            id="age-check"
+            value={form.age}
+            onValueChange={e => setForm(f => ({ ...f, age: e.value ?? null }))}
+            min={18}
+            max={70}
+            showButtons
+            suffix=" anni"
+            inputStyle={{ width: 250 }}
           />
         </FloatLabel>
       </span>
       <span>
         <FloatLabel>
           <label htmlFor="weight-check">Peso*</label>
-          <InputNumber 
+          <InputNumber
             id="weight-check"
-            value={form.weight} 
-            onValueChange={e => setForm(f => ({ ...f, weight: e.value ?? null }))} 
-            min={50} 
-            max={200} 
-            showButtons 
-            suffix=" kg" 
-            inputStyle={{ width: 250 }} 
+            value={form.weight}
+            onValueChange={e => setForm(f => ({ ...f, weight: e.value ?? null }))}
+            min={50}
+            max={200}
+            showButtons
+            suffix=" kg"
+            inputStyle={{ width: 250 }}
           />
         </FloatLabel>
       </span>
@@ -154,111 +157,142 @@ const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
 );
 
 
-const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => (
-  <div className="donor-signup-container">
-    <div className="donor-step-title">Dati obbligatori</div>
-    <div className="donor-step-desc">Inserisci i tuoi dati per la candidatura. Tutti i campi sono obbligatori.</div>
-          <Fieldset legend="Dati personali">
-    <div className="donor-step-form-row">
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-user">
-            <InputText value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
-          </InputWithIcon>
-          <label>Nome*</label>
-        </FloatLabel>
-      </span>
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-user">
-            <InputText value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} />
-          </InputWithIcon>
-          <label>Cognome*</label>
-       </FloatLabel>
-      </span>
-    </div>
-            </Fieldset>
-    <div className="donor-step-form-row">
-      <span style={{ textAlign: 'center' }}>
-        <label>Sesso*</label><br />
-        <RadioButton inputId="male" name="gender" value="male" checked={form.gender === "male"} onChange={() => setForm(f => ({ ...f, gender: "male" }))} />
-        <label htmlFor="male" style={{ marginLeft: 8, marginRight: 16 }}>Maschio</label>
-        <RadioButton inputId="female" name="gender" value="female" checked={form.gender === "female"} onChange={() => setForm(f => ({ ...f, gender: "female" }))} />
-        <label htmlFor="female" style={{ marginLeft: 8 }}>Femmina</label>
-      </span>
-      </div>
-      <div className="donor-step-form-row">
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-calendar">
-            <Calendar value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} />
-          </InputWithIcon>
-          <label>Data di nascita*</label>
-        </FloatLabel>
-      </span>
-    </div>
-    <div className="donor-step-form-row">
-       <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-map">
-            <InputText value={form.birthPlace} onChange={e => setForm({ ...form, birthPlace: e.target.value })} />
-          </InputWithIcon>
-          <label>Luogo di nascita*</label>
-        </FloatLabel>
-      </span>
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-id-card">
-            <InputText value={form.taxCode} onChange={e => setForm({ ...form, taxCode: e.target.value })} />
-          </InputWithIcon>
-          <label>Codice Fiscale*</label>
-        </FloatLabel>
-      </span>
-    </div>
-    <div className="donor-step-form-row">
-     <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-home">
-            <InputText value={form.residence} onChange={e => setForm({ ...form, residence: e.target.value })} />
-          </InputWithIcon>
-          <label>Indirizzo di residenza*</label>
-        </FloatLabel>
-      </span>
-    </div>
+const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
+  const [submitted, setSubmitted] = useState(false);
+
+  const validate = () => {
+    return form.firstName && form.lastName && form.gender && form.birthDate &&
+      form.birthPlace && form.taxCode && form.town && form.address &&
+      form.phone && form.email;
+  };
+
+  const handleNext = () => {
+    setSubmitted(true);
+    if (validate()) {
+      setStep(4);
+    }
+  };
+
+  const isInvalid = (val: any) => submitted && !val;
+
+  return (
+    <div className="donor-signup-container">
+      <div className="donor-step-title">Dati obbligatori</div>
+      <div className="donor-step-desc">Inserisci i tuoi dati per la candidatura. Tutti i campi sono obbligatori.</div>
+      <Fieldset legend="Dati personali">
         <div className="donor-step-form-row">
-     <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-building">
-            <InputText value={form.residence} onChange={e => setForm({ ...form, residence: e.target.value })} />
-          </InputWithIcon>
-          <label>Comune di residenza*</label>
-        </FloatLabel>
-      </span>
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-user">
+                <InputText value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} className={isInvalid(form.firstName) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Nome*</label>
+            </FloatLabel>
+            {isInvalid(form.firstName) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-user">
+                <InputText value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} className={isInvalid(form.lastName) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Cognome*</label>
+            </FloatLabel>
+            {isInvalid(form.lastName) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+
+        <div className="donor-step-form-row">
+          <span style={{ textAlign: 'center' }}>
+            <label style={{ color: isInvalid(form.gender) ? '#e24c4c' : 'inherit' }}>Sesso*</label><br />
+            <RadioButton inputId="male" name="gender" value="male" checked={form.gender === "male"} onChange={() => setForm(f => ({ ...f, gender: "male" }))} />
+            <label htmlFor="male" style={{ marginLeft: 8, marginRight: 16 }}>Maschio</label>
+            <RadioButton inputId="female" name="gender" value="female" checked={form.gender === "female"} onChange={() => setForm(f => ({ ...f, gender: "female" }))} />
+            <label htmlFor="female" style={{ marginLeft: 8 }}>Femmina</label>
+            {isInvalid(form.gender) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+        <div className="donor-step-form-row">
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-calendar">
+                <Calendar value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} className={isInvalid(form.birthDate) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Data di nascita*</label>
+            </FloatLabel>
+            {isInvalid(form.birthDate) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+        <div className="donor-step-form-row">
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-map">
+                <InputText value={form.birthPlace} onChange={e => setForm({ ...form, birthPlace: e.target.value })} className={isInvalid(form.birthPlace) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Luogo di nascita*</label>
+            </FloatLabel>
+            {isInvalid(form.birthPlace) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-id-card">
+                <InputText value={form.taxCode} onChange={e => setForm({ ...form, taxCode: e.target.value })} className={isInvalid(form.taxCode) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Codice Fiscale*</label>
+            </FloatLabel>
+            {isInvalid(form.taxCode) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+      </Fieldset>
+
+      <Fieldset legend="Dati di contatto">
+        <div className="donor-step-form-row">
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-home">
+                <InputText value={form.town} onChange={e => setForm({ ...form, town: e.target.value })} className={isInvalid(form.town) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Comune*</label>
+            </FloatLabel>
+            {isInvalid(form.town) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-building">
+                <InputText value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} className={isInvalid(form.address) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Via e numero*</label>
+            </FloatLabel>
+            {isInvalid(form.address) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+        <div className="donor-step-form-row">
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-phone">
+                <InputText value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} keyfilter="int" className={isInvalid(form.phone) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Telefono*</label>
+            </FloatLabel>
+            {isInvalid(form.phone) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+          <span>
+            <FloatLabel>
+              <InputWithIcon icon="pi pi-envelope">
+                <InputText value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} keyfilter="email" className={isInvalid(form.email) ? 'p-invalid' : ''} />
+              </InputWithIcon>
+              <label>Email*</label>
+            </FloatLabel>
+            {isInvalid(form.email) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+          </span>
+        </div>
+      </Fieldset>
+      <div className="donor-step-actions">
+        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(2)} />
+        <Button label="Avanti" icon="pi pi-arrow-right" onClick={handleNext} />
+      </div>
     </div>
-    <div className="donor-step-form-row">
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-phone">
-            <InputText value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} keyfilter="int" />
-          </InputWithIcon>
-          <label>Telefono*</label>
-        </FloatLabel>
-      </span>
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-envelope">
-            <InputText value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} keyfilter="email" />
-          </InputWithIcon>
-          <label>Email*</label>
-        </FloatLabel>
-      </span>
-    </div>
-    <div className="donor-step-actions">
-      <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(2)} />
-      <Button label="Avanti" icon="pi pi-arrow-right" onClick={() => setStep(4)} disabled={!(form.firstName && form.lastName && form.gender && form.birthDate && form.birthPlace && form.taxCode && form.residence && form.address && form.phone && form.email)} />
-    </div>
-  </div>
-);
+  );
+};
 
 
 const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setError, setAck, loading, error }) => (
@@ -292,14 +326,8 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
           <label>Professione</label>
         </FloatLabel>
       </span>
-      <span>
-        <FloatLabel>
-          <InputWithIcon icon="pi pi-user">
-            <InputText value={form.nonProfessionalStatus} onChange={e => setForm({ ...form, nonProfessionalStatus: e.target.value })} />
-          </InputWithIcon>
-          <label>Condizione non professionale</label>
-        </FloatLabel>
-      </span>
+    </div>
+    <div className="donor-step-form-row">
       <span>
         <FloatLabel>
           <InputWithIcon icon="pi pi-users">
@@ -314,20 +342,30 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
       <Button label="Invia" icon="pi pi-send" onClick={async () => {
         setLoading(true);
         setError("");
-        setTimeout(() => {
-          setLoading(false);
+        try {
+          // 1. Save Donor Data
+          await client.post('/api/signup', form);
+
+          // 2. Send OTP
+          await client.post('/api/send-otp', { email: form.email });
+
           setAck(true);
           setStep(5);
-        }, 1000);
+        } catch (err: any) {
+          console.error("Signup failed", err);
+          setError(err.response?.data?.error || "Errore durante l'invio. Riprova.");
+        } finally {
+          setLoading(false);
+        }
       }} />
     </div>
     {loading && <Message severity="info" text="Invio dati in corso..." />}
     {error && <Message severity="error" text={error} />}
-  </div>
+  </div >
 );
 
 
-const Step5: React.FC<StepProps> = ({ setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => (
+const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => (
   <div className="donor-signup-container">
     <div className="donor-step-title">Conferma la tua iscrizione</div>
     <div className="donor-step-desc">Abbiamo inviato un codice OTP alla tua email. Inseriscilo qui sotto per confermare la candidatura.</div>
@@ -344,12 +382,16 @@ const Step5: React.FC<StepProps> = ({ setStep, otp, setOtp, otpError, setOtpErro
     {otpError && <Message severity="error" text={otpError} />}
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
-      <Button label="Conferma" icon="pi pi-check" onClick={() => {
-        if (otp === "123456") {
-          setSuccess(true);
-          setStep(6);
-        } else {
-          setOtpError("Codice OTP non valido. Riprova.");
+      <Button label="Conferma" icon="pi pi-check" onClick={async () => {
+        try {
+          setOtpError("");
+          const res = await client.post('/api/verify-otp', { email: form.email, otp });
+          if (res.data.success) {
+            setSuccess(true);
+            setStep(6);
+          }
+        } catch (err: any) {
+          setOtpError("Codice OTP non valido o scaduto.");
         }
       }} />
     </div>
@@ -384,8 +426,8 @@ const DonorSignup: React.FC = () => {
     birthDate: null,
     birthPlace: "",
     taxCode: "",
-    residence: "",
     address: "",
+    town: "",
     phone: "",
     email: "",
     education: "",

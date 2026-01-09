@@ -30,7 +30,16 @@ const HomePage: React.FC = () => {
           image={process.env.PUBLIC_URL + '/images/ate.png'}
           title="Fa bene a te"
           subtitle="Donare il sangue fa bene anche a chi dona"
-          description="Donare il sangue stimola la produzione di nuove cellule, aiuta a monitorare regolarmente la propria salute grazie ai controlli periodici e offre una gratificazione personale per il gesto solidale. Diversi studi dimostrano che i donatori regolari hanno una migliore salute cardiovascolare e un rischio ridotto di alcune patologie." />
+          description={
+            <>
+              Donare il sangue stimola la rigenerazione cellulare e permette di monitorare la propria salute grazie ai controlli gratuiti.
+              Uno studio condotto su un campione di uomini di mezza età ha osservato una significativa associazione tra la donazione frequente e un rischio ridotto di infarto miocardico acuto.
+            </>
+          }
+          citation={{
+            text: "American Journal of Epidemiology",
+            link: "https://doi.org/10.1093/oxfordjournals.aje.a009669"
+          }} />
         <InfoBlock
           image={process.env.PUBLIC_URL + '/images/altri.png'}
           title="Fa bene agli altri"

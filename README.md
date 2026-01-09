@@ -82,49 +82,106 @@ The frontend application will open automatically in your browser at `http://loca
 
 ## 🚀 Deployment to Azure
 
-This project uses Terraform to create the necessary infrastructure on Azure. The code is deployed separately.
+### 1. Prerequisites & Credentials (Manual Step)
 
-### Manual Steps Before Deployment
+Since you are setting this up for the first time, you need to generate Azure credentials for GitHub Actions to use.
 
-1.  **Log in to Azure**: Open your terminal and log in to your Azure account.
+1.  **Login to Azure CLI**:
     ```sh
     az login
     ```
-
-2.  **Configure Custom Domain**: The Terraform script does not handle DNS configuration. You must manually configure your custom domain (e.g., `avismerate.it`) in your domain registrar's portal (e.g., GoDaddy) to point to the Azure resources *after* they are created. You will typically do this in the Azure Portal on the created App Service or Static Web App.
-
-### Deploying the Infrastructure
-
-1.  Navigate to the infrastructure directory:
+2.  **Create Service Principal**:
+    Run the following command to create a Service Principal with "Contributor" access.
+    Replace `<SUBSCRIPTION_ID>` with your actual Subscription ID (you can see it in the output of `az login`).
     ```sh
-    cd infrastructure
+    az ad sp create-for-rbac --name "OpenAvisDeploy" --role contributor --scopes /subscriptions/<SUBSCRIPTION_ID> --sdk-auth
     ```
+3.  **Save the Output**:
+    The command will output a JSON object. **Copy this entire JSON**. You will need it for the GitHub Repository Secret named `AZURE_CREDENTIALS`.
 
-2.  Initialize Terraform. This will download the necessary providers.
+### 2. Infrastructure (Terraform)
+
+The infrastructure is defined in the `/infrastructure` folder. It sets up:
+-   **Resource Group**: Container for all resources.
+-   **Cosmos DB**: Serverless database for donor data.
+-   **Communication Service**: For sending emails.
+-   **App Service Plan (Linux)**: Hosting plan.
+-   **App Service**: Hosting for the Node.js Backend.
+-   **Static Web App**: Hosting for the React Frontend.
+
+To deploy manually (or test):
+```sh
+cd infrastructure
+terraform init
+terraform apply
+```
+
+### 3. DNS Configuration (Manual Step - GoDaddy)
+
+Terraform sets up the resources, but for connecting custom domains like `avismerate.it` and `beta.avismerate.it`, you need to perform manual steps in the GoDaddy DNS panel.
+
+#### Beta Environment: `beta.avismerate.it`
+1.  **Azure Portal**: Navigate to the Static Web App named `openavis-merate-frontend-beta`.
+2.  **Custom Domains**: Click **"Add"**, enter `beta.avismerate.it`, and select "DNS TXT token" for validation.
+3.  **Validation Token**: Azure will provide a host name (e.g., `_dnsauth.beta`) and a value.
+4.  **GoDaddy**: In your DNS Management:
+    -   Add a **TXT** record with the **Host** and **Value** provided by Azure.
+    -   Add a **CNAME** record with Host `beta` pointing to your Azure SWA default hostname (e.g., `gentle-wave-....azurestaticapps.net`).
+5.  **Activation**: Once the records propagate, click "Validate" in Azure. SSL will be automatically provisioned.
+
+#### Production Environment: `avismerate.it`
+1.  **Azure Portal**: Navigate to the Static Web App named `openavis-merate-frontend-prod`.
+2.  **Custom Domains**: Add both `avismerate.it` and `www.avismerate.it`.
+3.  **Validation**: Follow the same TXT token process for both.
+4.  **GoDaddy**: 
+    -   Add **TXT** records for validation as requested.
+    -   Add a **CNAME** record for `www` pointing to the Production SWA hostname.
+    -   For the root domain (`@`), follow the instructions in the Azure Portal for "Root domain hosting".
+
+---
+
+### 4. CI/CD: Pipeline & Authorization (GitHub Actions)
+
+We use a **Sequential Environment Pipeline** (Beta → Production). To make this work, you must authorize GitHub to act on your Azure account and configure the manual gate.
+
+#### Step 1: Authorize GitHub on Azure Portal
+GitHub needs permission to update your Web Apps.
+1.  **Open your terminal** and ensure you are logged in: `az login`.
+2.  **Create a Service Principal**: This is like a "virtual user" for GitHub. Run:
     ```sh
-    terraform init
+    az ad sp create-for-rbac --name "OpenAvisGitHubDeploy" --role contributor --scopes /subscriptions/<YOUR_SUBSCRIPTION_ID> --sdk-auth
     ```
+    *(Replace `<YOUR_SUBSCRIPTION_ID>` with yours).*
+3.  **Copy the JSON output**: It contains the `clientId`, `clientSecret`, `tenantId`, etc. You will need this for GitHub.
 
-3.  (Optional) Preview the changes that Terraform will make.
-    ```sh
-    terraform plan
-    ```
+#### Step 2: Configure Secrets in GitHub
+1.  Go to your GitHub Repository -> **Settings** -> **Secrets and variables** -> **Actions**.
+2.  Click **"New repository secret"** and add the following:
+    -   `AZURE_CREDENTIALS`: Paste the **entire JSON** object from Step 1.
+    -   `AZURE_CLIENT_ID`: The `clientId` from the JSON.
+    -   `AZURE_CLIENT_SECRET`: The `clientSecret` from the JSON.
+    -   `AZURE_TENANT_ID`: The `tenantId` from the JSON.
+    -   `AZURE_SUBSCRIPTION_ID`: Your Azure Subscription ID.
 
-4.  Apply the changes to create the resources on Azure.
-    ```sh
-    terraform apply
-    ```
+#### Step 3: Setup Environments & Manual Approval (The "Gate")
+To prevent automatic deployment to production, we use GitHub Environments:
+1.  Go to **Settings** -> **Environments**.
+2.  Click **"New environment"** and name it `beta`. (No protection needed here).
+3.  Click **"New environment"** again and name it `production`.
+4.  Inside the **`production`** environment settings:
+    -   Check **"Required reviewers"**.
+    -   Search and add your GitHub username.
+    -   Click **"Save protection rules"**.
 
-Terraform will provision a Resource Group, an App Service Plan, an App Service for the backend, and a Static Web App for the frontend.
-
-### Deploying the Code (Post-Infrastructure)
-
-After the infrastructure is created, you need to deploy your code. The recommended approach is to set up a CI/CD pipeline (e.g., using GitHub Actions).
-
--   **Backend**: Configure the pipeline to build your Node.js app, create a deployment package (a zip file), and deploy it to the `azurerm_linux_web_app` instance.
--   **Frontend**: Configure the pipeline to build your React app (`npm run build`) and deploy the static files from the `build` directory to the `azurerm_static_site` instance.
-
-These deployment steps are typically configured within the Azure Portal or through YAML files for your CI/CD provider.
+#### Step 4: How the Pipeline Runs
+1.  **Push to `main`**: GitHub starts the "Deploy to Beta" job automatically.
+2.  **Beta Online**: Within minutes, the changes are live at `https://beta.avismerate.it`.
+3.  **The Pause**: The workflow will show a status of **"Waiting"**. You will receive an email and a notification on GitHub.
+4.  **Review & Approve**:
+    -   Go to the **Actions** tab.
+    -   Click on the running workflow.
+    -   Click **"Review deployments"**, select `production`, and click **"Approve"**.
+5.  **Production Live**: Only then, the code is moved to `https://avismerate.it`.
 
 
 ---
