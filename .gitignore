@@ -1,2 +1,52 @@
+# Sensitive files
 *.localfile
 *.exe
+
+# API local settings (contains credentials)
+api/local.settings.json
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+*.js.map
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Azure Functions
+api/.azurefunctions/
+api/__blobstorage__/
+api/__queuestorage__/
+api/__azurite_db*__/
+
+# Terraform
+infrastructure/.terraform/
+infrastructure/*.tfstate
+infrastructure/*.tfstate.backup
+infrastructure/.terraform.lock.hcl
+
+# Test outputs
+coverage/
+*.test.js

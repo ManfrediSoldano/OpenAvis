@@ -22,43 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # --- BACKEND BETA ---
-      - name: Set up Node.js (Backend)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: npm ci
-
-      - name: Build and Package Backend
-        working-directory: ./backend
-        run: |
-          npm run build
-          npm prune --production
-          cp package.json dist/
-          cp package-lock.json dist/
-          if [ -f config.json ]; then cp config.json dist/; fi
-          zip -r release.zip dist node_modules package.json config.json
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy Backend to Beta
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "${{ env.APP_NAME_PREFIX }}-backend-beta"
-          package: ./backend/release.zip
-
-      # --- FRONTEND BETA ---
-      - name: Set up Node.js (Frontend)
+      # --- FRONTEND + API (BETA) ---
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -74,6 +39,13 @@ jobs:
         run: npm run build
         env:
           CI: false
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Get SWA Deployment Token (Beta)
         id: get_token_beta
@@ -84,14 +56,16 @@ jobs:
             echo "::add-mask::$token"
             echo "token=$token" >> $GITHUB_OUTPUT
 
-      - name: Deploy Frontend to Beta
+      - name: Deploy Frontend + API to Beta
         uses: azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ steps.get_token_beta.outputs.token }}
           action: "upload"
           app_location: "frontend/build"
+          api_location: "api"
           app_artifact_location: ""
           skip_app_build: true
+
 
   deploy-production:
     name: Deploy to Production
@@ -101,43 +75,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # --- BACKEND PRODUCTION ---
-      - name: Set up Node.js (Backend)
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: npm ci
-
-      - name: Build and Package Backend
-        working-directory: ./backend
-        run: |
-          npm run build
-          npm prune --production
-          cp package.json dist/
-          cp package-lock.json dist/
-          if [ -f config.json ]; then cp config.json dist/; fi
-          zip -r release.zip dist node_modules package.json config.json
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy Backend to Production
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "${{ env.APP_NAME_PREFIX }}-backend-prod"
-          package: ./backend/release.zip
-
-      # --- FRONTEND PRODUCTION ---
-      - name: Set up Node.js (Frontend)
+      # --- FRONTEND + API (PRODUCTION) ---
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
@@ -154,6 +93,13 @@ jobs:
         env:
           CI: false
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: Get SWA Deployment Token (Production)
         id: get_token_prod
         uses: azure/CLI@v1
@@ -163,11 +109,13 @@ jobs:
             echo "::add-mask::$token"
             echo "token=$token" >> $GITHUB_OUTPUT
 
-      - name: Deploy Frontend to Production
+      - name: Deploy Frontend + API to Production
         uses: azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ steps.get_token_prod.outputs.token }}
           action: "upload"
           app_location: "frontend/build"
+          api_location: "api"
           app_artifact_location: ""
           skip_app_build: true
+
