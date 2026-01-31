@@ -2,7 +2,7 @@
     "name": "openavis-api",
     "version": "1.0.0",
     "description": "Azure Functions API for OpenAvis",
-    "main": "src/index.ts",
+    "main": "dist/src/index.js",
     "scripts": {
         "build": "tsc",
         "watch": "tsc --watch",
