@@ -8,7 +8,7 @@ import * as path from "path";
  */
 export async function config(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     try {
-        const configPath = path.join(__dirname, '../../config.json');
+        const configPath = path.join(process.cwd(), 'config.json');
 
         if (!fs.existsSync(configPath)) {
             context.error("config.json not found");
