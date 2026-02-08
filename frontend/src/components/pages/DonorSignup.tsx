@@ -339,27 +339,24 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
     </div>
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(3)} />
-      <Button label="Invia" icon="pi pi-send" onClick={async () => {
+      <Button label="Invia il codice" icon="pi pi-send" onClick={async () => {
         setLoading(true);
         setError("");
         try {
-          // 1. Save Donor Data
-          await client.post('/api/signup', form);
-
-          // 2. Send OTP
+          // 1. Send OTP only (Data is not saved yet)
           await client.post('/api/send-otp', { email: form.email });
 
           setAck(true);
           setStep(5);
         } catch (err: any) {
-          console.error("Signup failed", err);
-          setError(err.response?.data?.error || "Errore durante l'invio. Riprova.");
+          console.error("Send OTP failed", err);
+          setError(err.response?.data?.error || "Errore durante l'invio del codice. Riprova.");
         } finally {
           setLoading(false);
         }
       }} />
     </div>
-    {loading && <Message severity="info" text="Invio dati in corso..." />}
+    {loading && <Message severity="info" text="Invio codice OTP in corso..." />}
     {error && <Message severity="error" text={error} />}
   </div >
 );
@@ -382,16 +379,18 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
     {otpError && <Message severity="error" text={otpError} />}
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
-      <Button label="Conferma" icon="pi pi-check" onClick={async () => {
+      <Button label="Conferma Iscrizione" icon="pi pi-check" onClick={async () => {
         try {
           setOtpError("");
-          const res = await client.post('/api/verify-otp', { email: form.email, otp });
+          // Final Submit: Data + OTP
+          const res = await client.post('/api/signup', { ...form, otp });
           if (res.data.success) {
             setSuccess(true);
             setStep(6);
           }
         } catch (err: any) {
-          setOtpError("Codice OTP non valido o scaduto.");
+          console.error("Signup verify failed", err);
+          setOtpError(err.response?.data?.error || "Codice OTP non valido o errore nel salvataggio.");
         }
       }} />
     </div>

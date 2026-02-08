@@ -16,6 +16,62 @@ export class EmailService {
         }
     }
 
+    private getTemplate(title: string, bodyContent: string): string {
+        const logoUrl = "https://avismerate.it/images/Logo_AVIS.png"; // Adjustable URL
+        const year = new Date().getFullYear();
+
+        return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333333; margin: 0; padding: 0; background-color: #f9f9f9;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                
+                <!-- Header -->
+                <div style="background-color: #ffffff; padding: 20px; text-align: center; border-bottom: 2px solid #e9ecef;">
+                    <img src="${logoUrl}" alt="AVIS Merate Logo" style="max-width: 150px; height: auto;">
+                </div>
+
+                <!-- Body -->
+                <div style="padding: 30px 20px;">
+                    <h2 style="color: #d9534f; margin-top: 0;">${title}</h2>
+                    ${bodyContent}
+                </div>
+
+                <!-- Footer -->
+                <div style="background-color: #f1f1f1; padding: 20px; font-size: 12px; color: #666666; text-align: center; border-top: 1px solid #e9ecef;">
+                    <div style="margin-bottom: 15px;">
+                        <img src="${logoUrl}" alt="AVIS Merate" style="max-width: 80px; opacity: 0.8;">
+                    </div>
+                    
+                    <p style="margin: 5px 0;"><strong>AVIS Comunale di Merate</strong></p>
+                    <p style="margin: 5px 0;">Piazza Don Minzoni, 5, 23807 Merate (LC)</p>
+                    <p style="margin: 5px 0;">C.F. 94003940130</p>
+                    
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;">
+                        <p style="margin: 5px 0;">
+                            Tel: <a href="tel:+390399902303" style="color: #d9534f; text-decoration: none;">039 9902303</a> | 
+                            Email: <a href="mailto:info@avismerate.it" style="color: #d9534f; text-decoration: none;">info@avismerate.it</a>
+                        </p>
+                        <p style="margin: 5px 0;">
+                            PEC: <a href="mailto:merate.comunale@pec.avis.it" style="color: #d9534f; text-decoration: none;">merate.comunale@pec.avis.it</a>
+                        </p>
+                    </div>
+
+                    <p style="margin-top: 20px; font-size: 10px; color: #999999;">
+                        &copy; ${year} AVIS Merate. Tutti i diritti riservati.<br>
+                        Ricevi questa email perché hai richiesto un servizio sul nostro sito.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
+    }
+
     async sendOtp(toEmail: string, otpCode: string) {
         const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
 
@@ -26,20 +82,22 @@ export class EmailService {
 
         if (!this.client.beginSend) throw new Error("Email Client not initialized (Missing ACS_CONNECTION_STRING)");
 
+        const htmlContent = `
+            <p>Ciao,</p>
+            <p>Il tuo codice verifica per completare la registrazione è:</p>
+            <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; text-align: center; margin: 20px 0;">
+                <span style="font-size: 24px; font-weight: bold; letter-spacing: 5px; color: #d9534f;">${otpCode}</span>
+            </div>
+            <p>Il codice è valido per 5 minuti.</p>
+            <p>Se non hai richiesto tu questo codice, ignora questa email.</p>
+        `;
+
         const emailMessage = {
             senderAddress: this.senderAddress,
             content: {
                 subject: "Codice OTP per candidatura AVIS",
-                plainText: `Il tuo codice OTP valido per la candidatura è: ${otpCode}`,
-                html: `
-                <html>
-                    <body style="font-family: Arial, sans-serif;">
-                        <h1 style="color: #d9534f;">Conferma Candidatura</h1>
-                        <p>Il tuo codice OTP per completare la registrazione è:</p>
-                        <h2 style="background-color: #f4f4f4; padding: 10px; display: inline-block;">${otpCode}</h2>
-                        <p>Se non hai richiesto tu questo codice, ignora questa email.</p>
-                    </body>
-                </html>`
+                plainText: `Il tuo codice OTP è: ${otpCode}`,
+                html: this.getTemplate("Conferma la tua Email", htmlContent)
             },
             recipients: {
                 to: [{ address: toEmail }]
@@ -50,7 +108,7 @@ export class EmailService {
         return await poller.pollUntilDone();
     }
 
-    async sendConfirmation(toEmail: string) {
+    async sendConfirmation(toEmail: string, firstName: string = "Candidato") {
         const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
 
         if (!isProduction) {
@@ -60,21 +118,24 @@ export class EmailService {
 
         if (!this.client.beginSend) throw new Error("Email Client not initialized (Missing ACS_CONNECTION_STRING)");
 
+        const htmlContent = `
+            <p>Gentile ${firstName},</p>
+            <p>Grazie per esserti candidato come donatore AVIS. Abbiamo ricevuto correttamente la tua richiesta.</p>
+            <div style="background-color: #e8f4fe; border-left: 4px solid #0275d8; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #025aa5;"><strong>Prossimi passi:</strong></p>
+                <p style="margin: 5px 0 0;">Un nostro responsabile ti contatterà per fissare un primo colloquio conoscitivo.</p>
+            </div>
+            <p>Nel frattempo, puoi visitare il nostro sito per ulteriori informazioni sulla donazione.</p>
+            <br/>
+            <p>A presto,<br/>Lo staff di AVIS Merate</p>
+        `;
+
         const emailMessage = {
             senderAddress: this.senderAddress,
             content: {
                 subject: "Candidatura Ricevuta - AVIS Merate",
-                plainText: "Grazie! Abbiamo ricevuto la tua candidatura. Verrai contattato a breve da un nostro responsabile.",
-                html: `
-                <html>
-                    <body style="font-family: Arial, sans-serif;">
-                        <h1 style="color: #0275d8;">Candidatura Ricevuta</h1>
-                        <p>Grazie per esserti candidato come donatore AVIS.</p>
-                        <p>La tua richiesta è stata presa in carico. Un nostro medico o responsabile ti contatterà al numero fornito per fissare un primo colloquio.</p>
-                        <br/>
-                        <p>A presto,<br/>Lo staff di AVIS Merate</p>
-                    </body>
-                </html>`
+                plainText: "Grazie! Abbiamo ricevuto la tua candidatura. Verrai contattato a breve.",
+                html: this.getTemplate("Candidatura Ricevuta", htmlContent)
             },
             recipients: {
                 to: [{ address: toEmail }]

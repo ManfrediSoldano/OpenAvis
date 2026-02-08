@@ -31,9 +31,10 @@ export async function verifyOtp(request: HttpRequest, context: InvocationContext
 
         // Verify OTP
         if (storedOtp === otp) {
-            // Consume OTP (delete after successful verification)
-            await dbService.deleteOtp(email);
-            context.log(`[OTP] Verified and consumed for ${email}`);
+            // Do NOT consume OTP here - let signup consume it
+            // await dbService.deleteOtp(email);
+
+            context.log(`[OTP] Verified (but not consumed) for ${email}`);
 
             return {
                 status: 200,

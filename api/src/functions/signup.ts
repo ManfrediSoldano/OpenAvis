@@ -8,7 +8,8 @@ import { EmailService } from "../services/email";
  */
 export async function signup(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     try {
-        const donorData = await request.json() as any;
+        const body = await request.json() as any;
+        const { otp, ...donorData } = body;
 
         // Basic validation
         if (!donorData.email || !donorData.firstName || !donorData.lastName) {
@@ -18,14 +19,34 @@ export async function signup(request: HttpRequest, context: InvocationContext): 
             };
         }
 
-        // Save donor to database
+        if (!otp) {
+            return {
+                status: 400,
+                jsonBody: { error: "OTP code is required to complete signup" }
+            };
+        }
+
         const dbService = new DatabaseService();
+
+        // Verify OTP
+        const storedOtp = await dbService.getOtp(donorData.email);
+        if (!storedOtp || storedOtp !== otp) {
+            return {
+                status: 400,
+                jsonBody: { error: "Invalid or expired OTP" }
+            };
+        }
+
+        // Consume OTP (prevent reuse)
+        await dbService.deleteOtp(donorData.email);
+
+        // Save donor to database
         const savedItem = await dbService.saveDonor(donorData);
 
         // Send confirmation email
         const emailService = new EmailService();
         try {
-            await emailService.sendConfirmation(donorData.email);
+            await emailService.sendConfirmation(donorData.email, donorData.firstName);
         } catch (emailError) {
             context.error("Failed to send confirmation email:", emailError);
             // Continue anyway - donor is saved
