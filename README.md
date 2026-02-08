@@ -223,7 +223,29 @@ Terraform sets up the resources, but for connecting custom domains like `avismer
 
 ---
 
-### 4. CI/CD: Pipeline & Authorization (GitHub Actions)
+### 4. Email Configuration (Manual Step - Azure Portal)
+
+Terraform creates the Communication Service resources, but you must manually configure the domain and sender identity in the Azure Portal to enable email sending.
+
+1. **Add and Verify Domain (Email Communication Service)**
+   - Go to the **Email Communication Service** resource (e.g., `openavis-comm-service-email`).
+   - Click **Provision domains** -> **Add domain**.
+   - Enter `avismerate.it` (or your custom domain) and choose **Verify**.
+   - Add the provided **TXT** record to your GoDaddy (or other provider) DNS.
+   - Wait for verification to complete (Status: Verified).
+
+2. **Connect Domain (Communication Service)**
+   - Go to the **Communication Service** resource (e.g., `openavis-comm-service`).
+   - Click **Domains** -> **Connect domain**.
+   - Select the **Email Communication Service** and the verified domain.
+   - Click **Connect**.
+
+3. **Update Sender Address**
+   - Ensure the `EMAIL_SENDER_ADDRESS` variable in your `local.settings.json` and in the Azure Static Web App **Environment variables** matches the configured domain (e.g., `DoNotReply@avismerate.it`).
+
+---
+
+### 5. CI/CD: Pipeline & Authorization (GitHub Actions)
 
 We use a **Sequential Environment Pipeline** (Beta → Production). To make this work, you must authorize GitHub to act on your Azure account and configure the manual gate.
 
