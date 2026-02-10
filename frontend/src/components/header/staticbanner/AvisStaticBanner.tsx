@@ -6,7 +6,7 @@ const bannersData: BannerData[] = [
   {
     id: '1',
     type: 'video',
-    videoSrc: '/videos/avisNazionale-adv.mp4',
+    videoSrc: 'https://openavismeratestorage.blob.core.windows.net/public-assets/avisNazionale-adv.mp4',
     fallbackImageSrc: 'https://via.placeholder.com/1920x1080?text=Video+Banner',
     texts: ['fa bene a te', 'fa bene agli altri', 'fa bene alla comunità'],
     startTime: 5,
