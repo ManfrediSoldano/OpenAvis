@@ -5,7 +5,7 @@ import "./Footer.css";
 const Footer = () => (
   <footer className="footer">
     <div className="footer-section footer-logo">
-      <img src={process.env.PUBLIC_URL + "/images/Logo_AVIS.png"} alt="AVIS Logo" className="footer-avis-logo" />
+      <img src="https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png" alt="AVIS Logo" className="footer-avis-logo" />
       <address>
         Piazza Don Minzoni, 5<br />
         23807 Merate (LC)<br />

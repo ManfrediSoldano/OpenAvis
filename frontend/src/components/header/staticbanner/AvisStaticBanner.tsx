@@ -16,7 +16,7 @@ const bannersData: BannerData[] = [
   {
     id: '2',
     type: 'image',
-    imageSrc: '/images/adv.PNG',
+    imageSrc: 'https://openavismeratestorage.blob.core.windows.net/public-assets/adv.PNG',
     texts: [],
     descriptionText: "",
     enableAnimation: false
