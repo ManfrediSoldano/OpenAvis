@@ -9,15 +9,16 @@ export class DatabaseService {
     private newsContainerId: string = "news";
 
     constructor() {
-        if (!process.env.COSMOS_DB_ENDPOINT || !process.env.COSMOS_DB_KEY || !process.env.COSMOS_DB_DATABASE) {
-            console.warn("Cosmos DB environment variables missing. DatabaseService will fail if used.");
-        }
+        const endpoint = process.env.COSMOS_DB_ENDPOINT;
+        const key = process.env.COSMOS_DB_KEY;
+        this.databaseId = process.env.COSMOS_DB_DATABASE || "openavis-db";
 
-        this.client = new CosmosClient({
-            endpoint: process.env.COSMOS_DB_ENDPOINT!,
-            key: process.env.COSMOS_DB_KEY!
-        });
-        this.databaseId = process.env.COSMOS_DB_DATABASE!;
+        if (!endpoint || !key) {
+            console.error("Cosmos DB environment variables missing!");
+            this.client = new CosmosClient({ endpoint: "https://disabled", key: "disabled" });
+        } else {
+            this.client = new CosmosClient({ endpoint, key });
+        }
     }
 
     /**
@@ -158,21 +159,23 @@ export class DatabaseService {
      * Get specific news by ID
      */
     async getNews(id: string) {
-        if (!this.databaseId) return null;
-        const database = this.client.database(this.databaseId);
-        const container = database.container(this.newsContainerId);
+        if (!this.databaseId || !this.client) return null;
 
         try {
-            // Assuming id is the partition key or we just read by id. 
-            // If we use /id as partition key, we can do item(id, id).
-            // If we use something else, we might need a query.
-            // Let's assume for News, 'id' is a good partition key or maybe 'type' if we had one.
-            // For simplicity in this setup, let's use id.
-            const { resource } = await container.item(id, id).read();
-            return resource;
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.newsContainerId);
+
+            // Use query instead of point read for better stability with dynamic IDs and partition keys
+            const querySpec = {
+                query: "SELECT * FROM c WHERE c.id = @id",
+                parameters: [{ name: "@id", value: id }]
+            };
+
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources.length > 0 ? resources[0] : null;
         } catch (error: any) {
-            if (error.code === 404) return null;
-            throw error;
+            console.error(`Error retrieving news ${id}:`, error);
+            return null;
         }
     }
 
