@@ -33,5 +33,6 @@ export async function getHighlights(request: HttpRequest, context: InvocationCon
 app.http('getHighlights', {
     methods: ['GET'],
     authLevel: 'anonymous',
+    route: 'getHighlights',
     handler: getHighlights
 });

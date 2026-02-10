@@ -40,5 +40,6 @@ export async function retrieveNews(request: HttpRequest, context: InvocationCont
 app.http('retrieveNews', {
     methods: ['GET'],
     authLevel: 'anonymous',
+    route: 'retrieveNews',
     handler: retrieveNews
 });

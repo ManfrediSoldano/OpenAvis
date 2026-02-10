@@ -13,8 +13,5 @@
             "/api/*",
             "/*.{js,css,json,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}"
         ]
-    },
-    "platform": {
-        "apiRuntime": "node:18"
     }
 }
