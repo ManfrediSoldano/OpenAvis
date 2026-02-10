@@ -489,6 +489,10 @@ const DonorSignup: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
 
   const stepProps: StepProps = {
     form, setForm, setStep, setLoading, setError, setAck, setOtp, otp, otpError, setOtpError, setSuccess, loading, error, navigate

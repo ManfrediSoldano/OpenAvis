@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AvisStaticBanner from '../header/staticbanner/AvisStaticBanner';
 import BloodPlasmaBanner from './BloodPlasmaBanner';
 import InfoBlock from './InfoBlock';
+import NewsSection from '../news/NewsSection';
 import './HomePage.css';
 
 interface AppConfig {
@@ -25,6 +26,7 @@ const HomePage: React.FC = () => {
       <div className="homepage-donator-btn">
         <button onClick={() => navigate('/diventa-donatore')}>Diventa donatore</button>
       </div>
+      <NewsSection />
       <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         <InfoBlock
           image={process.env.PUBLIC_URL + '/images/ate.png'}
