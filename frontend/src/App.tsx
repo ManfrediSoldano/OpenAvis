@@ -8,6 +8,7 @@ import ProspectiveDonorsPage from './components/pages/ProspectiveDonorsPage';
 import NotFoundPage from './components/pages/NotFoundPage';
 import DonorSignup from './components/pages/DonorSignup';
 import NewsPage from './components/news/NewsPage';
+import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import ScrollToTop from './components/common/ScrollToTop';
@@ -26,6 +27,7 @@ const App: React.FC = () => {
                 <Route path="/aspiranti" element={<ProspectiveDonorsPage />} />
                 <Route path="/diventa-donatore" element={<DonorSignup />} />
                 <Route path="/news/:id" element={<NewsPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>

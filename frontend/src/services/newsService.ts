@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import client from "../api/client";
 
 export interface NewsHighlight {
     id: string;
@@ -23,16 +23,12 @@ export interface NewsDetail {
     date: string;
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:7071/api";
+
 
 export const getHighlights = async (): Promise<NewsHighlight[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/getHighlights`);
-        if (!response.ok) {
-            throw new Error(`Error fetching highlights: ${response.statusText}`);
-        }
-        const data = await response.json();
-        return data as NewsHighlight[];
+        const response = await client.get('/api/getHighlights');
+        return response.data as NewsHighlight[];
     } catch (error) {
         console.error("Failed to fetch highlights", error);
         return [];
@@ -41,16 +37,11 @@ export const getHighlights = async (): Promise<NewsHighlight[]> => {
 
 export const retrieveNews = async (id: string): Promise<NewsDetail | null> => {
     try {
-        const response = await fetch(`${API_BASE_URL}/retrieveNews?id=${id}`);
-        if (!response.ok) {
-            if (response.status === 404) return null;
-            throw new Error(`Error retrieving news: ${response.statusText}`);
-        }
-        const data = await response.json();
-        return data as NewsDetail;
+        const response = await client.get(`/api/retrieveNews?id=${id}`);
+        return response.data as NewsDetail;
     } catch (error) {
+        if ((error as any).response?.status === 404) return null;
         console.error("Failed to retrieve news", error);
-        // Fallback to null or rethrow based on strategy
         return null;
     }
 };

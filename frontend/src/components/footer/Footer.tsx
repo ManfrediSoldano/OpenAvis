@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 const Footer = () => (
@@ -12,7 +13,7 @@ const Footer = () => (
         PEC: <a href="mailto:MERATE.COMUNALE@PEC.AVIS.IT">merate.comunale@pec.avis.it</a><br />
       </address>
       <ul className="footer-links">
-        <li><a href="#">Privacy policy</a> | <a href="#">Cookie policy</a></li>
+        <li><Link to="/privacy-policy">Privacy policy</Link> | <Link to="/privacy-policy">Cookie policy</Link></li>
         <li><a href="#">Dati di contatto del DPO</a></li>
         <li><a href="#">Diritti dell'interessato</a></li>
         <li><a href="#">Informativa privacy per i soci</a></li>
