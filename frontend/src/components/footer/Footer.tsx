@@ -13,11 +13,10 @@ const Footer = () => (
         PEC: <a href="mailto:MERATE.COMUNALE@PEC.AVIS.IT">merate.comunale@pec.avis.it</a><br />
       </address>
       <ul className="footer-links">
-        <li><Link to="/privacy-policy">Privacy policy</Link> | <Link to="/privacy-policy">Cookie policy</Link></li>
-        <li><a href="#">Dati di contatto del DPO</a></li>
-        <li><a href="#">Diritti dell'interessato</a></li>
-        <li><a href="#">Informativa privacy per i soci</a></li>
-        <li><a href="#">Privacy policy per i Social network</a></li>
+        <li><Link to="/privacy-policy">Privacy policy & Cookie policy</Link></li>
+        <li><a href="https://avisprovincialelecco.it" target="_blank" rel="noopener noreferrer">Avis Provinciale Lecco</a></li>
+        <li><a href="https://avislombardia.it/" target="_blank" rel="noopener noreferrer">Avis Regionale Lombardia</a></li>
+        <li><a href="https://avis.it" target="_blank" rel="noopener noreferrer">Avis Nazionale</a></li>
       </ul>
     </div>
     <div className="footer-section footer-contacts">

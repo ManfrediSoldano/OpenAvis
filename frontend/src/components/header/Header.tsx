@@ -4,8 +4,9 @@ import './Header.css';
 
 const menuItems = [
   { label: 'Iscriviti', link: '/' },
-  { label: 'Chi siamo', link: '/about' },
-  { label: 'Avis Provinciale', link: '/contact' }
+  { label: 'Chi Siamo', link: '/storia' },
+  { label: 'Convenzioni', link: '/convenzioni' },
+  { label: 'Sospensione', link: '/sospensione' }
 ];
 
 const socialItems = [

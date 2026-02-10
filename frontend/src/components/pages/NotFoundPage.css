@@ -1,0 +1,77 @@
+.notfound-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+    /* Adjust based on header/footer */
+    text-align: center;
+    padding: 2rem;
+    background: transparent;
+}
+
+.notfound-content {
+    max-width: 600px;
+    padding: 3rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.844);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.notfound-content:hover {
+    transform: translateY(-5px);
+}
+
+.notfound-icon {
+    font-size: 6rem;
+    color: #f22626;
+    /* Avis Red */
+    margin-bottom: 1.5rem;
+}
+
+.notfound-title {
+    font-size: 5rem;
+    font-weight: 800;
+    margin: 0;
+    color: #333;
+    line-height: 1;
+}
+
+.notfound-subtitle {
+    font-size: 1.5rem;
+    color: #666;
+    margin: 1rem 0 2rem 0;
+}
+
+.notfound-description {
+    color: #888;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.home-button {
+    background: #f22626 !important;
+    border-color: #f22626 !important;
+    padding: 0.8rem 2rem !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.home-button:hover {
+    background: #d11f1f !important;
+    border-color: #d11f1f !important;
+    box-shadow: 0 5px 15px rgba(242, 38, 38, 0.3);
+}
+
+@media (max-width: 768px) {
+    .notfound-title {
+        font-size: 3.5rem;
+    }
+
+    .notfound-content {
+        padding: 2rem;
+    }
+}

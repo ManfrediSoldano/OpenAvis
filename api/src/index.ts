@@ -8,6 +8,9 @@ import './functions/config';
 import './functions/sendOtp';
 import './functions/verifyOtp';
 import './functions/signup';
+import './functions/getHighlights';
+import './functions/retrieveNews';
+import './functions/seedNews';
 
 // All functions are registered via app.http() calls in their respective files
 export { };
