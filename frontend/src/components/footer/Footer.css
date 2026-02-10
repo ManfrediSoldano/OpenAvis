@@ -9,7 +9,7 @@
   font-family: "Poppins", sans-serif;
   flex-wrap: wrap;
   border-radius: 0 0 15px 15px;
-  box-shadow: 0 8px 32px 0 rgba(0,117,191,0.12), 0 1.5px 8px 0 rgba(0,91,170,0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 117, 191, 0.12), 0 1.5px 8px 0 rgba(0, 91, 170, 0.08);
 }
 
 @media (min-width: 1704px) {
@@ -19,6 +19,7 @@
     margin: auto;
   }
 }
+
 @media (min-width: 1904px) {
   .footer {
     max-width: 90%;
@@ -26,6 +27,7 @@
     margin: auto;
   }
 }
+
 .footer-section {
   flex: 1 1 300px;
   margin: 0 2rem;
@@ -63,6 +65,7 @@
 }
 
 .footer-links a,
+.footer address a,
 .footer-links-utili a,
 .footer-contacts a {
   color: #fff;
@@ -72,6 +75,7 @@
 }
 
 .footer-links a:hover,
+.footer address a:hover,
 .footer-links-utili a:hover,
 .footer-contacts a:hover {
   color: #e30613;
@@ -114,10 +118,12 @@
     align-items: center;
     padding: 2rem 0 1.5rem 0;
   }
+
   .footer-section {
     margin: 1rem 0;
     min-width: 200px;
   }
+
   .footer-avis-logo {
     width: 90px;
   }

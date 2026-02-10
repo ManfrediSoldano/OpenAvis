@@ -6,6 +6,7 @@ export class DatabaseService {
     private databaseId: string;
     private donorsContainerId: string = "donors";
     private otpsContainerId: string = "otps";
+    private newsContainerId: string = "news";
 
     constructor() {
         if (!process.env.COSMOS_DB_ENDPOINT || !process.env.COSMOS_DB_KEY || !process.env.COSMOS_DB_DATABASE) {
@@ -125,5 +126,67 @@ export class DatabaseService {
                 console.warn(`[OTP] Failed to delete for ${email}:`, error);
             }
         }
+    }
+    /**
+     * Get news highlights (latest 3 or flagged as highlights)
+     */
+    async getHighlights() {
+        if (!this.databaseId) return [];
+        const database = this.client.database(this.databaseId);
+        const container = database.container(this.newsContainerId);
+
+        try {
+            // Query for highlights, order by date descending, take top 3
+            // Note: In a real app, you might want to index 'date' or 'isHighlight'
+            const querySpec = {
+                query: "SELECT TOP 3 * FROM c WHERE c.isHighlight = true ORDER BY c.date DESC"
+            };
+
+            // If no highlights found, fallback to just latest 3? 
+            // For now let's strict to isHighlight per requirements, or maybe just latest if user wants "news"
+            // The requirement says "Ritorna 3 news fatte da..."
+
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources;
+        } catch (error) {
+            console.error("Error fetching highlights:", error);
+            return [];
+        }
+    }
+
+    /**
+     * Get specific news by ID
+     */
+    async getNews(id: string) {
+        if (!this.databaseId) return null;
+        const database = this.client.database(this.databaseId);
+        const container = database.container(this.newsContainerId);
+
+        try {
+            // Assuming id is the partition key or we just read by id. 
+            // If we use /id as partition key, we can do item(id, id).
+            // If we use something else, we might need a query.
+            // Let's assume for News, 'id' is a good partition key or maybe 'type' if we had one.
+            // For simplicity in this setup, let's use id.
+            const { resource } = await container.item(id, id).read();
+            return resource;
+        } catch (error: any) {
+            if (error.code === 404) return null;
+            throw error;
+        }
+    }
+
+    /**
+     * Helper to seed/create news item (internal/admin use)
+     */
+    async createNews(newsItem: any) {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.newsContainerId,
+            partitionKey: { paths: ["/id"] }
+        });
+
+        const { resource } = await container.items.upsert(newsItem);
+        return resource;
     }
 }
