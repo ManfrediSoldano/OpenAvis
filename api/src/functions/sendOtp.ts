@@ -8,8 +8,8 @@ import { EmailService } from "../services/email";
  */
 export async function sendOtp(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     try {
-        const body = await request.json() as { email?: string };
-        const { email } = body;
+        const body = await request.json() as { email?: string; mode?: string };
+        const { email, mode } = body;
 
         if (!email) {
             return {
@@ -17,6 +17,8 @@ export async function sendOtp(request: HttpRequest, context: InvocationContext):
                 jsonBody: { error: "Email required" }
             };
         }
+
+        const isResend = mode === 'resend';
 
         // Generate 6-digit OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -30,11 +32,11 @@ export async function sendOtp(request: HttpRequest, context: InvocationContext):
         await emailService.sendOtp(email, otp);
 
         // Log for development (email service already logs in dev mode)
-        context.log(`[OTP] Generated for ${email}: ${otp}`);
+        context.log(`[OTP] ${isResend ? 'Resent' : 'Generated'} for ${email}: ${otp}`);
 
         return {
             status: 200,
-            jsonBody: { success: true, message: "OTP sent" }
+            jsonBody: { success: true, message: isResend ? "OTP resent" : "OTP sent" }
         };
     } catch (error: any) {
         context.error("Error sending OTP:", error);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import client from "../../api/client";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -339,21 +339,21 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
     </div>
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(3)} />
-      <Button label="Invia il codice" icon="pi pi-send" onClick={async () => {
+      <Button label="Invia il codice" icon="pi pi-send" onClick={() => {
+        // Optimistic update: Go to next step immediately
+        // Fire request in background
         setLoading(true);
         setError("");
-        try {
-          // 1. Send OTP only (Data is not saved yet)
-          await client.post('/api/send-otp', { email: form.email });
+        client.post('/api/send-otp', { email: form.email })
+          .then(() => setAck(true))
+          .catch((err: any) => {
+            console.error("Send OTP failed", err);
+            // We can show the error in the next step or handle it globally
+            // For now, we log it. The user can click "Resend" in the next step.
+          })
+          .finally(() => setLoading(false));
 
-          setAck(true);
-          setStep(5);
-        } catch (err: any) {
-          console.error("Send OTP failed", err);
-          setError(err.response?.data?.error || "Errore durante l'invio del codice. Riprova.");
-        } finally {
-          setLoading(false);
-        }
+        setStep(5);
       }} />
     </div>
     {loading && <Message severity="info" text="Invio codice OTP in corso..." />}
@@ -362,40 +362,89 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
 );
 
 
-const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => (
-  <div className="donor-signup-container">
-    <div className="donor-step-title">Conferma la tua iscrizione</div>
-    <div className="donor-step-desc">Abbiamo inviato un codice OTP alla tua email. Inseriscilo qui sotto per confermare la candidatura.</div>
-    <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
-      <InputText
-        value={otp}
-        onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-        maxLength={6}
-        style={{ fontSize: '1.5rem', width: 180, textAlign: 'center', letterSpacing: '0.5rem' }}
-        keyfilter="int"
-        placeholder="------"
-      />
-    </div>
-    {otpError && <Message severity="error" text={otpError} />}
-    <div className="donor-step-actions">
-      <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
-      <Button label="Conferma Iscrizione" icon="pi pi-check" onClick={async () => {
-        try {
-          setOtpError("");
-          // Final Submit: Data + OTP
-          const res = await client.post('/api/signup', { ...form, otp });
-          if (res.data.success) {
-            setSuccess(true);
-            setStep(6);
+const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => {
+  const [timer, setTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
+  const [resending, setResending] = useState(false);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else {
+      setCanResend(true);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const handleResend = async () => {
+    setResending(true);
+    setOtpError("");
+    setCanResend(false);
+    try {
+      await client.post('/api/send-otp', { email: form.email, mode: 'resend' });
+      setTimer(30); // Reset timer
+    } catch (err: any) {
+      console.error("Resend OTP failed", err);
+      setOtpError("Errore durante l'invio del codice. Riprova.");
+      setCanResend(true); // Allow retry immediately on error? Or keep timer? Let's keep it consistent.
+    } finally {
+      setResending(false);
+    }
+  };
+
+  return (
+    <div className="donor-signup-container">
+      <div className="donor-step-title">Conferma la tua iscrizione</div>
+      <div className="donor-step-desc">
+        Abbiamo inviato un codice OTP alla tua email <strong>{form.email}</strong>.<br />
+        <span style={{ color: '#d97706', fontWeight: 'bold' }}>Controlla anche nella cartella spam.</span>
+        <br />Inseriscilo qui sotto per confermare la candidatura.
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '2rem 0' }}>
+        <InputText
+          value={otp}
+          onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+          maxLength={6}
+          style={{ fontSize: '1.5rem', width: 180, textAlign: 'center', letterSpacing: '0.5rem' }}
+          keyfilter="int"
+          placeholder="------"
+        />
+      </div>
+      {otpError && <Message severity="error" text={otpError} />}
+
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <Button
+          label={resending ? "Invio in corso..." : (canResend ? "Invia nuovo codice" : `Invia nuovo codice (${timer}s)`)}
+          icon="pi pi-refresh"
+          className="p-button-text p-button-sm"
+          onClick={handleResend}
+          disabled={!canResend || resending}
+        />
+      </div>
+
+      <div className="donor-step-actions">
+        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
+        <Button label="Conferma Iscrizione" icon="pi pi-check" onClick={async () => {
+          try {
+            setOtpError("");
+            // Final Submit: Data + OTP
+            const res = await client.post('/api/signup', { ...form, otp });
+            if (res.data.success) {
+              setSuccess(true);
+              setStep(6);
+            }
+          } catch (err: any) {
+            console.error("Signup verify failed", err);
+            setOtpError(err.response?.data?.error || "Codice OTP non valido o errore nel salvataggio.");
           }
-        } catch (err: any) {
-          console.error("Signup verify failed", err);
-          setOtpError(err.response?.data?.error || "Codice OTP non valido o errore nel salvataggio.");
-        }
-      }} />
+        }} />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 
 const Step6: React.FC<StepProps> = ({ navigate }) => (
