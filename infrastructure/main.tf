@@ -129,6 +129,29 @@ resource "azurerm_cosmosdb_sql_container" "news_prod" {
   partition_key_paths = ["/id"]
 }
 
+# --- Azure Storage Account (Blob Storage - S3 equivalent) ---
+resource "azurerm_storage_account" "storage" {
+  name                     = "openavismeratestorage" # Must be globally unique, lowercase, no hyphens
+  resource_group_name      = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+  
+  # Required to allow public access to containers
+  allow_nested_items_to_be_public = true
+
+  tags = {
+    environment = "production"
+  }
+}
+
+resource "azurerm_storage_container" "assets" {
+  name                  = "public-assets"
+  storage_account_id    = azurerm_storage_account.storage.id
+  container_access_type = "blob" # Allows public read access to blobs (files)
+}
+
+
 # --- Azure Communication Services (Email) ---
 resource "azurerm_communication_service" "acs" {
   name                = var.email_service_name

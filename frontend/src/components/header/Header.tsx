@@ -3,15 +3,14 @@ import StaggeredMenu from '../reactbits/StaggeredMenu';
 import './Header.css';
 
 const menuItems = [
-  { label: 'Iscriviti', link: '/' },
+  { label: 'Diventa Donatore', link: '/diventa-donatore' },
   { label: 'Chi Siamo', link: '/storia' },
   { label: 'Convenzioni', link: '/convenzioni' },
   { label: 'Sospensione', link: '/sospensione' }
 ];
 
 const socialItems = [
-  { label: 'GitHub', link: 'https://github.com' },
-  { label: 'LinkedIn', link: 'https://linkedin.com' }
+  { label: 'Facebook', link: '#' }
 ];
 
 const Header: React.FC = () => {
