@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-# --- Azure Cosmos DB (Serverless) ---
+# --- Azure Cosmos DB (Serverless) - BETA (Existing) ---
 resource "azurerm_cosmosdb_account" "db" {
   name                = var.cosmos_db_name
   location            = "northeurope"
@@ -66,6 +66,69 @@ resource "azurerm_cosmosdb_sql_container" "otps" {
   default_ttl         = -1  # Enable TTL, documents specify their own TTL value
 }
 
+resource "azurerm_cosmosdb_sql_container" "news" {
+  name                = "news"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.db.name
+  database_name       = azurerm_cosmosdb_sql_database.main_db.name
+  partition_key_paths = ["/id"]
+}
+
+# --- Azure Cosmos DB (Serverless) - PROD (New) ---
+resource "azurerm_cosmosdb_account" "db_prod" {
+  name                = "${var.cosmos_db_name}-prod"
+  location            = "northeurope"
+  resource_group_name = azurerm_resource_group.rg.name
+  offer_type          = "Standard"
+  kind                = "GlobalDocumentDB"
+
+  capabilities {
+    name = "EnableServerless"
+  }
+
+  geo_location {
+    location          = "northeurope"
+    failover_priority = 0
+  }
+
+  consistency_policy {
+    consistency_level       = "Session"
+    max_interval_in_seconds = 5
+    max_staleness_prefix    = 100
+  }
+}
+
+resource "azurerm_cosmosdb_sql_database" "main_db_prod" {
+  name                = "openavis-db"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.db_prod.name
+}
+
+resource "azurerm_cosmosdb_sql_container" "donors_prod" {
+  name                = "donors"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.db_prod.name
+  database_name       = azurerm_cosmosdb_sql_database.main_db_prod.name
+  partition_key_paths = ["/email"]
+}
+
+resource "azurerm_cosmosdb_sql_container" "otps_prod" {
+  name                = "otps"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.db_prod.name
+  database_name       = azurerm_cosmosdb_sql_database.main_db_prod.name
+  partition_key_paths = ["/email"]
+  default_ttl         = -1
+}
+
+resource "azurerm_cosmosdb_sql_container" "news_prod" {
+  name                = "news"
+  resource_group_name = azurerm_resource_group.rg.name
+  account_name        = azurerm_cosmosdb_account.db_prod.name
+  database_name       = azurerm_cosmosdb_sql_database.main_db_prod.name
+  partition_key_paths = ["/id"]
+}
+
 # --- Azure Communication Services (Email) ---
 resource "azurerm_communication_service" "acs" {
   name                = var.email_service_name
@@ -93,9 +156,9 @@ resource "azurerm_static_web_app" "frontend_prod" {
   sku_size            = "Free"
 
   app_settings = {
-    "COSMOS_DB_ENDPOINT"    = azurerm_cosmosdb_account.db.endpoint
-    "COSMOS_DB_KEY"         = azurerm_cosmosdb_account.db.primary_key
-    "COSMOS_DB_DATABASE"    = azurerm_cosmosdb_sql_database.main_db.name
+    "COSMOS_DB_ENDPOINT"    = azurerm_cosmosdb_account.db_prod.endpoint
+    "COSMOS_DB_KEY"         = azurerm_cosmosdb_account.db_prod.primary_key
+    "COSMOS_DB_DATABASE"    = azurerm_cosmosdb_sql_database.main_db_prod.name
     "ACS_CONNECTION_STRING" = azurerm_communication_service.acs.primary_connection_string
     "EMAIL_SENDER_ADDRESS"  = var.email_sender_address
     "NODE_ENV"              = "production"

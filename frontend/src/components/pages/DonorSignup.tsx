@@ -431,7 +431,8 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
           try {
             setOtpError("");
             // Final Submit: Data + OTP
-            const res = await client.post('/api/signup', { ...form, otp });
+            const { age: _age, weight: _weight, noPermanentExclusion: _npe, ...dataToSend } = form;
+            const res = await client.post('/api/signup', { ...dataToSend, otp });
             if (res.data.success) {
               setSuccess(true);
               setStep(6);
