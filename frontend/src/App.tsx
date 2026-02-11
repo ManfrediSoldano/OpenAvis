@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import HomePage from './components/pages/HomePage';
@@ -24,6 +24,8 @@ const App: React.FC = () => {
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/Assemblea2026" element={<Navigate to="/news/assemblea-comunale-2026" replace />} />
+                <Route path="/AssembleaOrdinaria" element={<Navigate to="/news/assemblea-comunale-2026" replace />} />
                 <Route path="/aspiranti" element={<ProspectiveDonorsPage />} />
                 <Route path="/diventa-donatore" element={<DonorSignup />} />
                 <Route path="/news/:id" element={<NewsPage />} />
