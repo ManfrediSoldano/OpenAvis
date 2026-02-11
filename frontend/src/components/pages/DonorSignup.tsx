@@ -14,6 +14,7 @@ import { FloatLabel } from "primereact/floatlabel";
 import { Fieldset } from 'primereact/fieldset';
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
+import CodiceFiscale from "codice-fiscale-js";
 
 
 const exclusionPdf = "https://lineeguida.avis.it/wp-content/uploads/2025/01/Approfondimento-4.-Criteri-di-esclusione-temporanea-e-permanente-dalla-donazione.pdf";
@@ -159,6 +160,10 @@ const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
 
 const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
   const [submitted, setSubmitted] = useState(false);
+  const [taxCodeError, setTaxCodeError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [birthDateError, setBirthDateError] = useState("");
 
   const validate = () => {
     return form.firstName && form.lastName && form.gender && form.birthDate &&
@@ -166,9 +171,90 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
       form.phone && form.email;
   };
 
+  const validateTaxCode = () => {
+    const cfStr = form.taxCode.trim().toUpperCase();
+    if (!cfStr) return "Codice fiscale obbligatorio";
+    if (cfStr.length !== 16) return "Il codice fiscale deve essere di 16 caratteri";
+
+    try {
+      const g = form.gender === "male" ? "M" : "F";
+      const bDate = form.birthDate;
+      if (!bDate) return "Data di nascita non valida";
+
+      const cf = new CodiceFiscale({
+        name: form.firstName,
+        surname: form.lastName,
+        gender: g as any,
+        day: bDate.getDate(),
+        month: bDate.getMonth() + 1,
+        year: bDate.getFullYear(),
+        birthplace: form.birthPlace.split('(')[0].trim(),
+        birthplaceProvincia: ""
+      });
+
+      const generatedCf = cf.toString().toUpperCase();
+      if (generatedCf !== cfStr) {
+        // Check for omocodie
+        const omocodes = cf.omocodie().map(o => o.toUpperCase());
+        if (!omocodes.includes(cfStr)) {
+          return `Il codice fiscale inserito (${cfStr}) non corrisponde ai dati anagrafici. Corretto: ${generatedCf}`;
+        }
+      }
+    } catch (e) {
+      console.error("CF Validation error", e);
+      return "Impossibile validare il codice fiscale. Controlla il luogo di nascita (scrivi solo il nome del comune o dello stato estero).";
+    }
+    return null;
+  };
+
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!form.email) return "Email obbligatoria";
+    if (!emailRegex.test(form.email)) return "Formato email non valido";
+    return null;
+  };
+
+  const validatePhone = () => {
+    const phoneRegex = /^\+?[0-9]{8,15}$/;
+    if (!form.phone) return "Telefono obbligatorio";
+    if (!phoneRegex.test(form.phone)) return "Formato telefono non valido (es: 3401234567)";
+    return null;
+  };
+
+  const validateAge = () => {
+    if (!form.birthDate) return "Data di nascita obbligatoria";
+    const today = new Date();
+    const birthDate = new Date(form.birthDate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    if (age < 18) return "Devi avere almeno 18 anni per candidarti";
+    if (age > 60) return "L'età massima per la prima candidatura è 60 anni";
+    return null;
+  };
+
   const handleNext = () => {
     setSubmitted(true);
+    setTaxCodeError("");
+    setEmailError("");
+    setPhoneError("");
+    setBirthDateError("");
+
     if (validate()) {
+      const cfError = validateTaxCode();
+      const eError = validateEmail();
+      const pError = validatePhone();
+      const aError = validateAge();
+
+      if (cfError || eError || pError || aError) {
+        setTaxCodeError(cfError || "");
+        setEmailError(eError || "");
+        setPhoneError(pError || "");
+        setBirthDateError(aError || "");
+        return;
+      }
       setStep(4);
     }
   };
@@ -215,11 +301,12 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
           <span>
             <FloatLabel>
               <InputWithIcon icon="pi pi-calendar">
-                <Calendar value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} className={isInvalid(form.birthDate) ? 'p-invalid' : ''} />
+                <Calendar value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} className={(isInvalid(form.birthDate) || !!birthDateError) ? 'p-invalid' : ''} readOnlyInput={false} mask="99/99/9999" />
               </InputWithIcon>
               <label>Data di nascita*</label>
             </FloatLabel>
             {isInvalid(form.birthDate) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            {birthDateError && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>{birthDateError}</small>}
           </span>
         </div>
         <div className="donor-step-form-row">
@@ -235,11 +322,12 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
           <span>
             <FloatLabel>
               <InputWithIcon icon="pi pi-id-card">
-                <InputText value={form.taxCode} onChange={e => setForm({ ...form, taxCode: e.target.value })} className={isInvalid(form.taxCode) ? 'p-invalid' : ''} />
+                <InputText value={form.taxCode} onChange={e => setForm({ ...form, taxCode: e.target.value })} className={(isInvalid(form.taxCode) || !!taxCodeError) ? 'p-invalid' : ''} maxLength={16} />
               </InputWithIcon>
               <label>Codice Fiscale*</label>
             </FloatLabel>
             {isInvalid(form.taxCode) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            {taxCodeError && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>{taxCodeError}</small>}
           </span>
         </div>
       </Fieldset>
@@ -269,20 +357,22 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
           <span>
             <FloatLabel>
               <InputWithIcon icon="pi pi-phone">
-                <InputText value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} keyfilter="int" className={isInvalid(form.phone) ? 'p-invalid' : ''} />
+                <InputText value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} keyfilter="int" className={(isInvalid(form.phone) || !!phoneError) ? 'p-invalid' : ''} />
               </InputWithIcon>
               <label>Telefono*</label>
             </FloatLabel>
             {isInvalid(form.phone) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            {phoneError && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>{phoneError}</small>}
           </span>
           <span>
             <FloatLabel>
               <InputWithIcon icon="pi pi-envelope">
-                <InputText value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} keyfilter="email" className={isInvalid(form.email) ? 'p-invalid' : ''} />
+                <InputText value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} keyfilter="email" className={(isInvalid(form.email) || !!emailError) ? 'p-invalid' : ''} />
               </InputWithIcon>
               <label>Email*</label>
             </FloatLabel>
             {isInvalid(form.email) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            {emailError && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>{emailError}</small>}
           </span>
         </div>
       </Fieldset>

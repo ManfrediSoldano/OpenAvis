@@ -5,6 +5,7 @@
   "dependencies": {
     "@types/gsap": "^1.20.2",
     "axios": "^1.13.2",
+    "codice-fiscale-js": "^2.3.23",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
     "motion": "^12.23.12",
