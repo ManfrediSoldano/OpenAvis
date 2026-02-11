@@ -456,6 +456,7 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [resending, setResending] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -501,9 +502,11 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
           style={{ fontSize: '1.5rem', width: 180, textAlign: 'center', letterSpacing: '0.5rem' }}
           keyfilter="int"
           placeholder="------"
+          disabled={isSubmitting}
         />
       </div>
-      {otpError && <Message severity="error" text={otpError} />}
+      {otpError && <Message severity="error" text={otpError} className="w-full mb-3" />}
+      {isSubmitting && <Message severity="info" text="Stiamo completando la richiesta, attendi un momento..." className="w-full mb-3" />}
 
       <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
         <Button
@@ -511,14 +514,15 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
           icon="pi pi-refresh"
           className="p-button-text p-button-sm"
           onClick={handleResend}
-          disabled={!canResend || resending}
+          disabled={!canResend || resending || isSubmitting}
         />
       </div>
 
       <div className="donor-step-actions">
-        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
-        <Button label="Conferma Iscrizione" icon="pi pi-check" onClick={async () => {
+        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} disabled={isSubmitting} />
+        <Button label="Conferma Iscrizione" icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"} loading={isSubmitting} onClick={async () => {
           try {
+            setIsSubmitting(true);
             setOtpError("");
             // Final Submit: Data + OTP
             const { age: _age, weight: _weight, noPermanentExclusion: _npe, ...dataToSend } = form;
@@ -530,6 +534,8 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
           } catch (err: any) {
             console.error("Signup verify failed", err);
             setOtpError(err.response?.data?.error || "Codice OTP non valido o errore nel salvataggio.");
+          } finally {
+            setIsSubmitting(false);
           }
         }} />
       </div>
