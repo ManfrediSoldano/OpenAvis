@@ -17,7 +17,7 @@ export class EmailService {
     }
 
     private getTemplate(title: string, bodyContent: string): string {
-        const logoUrl = "https://avismerate.it/images/Logo_AVIS.png"; // Adjustable URL
+        const logoUrl = "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png";
         const year = new Date().getFullYear();
 
         return `
@@ -47,8 +47,8 @@ export class EmailService {
                         <img src="${logoUrl}" alt="AVIS Merate" style="max-width: 80px; opacity: 0.8;">
                     </div>
                     
-                    <p style="margin: 5px 0;"><strong>AVIS Comunale di Merate</strong></p>
-                    <p style="margin: 5px 0;">Piazza Don Minzoni, 5, 23807 Merate (LC)</p>
+                    <p style="margin: 5px 0;"><strong>AVIS Comunale di Merate ODV</strong></p>
+                    <p style="margin: 5px 0;">Piazza Don Giovanni Minzoni, 5, 23807 Merate (LC)</p>
                     <p style="margin: 5px 0;">C.F. 94003940130</p>
                     
                     <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;">
@@ -59,6 +59,13 @@ export class EmailService {
                         <p style="margin: 5px 0;">
                             PEC: <a href="mailto:merate.comunale@pec.avis.it" style="color: #d9534f; text-decoration: none;">merate.comunale@pec.avis.it</a>
                         </p>
+                    </div>
+
+                    <div style="margin-top: 15px; font-size: 11px;">
+                        <a href="https://avismerate.it/privacy-policy" style="color: #666666; text-decoration: underline;">Privacy & Cookie Policy</a> | 
+                        <a href="https://avisprovincialelecco.it" style="color: #666666; text-decoration: underline;">AVIS Provinciale Lecco</a> | 
+                        <a href="https://avislombardia.it/" style="color: #666666; text-decoration: underline;">AVIS Regionale Lombardia</a> | 
+                        <a href="https://avis.it" style="color: #666666; text-decoration: underline;">AVIS Nazionale</a>
                     </div>
 
                     <p style="margin-top: 20px; font-size: 10px; color: #999999;">

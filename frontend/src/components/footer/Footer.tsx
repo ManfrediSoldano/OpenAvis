@@ -7,7 +7,7 @@ const Footer = () => (
     <div className="footer-section footer-logo">
       <img src="https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png" alt="AVIS Logo" className="footer-avis-logo" />
       <address>
-        Piazza Don Minzoni, 5<br />
+        Piazza Don Giovanni Minzoni, 5<br />
         23807 Merate (LC)<br />
         C.F. 94003940130<br />
         PEC: <a href="mailto:MERATE.COMUNALE@PEC.AVIS.IT">merate.comunale@pec.avis.it</a><br />
