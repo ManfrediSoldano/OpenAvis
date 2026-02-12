@@ -21,9 +21,9 @@ const exclusionPdf = "https://lineeguida.avis.it/wp-content/uploads/2025/01/Appr
 
 
 const transfusionCenters = [
-  { label: "Ospedale Manzoni Lecco", value: "AvisLecco", url: "https://www.avislecco.it/" },
-  { label: "Ospedale Vimercate", value: "AvisVimercate", url: "https://www.avisvimercate.it/" },
-  { label: "Ospedali di Bergamo", value: "AvisBergamo", url: "https://www.avisbergamo.it/" }
+  { label: "Ospedale Manzoni Lecco", value: "AvisLecco", url: "http://www.avislecco.it/avis/" },
+  { label: "Ospedale Vimercate", value: "AvisVimercate", url: "https://avisvimercate.it/" },
+  { label: "Ospedali di Bergamo", value: "AvisBergamo", url: "https://avisbergamo.it/" }
 ];
 
 
@@ -140,6 +140,7 @@ const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
     </div>
     {form.donateInMerate === false && (
       <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+        <Message severity="warn" text="Attenzione: sarai reindirizzato verso il sito dell'AVIS della zona selezionata." style={{ marginBottom: '1rem', width: '100%' }} />
         <label>Scegli il centro trasfusionale:</label>
         <div style={{ display: 'flex', gap: '1rem', marginTop: '0.7rem', justifyContent: 'center' }}>
           {transfusionCenters.map(center => (
