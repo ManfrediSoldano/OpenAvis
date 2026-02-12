@@ -132,11 +132,24 @@ const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
   <div className="donor-signup-container">
     <div className="donor-step-title">Dove vuoi donare?</div>
     <div className="donor-step-desc">Preferisci donare a Merate o in un altro centro trasfusionale?</div>
-    <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
-      <RadioButton inputId="merateYes" name="donateInMerate" value={true} checked={form.donateInMerate === true} onChange={() => setForm(f => ({ ...f, donateInMerate: true, transfusionCenter: "" }))} />
-      <label htmlFor="merateYes" style={{ marginLeft: 8, marginRight: 24 }}>Merate</label>
-      <RadioButton inputId="merateNo" name="donateInMerate" value={false} checked={form.donateInMerate === false} onChange={() => setForm(f => ({ ...f, donateInMerate: false }))} />
-      <label htmlFor="merateNo" style={{ marginLeft: 8 }}>Altro centro</label>
+    <div className="donor-center-options">
+      <div
+        className={`donor-center-option ${form.donateInMerate === true ? 'selected' : ''}`}
+        onClick={() => setForm(f => ({ ...f, donateInMerate: true, transfusionCenter: "" }))}
+      >
+        <i className="pi pi-home"></i>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <span style={{ fontWeight: 600 }}>Merate</span>
+          <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Ospedale Mandic</span>
+        </div>
+      </div>
+      <div
+        className={`donor-center-option ${form.donateInMerate === false ? 'selected' : ''}`}
+        onClick={() => setForm(f => ({ ...f, donateInMerate: false }))}
+      >
+        <i className="pi pi-map-marker"></i>
+        <span>Altro centro</span>
+      </div>
     </div>
     {form.donateInMerate === false && (
       <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
@@ -564,7 +577,7 @@ const DonorSignup: React.FC = () => {
     age: null,
     weight: null,
     noPermanentExclusion: false,
-    donateInMerate: null,
+    donateInMerate: true,
     transfusionCenter: "",
     firstName: "",
     lastName: "",

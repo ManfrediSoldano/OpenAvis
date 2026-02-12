@@ -1,3 +1,4 @@
+/* Existing contents of DonorSignup.css */
 .donor-signup-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -114,9 +115,60 @@
 
   .donor-step-form-row>span .p-icon-field input {
     width: 100% !important;
+    max-width: 90vw;
   }
 
   .donor-step-form-row>span:has(.p-radiobutton) {
     align-items: center;
   }
+}
+
+/* New styles for card selection */
+.donor-center-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.donor-center-option {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  width: 200px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #ffffff;
+}
+
+.donor-center-option:hover {
+  border-color: #bbdefb;
+  background-color: #f8fbff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.donor-center-option.selected {
+  border-color: #0075bf;
+  background-color: #eaf6ff;
+  color: #0075bf;
+  font-weight: bold;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 117, 191, 0.15);
+}
+
+.donor-center-option i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.donor-center-option.selected i {
+  color: #0075bf;
 }
