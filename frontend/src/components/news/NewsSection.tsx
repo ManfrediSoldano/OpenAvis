@@ -78,6 +78,25 @@ const NewsSection: React.FC = () => {
                     </article>
                 ))}
             </div>
+            <div className="news-footer" style={{ textAlign: 'center', marginTop: '2rem' }}>
+                <button
+                    onClick={() => navigate('/news')}
+                    style={{
+                        padding: '0.8rem 2rem',
+                        backgroundColor: '#0075be',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        transition: 'background-color 0.3s'
+                    }}
+                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#005fa0')}
+                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#0075be')}
+                >
+                    Vedi tutte le notizie
+                </button>
+            </div>
         </section>
     );
 };

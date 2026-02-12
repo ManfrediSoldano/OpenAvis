@@ -6,7 +6,7 @@ const menuItems = [
   { label: 'Diventa Donatore', link: '/diventa-donatore' },
   { label: 'Chi Siamo', link: '/storia' },
   { label: 'Convenzioni', link: '/convenzioni' },
-  { label: 'Sospensione', link: '/sospensione' }
+  { label: 'Notizie', link: '/news' }
 ];
 
 const socialItems = [

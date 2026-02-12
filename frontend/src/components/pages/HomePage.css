@@ -14,7 +14,7 @@
   border: none;
   border-radius: 2rem;
   padding: 1.2rem 3.5rem;
-  box-shadow: 0 2px 12px 0 rgba(227,6,19,0.10);
+  box-shadow: 0 2px 12px 0 rgba(227, 6, 19, 0.10);
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
   letter-spacing: 0.03em;
@@ -29,5 +29,5 @@
 
 .homepage-donator-btn button:hover {
   background: #b8000f;
-  box-shadow: 0 4px 18px 0 rgba(227,6,19,0.18);
+  box-shadow: 0 4px 18px 0 rgba(227, 6, 19, 0.18);
 }

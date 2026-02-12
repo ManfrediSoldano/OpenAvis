@@ -378,7 +378,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       <nav className="sm-desktop-links-bar">
         <a href="/storia" className="sm-header-link">Chi Siamo</a>
         <a href="/convenzioni" className="sm-header-link">Convenzioni</a>
-        <a href="/sospensione" className="sm-header-link">Sospensione</a>
+        <a href="/news" className="sm-header-link">Notizie</a>
         <button className="sm-header-clear" onClick={() => navigate('/diventa-donatore')}>Diventa Donatore</button>
       </nav>
       <div ref={preLayersRef} className="sm-prelayers" aria-hidden="true">

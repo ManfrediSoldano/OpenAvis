@@ -27,6 +27,7 @@ const HomePage: React.FC = () => {
         <button onClick={() => navigate('/diventa-donatore')}>Diventa donatore</button>
       </div>
       <NewsSection />
+      <hr style={{ maxWidth: '1100px', margin: '3rem auto', border: 'none', borderTop: '1px solid #e0e0e0' }} />
       <section style={{ maxWidth: '1100px', margin: '0 auto', padding: '2rem 0', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         <InfoBlock
           image="https://openavismeratestorage.blob.core.windows.net/public-assets/ate.png"
@@ -34,13 +35,12 @@ const HomePage: React.FC = () => {
           subtitle="Donare il sangue fa bene anche a chi dona"
           description={
             <>
-              Donare il sangue stimola la rigenerazione cellulare e permette di monitorare la propria salute grazie ai controlli gratuiti.
-              Uno studio condotto su un campione di uomini di mezza età ha osservato una significativa associazione tra la donazione frequente e un rischio ridotto di infarto miocardico acuto.
+              Donare il sangue garantisce un <strong>monitoraggio costante</strong> della salute con esami gratuiti, protegge <strong>cuore e fegato</strong> riducendo il ferro in eccesso e abbassa il rischio di <strong>diabete</strong>. Inoltre, incentiva uno <strong>stile di vita sano</strong> e regala un profondo <strong>benessere psicologico</strong> derivante dal gesto di solidarietà.
             </>
           }
           citation={{
-            text: "American Journal of Epidemiology",
-            link: "https://doi.org/10.1093/oxfordjournals.aje.a009669"
+            text: "AVIS Provinciale Brescia",
+            link: "https://avisprovincialebrescia.it/donare-il-sangue-fa-bene-anche-al-donatore-5-benefici-per-chi-dona/"
           }} />
         <InfoBlock
           image="https://openavismeratestorage.blob.core.windows.net/public-assets/altri.png"
@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
           image="https://openavismeratestorage.blob.core.windows.net/public-assets/comunit%C3%A0.png"
           title="Fa bene alla comunità"
           subtitle="L'impatto di AVIS Merate per il territorio"
-          description="AVIS Merate ha donato negli anni un ambulanza, defibrillatori e attrezzature mediche agli ospedali e alle associazioni locali. Tra le donazioni più recenti: ambulanza alla Croce Bianca di Merate, apparecchiature per l’Ospedale Mandic, sostegno a progetti di prevenzione e formazione nelle scuole. Ogni donazione rafforza la rete di solidarietà e aiuta tutta la comunità." />
+          description="AVIS Merate sostiene concretamente il territorio attraverso importanti donazioni, come una nuova ambulanza alla Croce Bianca e attrezzature mediche avanzate per l'Ospedale Mandic. L'impegno dell'associazione si estende anche all'installazione di defibrillatori e alla promozione di progetti di prevenzione e formazione nelle scuole, rafforzando costantemente la rete di solidarietà locale." />
       </section>
     </main>
   );

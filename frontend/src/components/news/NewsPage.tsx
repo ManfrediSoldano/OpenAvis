@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { retrieveNews, NewsDetail } from '../../services/newsService';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import './NewsPage.css';
+import '../pages/NotFoundPage.css';
+import { Skeleton } from 'primereact/skeleton';
+import { motion } from 'framer-motion';
 
 const NewsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -23,6 +25,7 @@ const NewsPage: React.FC = () => {
             } catch (error) {
                 console.error("Error fetching news detail:", error);
             } finally {
+                // Simulate a slight delay for better UX if needed, but not required by user
                 setLoading(false);
             }
         };
@@ -32,14 +35,74 @@ const NewsPage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-content-center align-items-center" style={{ height: '50vh' }}>
-                <ProgressSpinner />
+            <div className="news-page fadein animation-duration-500">
+                <Skeleton width="100%" height="400px" className="news-header-image mb-4" />
+                <header className="news-title-section">
+                    <Skeleton width="80%" height="3rem" className="mx-auto mb-4" />
+                    <div className="news-meta flex justify-content-center gap-3">
+                        <Skeleton shape="circle" size="3rem" />
+                        <Skeleton width="100px" height="1.5rem" />
+                        <Skeleton width="80px" height="1.5rem" />
+                    </div>
+                </header>
+                <div className="news-content-markdown mt-5">
+                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="90%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="80%" height="1.2rem" className="mb-4" />
+                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="95%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
+                    <Skeleton width="85%" height="1.2rem" />
+                </div>
             </div>
         );
     }
 
     if (!newsDetail) {
-        return <div className="text-center p-5">Notizia non trovata</div>;
+        return (
+            <div className="notfound-container">
+                <motion.div
+                    className="notfound-content"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                >
+                    <motion.i
+                        className="pi pi-search-minus notfound-icon"
+                        initial={{ y: -20 }}
+                        animate={{ y: 0 }}
+                        transition={{
+                            delay: 0.2,
+                            type: "spring",
+                            stiffness: 200,
+                            damping: 10
+                        }}
+                    ></motion.i>
+                    <h1 className="notfound-title">Oops!</h1>
+                    <h2 className="notfound-subtitle">Notizia non trovata</h2>
+                    <p className="notfound-description">
+                        Spiacenti, la notizia che stai cercando non esiste o è stata rimossa.
+                        Torna all'elenco delle notizie per scoprire le ultime novità di AVIS.
+                    </p>
+                    <div className="flex flex-column gap-2">
+                        <Button
+                            label="Vai alle Notizie"
+                            icon="pi pi-list"
+                            className="home-button mb-2"
+                            onClick={() => navigate("/news")}
+                        />
+                        <Button
+                            label="Torna alla Home"
+                            icon="pi pi-home"
+                            onClick={() => navigate("/")}
+                            text
+                        />
+                    </div>
+                </motion.div>
+            </div>
+        );
     }
 
     return (

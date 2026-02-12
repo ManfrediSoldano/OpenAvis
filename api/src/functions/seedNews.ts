@@ -8,6 +8,33 @@ export async function seedNews(request: HttpRequest, context: InvocationContext)
 
     const mockNewsToSeed = [
         {
+            id: "sito-in-costruzione",
+            title: "Sito in Costruzione",
+            subtitle: "Stiamo lavorando per offrirvi un servizio migliore. Molte sezioni sono attualmente in fase di sviluppo.",
+            imageUrl: "https://openavismeratestorage.blob.core.windows.net/public-assets/construction.jpg",
+            contentMarkdown: `
+# Lavori in corso
+
+Siamo felici di darvi il benvenuto sul nuovo portale di **AVIS Comunale Merate**. 
+
+Il sito è attualmente in fase di **costruzione** e perfezionamento. Per questo motivo, alcune sezioni potrebbero risultare incomplete o non ancora accessibili. 
+
+Stiamo lavorando intensamente per caricare tutti i contenuti, i documenti e le funzionalità necessarie per rendere la vostra esperienza utente il più completa e semplice possibile.
+
+Vi ringraziamo per la pazienza e vi invitiamo a tornare a trovarci presto per scoprire tutte le novità!
+
+> Avis Merate: il tuo dono, la nostra forza.
+            `,
+            author: {
+                name: "Stefano Barelli, Vicepresidente Vicario",
+                avatarUrl: "https://ui-avatars.com/api/?name=Stefano+Barelli&background=e63946&color=fff"
+            },
+            attachments: [],
+            date: "11 Febbraio 2026",
+            isHighlight: true,
+            createdAt: "2026-02-11T09:00:00.000Z"
+        },
+        {
             id: "1",
             title: "Giornata Mondiale del Donatore",
             subtitle: "Unisciti a noi per celebrare i donatori di tutto il mondo.",

@@ -8,6 +8,7 @@ import ProspectiveDonorsPage from './components/pages/ProspectiveDonorsPage';
 import NotFoundPage from './components/pages/NotFoundPage';
 import DonorSignup from './components/pages/DonorSignup';
 import NewsPage from './components/news/NewsPage';
+import NewsListPage from './components/news/NewsListPage';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                 <Route path="/AssembleaOrdinaria" element={<Navigate to="/news/assemblea-comunale-2026" replace />} />
                 <Route path="/aspiranti" element={<ProspectiveDonorsPage />} />
                 <Route path="/diventa-donatore" element={<DonorSignup />} />
+                <Route path="/news" element={<NewsListPage />} />
                 <Route path="/news/:id" element={<NewsPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="*" element={<NotFoundPage />} />
