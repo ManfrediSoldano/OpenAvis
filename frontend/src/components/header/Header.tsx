@@ -16,14 +16,35 @@ const socialItems = [
 const Header: React.FC = () => {
   const headerRef = useRef<HTMLHeadingElement>(null);
   const [isSticky, setIsSticky] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 0);
     };
     window.addEventListener('scroll', handleScroll);
+
+    // Check authentication
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/.auth/me');
+        const data = await res.json();
+        if (data.clientPrincipal) {
+          setIsLoggedIn(true);
+        }
+      } catch (e) {
+        console.error("Auth check failed in header", e);
+      }
+    };
+    checkAuth();
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const items = [...menuItems];
+  if (isLoggedIn) {
+    items.push({ label: 'Dashboard', link: '/reserved' });
+  }
 
   return (
     <>
@@ -35,7 +56,7 @@ const Header: React.FC = () => {
       </header>
       <StaggeredMenu
         position="right"
-        items={menuItems}
+        items={items}
         socialItems={socialItems}
         displaySocials={true}
         displayItemNumbering={true}
