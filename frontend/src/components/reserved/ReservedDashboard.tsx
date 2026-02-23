@@ -1,11 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import './ReservedDashboard.css';
+
+interface UserInfo {
+    clientPrincipal: {
+        userId: string;
+        userDetails: string;
+        userRoles: string[];
+    } | null;
+}
 
 const ReservedDashboard: React.FC = () => {
     const [activeSection, setActiveSection] = useState<'candidati' | 'notizie'>('candidati');
+    const [user, setUser] = useState<{ details: string, roles: string[] } | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const response = await fetch('/.auth/me');
+                const data: UserInfo = await response.json();
+
+                if (data.clientPrincipal && data.clientPrincipal.userRoles.includes('admin')) {
+                    setUser({
+                        details: data.clientPrincipal.userDetails,
+                        roles: data.clientPrincipal.userRoles
+                    });
+                } else {
+                    // Se non è admin, Azure SWA dovrebbe già aver bloccato la rotta, 
+                    // ma per sicurezza reindirizziamo se arriviamo qui via client-side routing
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Auth check failed', error);
+                window.location.href = '/login';
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, []);
 
     const items = [
         {
@@ -37,6 +75,16 @@ const ReservedDashboard: React.FC = () => {
         }
     ];
 
+    if (loading) {
+        return (
+            <div className="flex align-items-center justify-content-center h-screen">
+                <ProgressSpinner />
+            </div>
+        );
+    }
+
+    if (!user) return null;
+
     return (
         <div className="reserved-dashboard-container">
             <header className="reserved-header">
@@ -46,7 +94,7 @@ const ReservedDashboard: React.FC = () => {
                 </div>
                 <div className="header-right">
                     <div className="user-info">
-                        <span className="user-role">Administrator</span>
+                        <span className="user-role">{user.details}</span>
                         <Avatar icon="pi pi-user" shape="circle" style={{ backgroundColor: '#e63946', color: '#ffffff' }} />
                     </div>
                 </div>
