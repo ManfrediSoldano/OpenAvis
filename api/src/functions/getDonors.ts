@@ -40,6 +40,5 @@ export async function getDonors(request: HttpRequest, context: InvocationContext
 app.http('getDonors', {
     methods: ['GET'],
     authLevel: 'anonymous',
-    route: 'reserved/donors',
     handler: getDonors
 });

@@ -66,7 +66,7 @@ const ReservedDashboard: React.FC = () => {
     const fetchDonors = async () => {
         setLoadingDonors(true);
         try {
-            const res = await fetch('/api/reserved/donors');
+            const res = await fetch('/api/getDonors');
             if (res.ok) {
                 const data = await res.json();
                 setDonors(data);

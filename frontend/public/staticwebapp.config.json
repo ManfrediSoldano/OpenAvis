@@ -17,6 +17,13 @@
             ]
         },
         {
+            "route": "/api/getDonors",
+            "allowedRoles": [
+                "admin",
+                "candidates-manager"
+            ]
+        },
+        {
             "route": "/api/*",
             "allowedRoles": [
                 "anonymous"
