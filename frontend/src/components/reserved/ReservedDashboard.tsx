@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Toast } from 'primereact/toast';
 import './ReservedDashboard.css';
 
 interface UserInfo {
@@ -21,6 +22,7 @@ const ReservedDashboard: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [donors, setDonors] = useState<any[]>([]);
     const [loadingDonors, setLoadingDonors] = useState(false);
+    const toast = useRef<Toast>(null);
 
     const hasRole = (role: string) => user?.roles.includes('admin') || user?.roles.includes(role);
 
@@ -68,9 +70,22 @@ const ReservedDashboard: React.FC = () => {
             if (res.ok) {
                 const data = await res.json();
                 setDonors(data);
+            } else {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Errore Caricamento',
+                    detail: `Impossibile recuperare i candidati (Status: ${res.status})`,
+                    life: 5000
+                });
             }
         } catch (error) {
             console.error("Failed to fetch donors", error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Errore di Rete',
+                detail: 'Controlla la tua connessione e riprova.',
+                life: 5000
+            });
         } finally {
             setLoadingDonors(false);
         }
@@ -126,6 +141,7 @@ const ReservedDashboard: React.FC = () => {
 
     return (
         <div className="reserved-dashboard-container">
+            <Toast ref={toast} position="top-right" />
             <header className="reserved-header">
                 <div className="header-left">
                     <img src="/images/Logo_AVIS.svg" alt="Logo" className="reserved-logo" />
