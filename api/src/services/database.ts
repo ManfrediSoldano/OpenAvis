@@ -60,6 +60,26 @@ export class DatabaseService {
     }
 
     /**
+     * Get all donors
+     */
+    async getAllDonors() {
+        if (!this.databaseId) return [];
+        const database = this.client.database(this.databaseId);
+        const container = database.container(this.donorsContainerId);
+
+        try {
+            const querySpec = {
+                query: "SELECT * FROM c ORDER BY c.createdAt DESC"
+            };
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources;
+        } catch (error) {
+            console.error("Error fetching all donors:", error);
+            return [];
+        }
+    }
+
+    /**
      * Save OTP to Cosmos DB with 5-minute TTL
      * @param email - User's email address
      * @param code - 6-digit OTP code

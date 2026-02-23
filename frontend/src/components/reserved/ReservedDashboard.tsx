@@ -3,6 +3,8 @@ import { Menu } from 'primereact/menu';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import './ReservedDashboard.css';
 
 interface UserInfo {
@@ -17,6 +19,10 @@ const ReservedDashboard: React.FC = () => {
     const [activeSection, setActiveSection] = useState<'candidati' | 'notizie'>('candidati');
     const [user, setUser] = useState<{ details: string, roles: string[] } | null>(null);
     const [loading, setLoading] = useState(true);
+    const [donors, setDonors] = useState<any[]>([]);
+    const [loadingDonors, setLoadingDonors] = useState(false);
+
+    const hasRole = (role: string) => user?.roles.includes('admin') || user?.roles.includes(role);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -24,14 +30,24 @@ const ReservedDashboard: React.FC = () => {
                 const response = await fetch('/.auth/me');
                 const data: UserInfo = await response.json();
 
-                if (data.clientPrincipal && data.clientPrincipal.userRoles.includes('admin')) {
+                if (data.clientPrincipal && (
+                    data.clientPrincipal.userRoles.includes('admin') ||
+                    data.clientPrincipal.userRoles.includes('news-editor') ||
+                    data.clientPrincipal.userRoles.includes('candidates-manager')
+                )) {
                     setUser({
                         details: data.clientPrincipal.userDetails,
                         roles: data.clientPrincipal.userRoles
                     });
+
+                    // Set initial section based on roles
+                    if (!data.clientPrincipal.userRoles.includes('admin') &&
+                        !data.clientPrincipal.userRoles.includes('candidates-manager') &&
+                        data.clientPrincipal.userRoles.includes('news-editor')) {
+                        setActiveSection('notizie');
+                    }
+
                 } else {
-                    // Se non è admin, Azure SWA dovrebbe già aver bloccato la rotta, 
-                    // ma per sicurezza reindirizziamo se arriviamo qui via client-side routing
                     window.location.href = '/login';
                 }
             } catch (error) {
@@ -45,6 +61,27 @@ const ReservedDashboard: React.FC = () => {
         checkAuth();
     }, []);
 
+    const fetchDonors = async () => {
+        setLoadingDonors(true);
+        try {
+            const res = await fetch('/api/reserved/donors');
+            if (res.ok) {
+                const data = await res.json();
+                setDonors(data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch donors", error);
+        } finally {
+            setLoadingDonors(false);
+        }
+    };
+
+    useEffect(() => {
+        if (user && activeSection === 'candidati' && hasRole('candidates-manager')) {
+            fetchDonors();
+        }
+    }, [user, activeSection]);
+
     const items = [
         {
             label: 'Gestionale',
@@ -52,12 +89,14 @@ const ReservedDashboard: React.FC = () => {
                 {
                     label: 'Candidati',
                     icon: 'pi pi-users',
+                    visible: hasRole('candidates-manager'),
                     className: activeSection === 'candidati' ? 'active-menu-item' : '',
                     command: () => setActiveSection('candidati')
                 },
                 {
                     label: 'Notizie',
                     icon: 'pi pi-megaphone',
+                    visible: hasRole('news-editor'),
                     className: activeSection === 'notizie' ? 'active-menu-item' : '',
                     command: () => setActiveSection('notizie')
                 }
@@ -89,7 +128,7 @@ const ReservedDashboard: React.FC = () => {
         <div className="reserved-dashboard-container">
             <header className="reserved-header">
                 <div className="header-left">
-                    <img src="/logo192.png" alt="Logo" className="reserved-logo" />
+                    <img src="/images/Logo_AVIS.svg" alt="Logo" className="reserved-logo" />
                     <span className="area-title">Area Riservata OpenAvis</span>
                 </div>
                 <div className="header-right">
@@ -106,23 +145,35 @@ const ReservedDashboard: React.FC = () => {
                 </aside>
 
                 <main className="reserved-content">
-                    <div className="content-card shadow-1 border-round p-4">
-                        {activeSection === 'candidati' && (
+                    <div className="content-card p-4">
+                        {activeSection === 'candidati' && hasRole('candidates-manager') && (
                             <section className="dashboard-section">
-                                <h2 className="section-title"><i className="pi pi-users mr-2"></i>Gestione Candidati</h2>
-                                <p className="section-description">Qui potrai visualizzare e gestire i nuovi aspiranti donatori che si sono iscritti tramite il sito.</p>
-                                <div className="placeholder-content">
-                                    <i className="pi pi-database text-400" style={{ fontSize: '3rem' }}></i>
-                                    <p>I dati dei candidati verranno caricati qui.</p>
-                                    <Button label="Aggiorna Lista" icon="pi pi-refresh" severity="secondary" outlined />
+                                <div className="flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <h2 className="section-title m-0"><i className="pi pi-users mr-2"></i>Gestione Candidati</h2>
+                                        <p className="text-secondary mt-1">Lista degli aspiranti donatori iscritti sul sito.</p>
+                                    </div>
+                                    <Button icon="pi pi-refresh" rounded text onClick={fetchDonors} loading={loadingDonors} />
                                 </div>
+
+                                <DataTable value={donors} loading={loadingDonors} paginator rows={10}
+                                    className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                                    emptyMessage="Nessun candidato trovato.">
+                                    <Column field="firstName" header="Nome" sortable />
+                                    <Column field="lastName" header="Cognome" sortable />
+                                    <Column field="email" header="Email" sortable />
+                                    <Column field="phone" header="Telefono" />
+                                    <Column field="donationType" header="Tipo" sortable />
+                                    <Column field="createdAt" header="Data Iscrizione"
+                                        body={(rowData) => rowData.createdAt ? new Date(rowData.createdAt).toLocaleDateString('it-IT') : '-'} sortable />
+                                </DataTable>
                             </section>
                         )}
 
-                        {activeSection === 'notizie' && (
+                        {activeSection === 'notizie' && hasRole('news-editor') && (
                             <section className="dashboard-section">
-                                <h2 className="section-title"><i className="pi pi-megaphone mr-2"></i>Gestione Notizie</h2>
-                                <p className="section-description">Area dedicata alla creazione e modifica delle notizie visualizzate nella homepage.</p>
+                                <h2 className="section-title"><i className="pi pi- megaphone mr-2"></i>Gestione Notizie</h2>
+                                <p className="section-description text-secondary">Area dedicata alla creazione e modifica delle notizie visualizzate nella homepage.</p>
                                 <div className="placeholder-content">
                                     <i className="pi pi-file-edit text-400" style={{ fontSize: '3rem' }}></i>
                                     <p>L'interfaccia di editing notizie sarà disponibile a breve.</p>

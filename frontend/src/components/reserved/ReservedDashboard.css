@@ -61,9 +61,8 @@
 
 .reserved-content {
     flex: 1;
-    padding: 2rem;
     overflow-y: auto;
-    background: #f0f2f5;
+    background: #ffffff;
 }
 
 .content-card {
