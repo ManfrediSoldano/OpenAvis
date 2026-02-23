@@ -3,13 +3,17 @@
         {
             "route": "/reserved/*",
             "allowedRoles": [
-                "admin"
+                "admin",
+                "news-editor",
+                "candidates-manager"
             ]
         },
         {
             "route": "/api/reserved/*",
             "allowedRoles": [
-                "admin"
+                "admin",
+                "news-editor",
+                "candidates-manager"
             ]
         },
         {
