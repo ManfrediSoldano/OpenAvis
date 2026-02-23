@@ -1,10 +1,30 @@
 {
     "routes": [
         {
+            "route": "/reserved/*",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
+            "route": "/api/reserved/*",
+            "allowedRoles": [
+                "admin"
+            ]
+        },
+        {
             "route": "/api/*",
             "allowedRoles": [
                 "anonymous"
             ]
+        },
+        {
+            "route": "/login",
+            "rewrite": "/.auth/login/aad"
+        },
+        {
+            "route": "/logout",
+            "rewrite": "/.auth/logout"
         }
     ],
     "navigationFallback": {
@@ -13,5 +33,14 @@
             "/api/*",
             "/*.{js,css,json,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}"
         ]
+    },
+    "responseOverrides": {
+        "401": {
+            "redirect": "/login",
+            "statusCode": 302
+        }
+    },
+    "globalHeaders": {
+        "content-security-policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' data: https:; font-src 'self' data: https:;"
     }
 }
