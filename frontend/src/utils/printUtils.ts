@@ -34,7 +34,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 6mm 8mm 6mm 8mm; /* narrower margins */
+      padding: 6mm 8mm 6mm 8mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -47,7 +47,7 @@ const TEMPLATE = `
     }
     .logo-wrap img {
       display: block;
-      max-height: 12mm;   /* even smaller */
+      max-height: 12mm;
       max-width: 100%;
       width: auto;
       height: auto;
@@ -80,13 +80,14 @@ const TEMPLATE = `
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 11px; height: 11px;
-      border: 1.2px solid var(--avis-blue);
+      width: 14px; height: 14px; /* bigger */
+      border: 1.5px solid var(--avis-blue);
       vertical-align: middle;
-      font-size: 9.5px;
+      font-size: 11px;
       line-height: 1;
       flex-shrink: 0;
       background: #fff;
+      margin-right: 4px;
     }
 
     /* ── Underline field ─────────────────────────────── */
@@ -94,19 +95,20 @@ const TEMPLATE = `
       display: inline-block;
       border-bottom: 1px solid var(--avis-blue);
       min-width: 20mm;
-      height: 14px;
-      vertical-align: baseline;
+      height: 18px; /* higher to allow lifting text */
+      vertical-align: bottom;
       font-size: 10px;
       color: #333;
       font-style: italic;
       padding-left: 3px;
       padding-right: 3px;
+      padding-bottom: 4.5px; /* lift text from line significantly */
     }
     .field-full {
       display: block;
       border-bottom: 1px solid var(--avis-blue);
       width: 100%;
-      min-height: 14px;
+      min-height: 18px;
       margin: 1px 0 3px;
       font-size: 10px;
       color: #333;
@@ -114,6 +116,7 @@ const TEMPLATE = `
       overflow: hidden;
       white-space: nowrap;
       padding-left: 3px;
+      padding-bottom: 4.5px; /* lift text from line significantly */
     }
 
     /* ── Boxed cells (ISTAT / CF / CAP) ─────────────── */
@@ -122,13 +125,13 @@ const TEMPLATE = `
       gap: 0;
     }
     .cell {
-      width: 6.4mm; height: 5.5mm;
+      width: 6.5mm; height: 5.8mm;
       border: 1px solid var(--avis-blue);
       border-right: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 9.5px;
+      font-size: 10px;
       color: #333;
       font-style: italic;
       font-weight: bold;
@@ -136,20 +139,20 @@ const TEMPLATE = `
     }
     .cell:last-child { border-right: 1px solid var(--avis-blue); }
 
-    /* ── Form wrapper (page 1) ───────────────────────── */
+    /* ── Form wrapper ───────────────────────── */
     .form-box {
       border: 1.5px solid var(--avis-blue);
       padding: 2mm 4mm;
     }
     .form-title {
       text-align: center;
-      font-size: 13.5px;
+      font-size: 15px;
       font-weight: bold;
       color: var(--avis-red);
       letter-spacing: 1px;
-      border-bottom: 1.5px solid var(--avis-blue);
-      padding-bottom: 1.5mm;
-      margin-bottom: 1.5mm;
+      border: 1.5px solid var(--avis-blue); /* full border */
+      padding: 1.5mm 0;
+      margin-bottom: 2mm;
     }
     .form-label {
       font-size: 9px;
@@ -196,14 +199,14 @@ const TEMPLATE = `
       font-size: 9px;
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
       padding-bottom: 1.5px;
     }
     .col-item {
       display: flex;
       align-items: center;
       gap: 3px;
-      margin: 1.5px 0;
+      margin: 2.5px 0;
       font-size: 9px;
     }
     .col-inner { display: flex; gap: 4mm; }
@@ -223,15 +226,17 @@ const TEMPLATE = `
     .si-no-row {
       display: flex;
       align-items: center;
-      gap: 3mm;
-      margin-top: 2mm;
+      gap: 4mm;
+      margin-top: 2.5mm;
       flex-wrap: wrap;
     }
     .si-no-btn {
       border: 1.5px solid var(--avis-blue);
-      padding: 1mm 3mm;
-      font-size: 11px;
+      padding: 1.5mm 4mm;
+      font-size: 11.5px;
       font-weight: bold;
+      min-width: 12mm;
+      text-align: center;
     }
     .si-no-btn.selected {
         background-color: var(--avis-blue);
@@ -259,25 +264,25 @@ const TEMPLATE = `
 
     /* ── Privacy consent section ─────────────────────── */
     .consent-title {
-      font-size: 12.5px;
+      font-size: 13.5px;
       font-weight: bold;
       text-align: center;
-      margin: 8px 0 6px;
+      margin: 10px 0 8px;
     }
     .cb-label {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 1.5px solid var(--avis-blue);
-      width: 12px; height: 12px;
+      width: 14px; height: 14px;
       vertical-align: middle;
-      margin-right: 2px;
+      margin-right: 4px;
       font-size: 10px;
       background: #fff;
     }
-    .consent-group { margin: 5px 0; font-size: 10px; }
+    .consent-group { margin: 6px 0; font-size: 10px; }
     .consent-row { display: flex; gap: 8mm; margin-bottom: 2px; align-items: center; }
-    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 10px; }
+    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 10.5px; }
 
     @media print {
       body { background: #fff; }
