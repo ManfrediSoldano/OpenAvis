@@ -21,7 +21,7 @@ const TEMPLATE = `
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 10px;
+      font-size: 11px;
       color: var(--avis-blue);
       background: #fff;
     }
@@ -31,7 +31,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 12mm 13mm 12mm 13mm;
+      padding: 8mm 10mm 8mm 10mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -39,13 +39,13 @@ const TEMPLATE = `
 
     /* ── Logo ────────────────────────────────────────── */
     .logo-wrap {
-      margin-bottom: 4mm;
+      margin-bottom: 3mm;
       line-height: 0;
     }
     /* Image scales freely; layout is not broken by any size */
     .logo-wrap img {
       display: block;
-      max-height: 22mm;   /* cap height so it never overflows header */
+      max-height: 15mm;   /* reduced size */
       max-width: 100%;
       width: auto;
       height: auto;
@@ -56,10 +56,10 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 3px; line-height: 1.45; font-size: 9px; text-align: justify; }
+    p { margin-bottom: 3px; line-height: 1.45; font-size: 10px; text-align: justify; }
 
     .main-title {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
       color: var(--avis-blue);
       text-align: center;
@@ -67,7 +67,7 @@ const TEMPLATE = `
       margin: 5px 0 6px;
     }
     .section-title {
-      font-size: 9.5px;
+      font-size: 10.5px;
       font-weight: bold;
       color: var(--avis-blue);
       margin: 5px 0 2px;
@@ -79,10 +79,10 @@ const TEMPLATE = `
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 9px; height: 9px;
+      width: 10px; height: 10px;
       border: 1.2px solid var(--avis-blue);
       vertical-align: middle;
-      font-size: 8px;
+      font-size: 9px;
       line-height: 1;
       flex-shrink: 0;
     }
@@ -92,23 +92,27 @@ const TEMPLATE = `
       display: inline-block;
       border-bottom: 1px solid var(--avis-blue);
       min-width: 30mm;
-      height: 11px;
+      height: 14px;
       vertical-align: bottom;
-      font-size: 9px;
+      font-size: 10px;
       color: #444;
       font-style: italic;
+      padding-left: 4px; /* better readability */
+      padding-bottom: 1px;
     }
     .field-full {
       display: block;
       border-bottom: 1px solid var(--avis-blue);
       width: 100%;
-      min-height: 11px;
+      min-height: 14px;
       margin: 2px 0 4px;
-      font-size: 9px;
+      font-size: 10px;
       color: #444;
       font-style: italic;
       overflow: hidden;
       white-space: nowrap;
+      padding-left: 4px;
+      padding-bottom: 1px;
     }
 
     /* ── Boxed cells (ISTAT / CF / CAP) ─────────────── */
@@ -117,13 +121,13 @@ const TEMPLATE = `
       gap: 0;
     }
     .cell {
-      width: 7mm; height: 6mm;
+      width: 6.5mm; height: 6mm;
       border: 1px solid var(--avis-blue);
       border-right: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 8px;
+      font-size: 9px;
       color: #444;
       font-style: italic;
       font-weight: bold;
@@ -132,21 +136,21 @@ const TEMPLATE = `
 
     /* ── Form wrapper (page 1) ───────────────────────── */
     .form-box {
-      border: 2px solid var(--avis-blue);
-      padding: 4mm 5mm;
+      border: 1.5px solid var(--avis-blue);
+      padding: 3mm 4mm;
     }
     .form-title {
       text-align: center;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       color: var(--avis-red);
       letter-spacing: 1px;
-      border-bottom: 2px solid var(--avis-blue);
-      padding-bottom: 3mm;
-      margin-bottom: 3mm;
+      border-bottom: 1.5px solid var(--avis-blue);
+      padding-bottom: 2mm;
+      margin-bottom: 2mm;
     }
     .form-label {
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: bold;
       color: var(--avis-blue);
       margin-bottom: 1px;
@@ -161,10 +165,12 @@ const TEMPLATE = `
     }
     .gender-box {
       border: 1.5px solid var(--avis-blue);
-      padding: 1px 3px;
+      padding: 1px 4px;
       font-weight: bold;
       font-size: 11px;
       display: inline-block;
+      min-width: 18px;
+      text-align: center;
     }
     .gender-box.selected {
         background-color: var(--avis-blue);
@@ -179,13 +185,13 @@ const TEMPLATE = `
     }
     .col-box {
       flex: 1;
-      padding: 2mm 2.5mm;
+      padding: 1.5mm 2mm;
       border-right: 1px solid var(--avis-blue);
     }
     .col-box:last-child { border-right: none; }
     .col-box-title {
       font-weight: bold;
-      font-size: 8.5px;
+      font-size: 9px;
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
       margin-bottom: 3px;
@@ -196,9 +202,9 @@ const TEMPLATE = `
       align-items: center;
       gap: 3px;
       margin: 2px 0;
-      font-size: 8.5px;
+      font-size: 9px;
     }
-    .col-inner { display: flex; gap: 5mm; }
+    .col-inner { display: flex; gap: 4mm; }
 
     /* ── Two-column table ────────────────────────────── */
     .two-cols {
@@ -208,21 +214,21 @@ const TEMPLATE = `
     }
     .two-col-box {
       flex: 1;
-      padding: 2mm 2.5mm;
+      padding: 1.5mm 2mm;
       border-right: 1px solid var(--avis-blue);
     }
     .two-col-box:last-child { border-right: none; }
     .si-no-row {
       display: flex;
       align-items: center;
-      gap: 4mm;
-      margin-top: 3mm;
+      gap: 3mm;
+      margin-top: 2mm;
       flex-wrap: wrap;
     }
     .si-no-btn {
-      border: 2px solid var(--avis-blue);
-      padding: 2mm 5mm;
-      font-size: 13px;
+      border: 1.5px solid var(--avis-blue);
+      padding: 1mm 3mm;
+      font-size: 11px;
       font-weight: bold;
     }
     .si-no-btn.selected {
@@ -231,17 +237,17 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 8.5px; line-height: 1.65; margin-bottom: 2mm; }
+    .chiede-section { font-size: 9px; line-height: 1.6; margin-bottom: 2mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
-    .sign-row { display: flex; justify-content: space-between; margin-top: 4mm; }
+    .sign-row { display: flex; justify-content: space-between; margin-top: 3mm; }
     .sign-block { width: 46%; }
-    .sign-line { border-bottom: 1px solid var(--avis-blue); margin-top: 7mm; }
+    .sign-line { border-bottom: 1px solid var(--avis-blue); margin-top: 6mm; }
 
     /* ── Footer ──────────────────────────────────────── */
     .footer-sede {
-      font-size: 7.5px;
+      font-size: 8px;
       text-align: center;
       color: var(--avis-blue);
       border-top: 1px solid var(--avis-blue);
@@ -251,24 +257,24 @@ const TEMPLATE = `
 
     /* ── Privacy consent section ─────────────────────── */
     .consent-title {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: bold;
       text-align: center;
-      margin: 8px 0 5px;
+      margin: 10px 0 6px;
     }
     .cb-label {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 1.5px solid var(--avis-blue);
-      width: 10px; height: 10px;
+      width: 11px; height: 11px;
       vertical-align: middle;
       margin-right: 2px;
-      font-size: 9px;
+      font-size: 10px;
     }
-    .consent-group { margin: 5px 0; font-size: 8.5px; }
-    .consent-row { display: flex; gap: 8mm; margin-bottom: 2px; align-items: center; }
-    .consent-opt { display: flex; align-items: center; gap: 3px; font-size: 8.5px; }
+    .consent-group { margin: 6px 0; font-size: 10px; }
+    .consent-row { display: flex; gap: 8mm; margin-bottom: 3px; align-items: center; }
+    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 10px; }
 
     @media print {
       body { background: #fff; }
@@ -297,7 +303,7 @@ const TEMPLATE = `
         <span class="form-label">IL/LA SOTTOSCRITTO/A</span>
         <div class="field-full">{{FULL_NAME}}</div>
       </div>
-      <div style="display:flex; gap:2px; margin-bottom:4px;">
+      <div style="display:flex; gap:3px; margin-bottom:4px;">
         <span class="gender-box {{MALE_SELECTED}}">M</span>
         <span class="gender-box {{FEMALE_SELECTED}}">F</span>
       </div>
@@ -321,7 +327,7 @@ const TEMPLATE = `
 
     <!-- CODICE ISTAT comune -->
     <div style="margin-bottom:3mm; display:flex; justify-content:space-between; align-items:flex-end;">
-      <span class="form-label red" style="display:inline;">CODICE ISTAT** del comune o dello stato estero (**Riservato Avis)</span>
+      <span class="form-label red" style="display:inline;">CODICE ISTAT** (**Riservato)</span>
       <div class="cell-row">
         <span class="cell">{{ISTAT_COM_1}}</span><span class="cell">{{ISTAT_COM_2}}</span>
         <span class="cell">{{ISTAT_COM_3}}</span><span class="cell">{{ISTAT_COM_4}}</span>
@@ -357,12 +363,12 @@ const TEMPLATE = `
     </div>
 
     <!-- Città + CAP residenza / Città + CAP domicilio -->
-    <div class="form-row" style="align-items:flex-start; flex-wrap:nowrap;">
+    <div class="form-row" style="align-items:flex-end; flex-wrap:nowrap;">
       <div style="flex:2;">
         <span class="form-label">Città</span>
         <div class="field-full">{{RESIDENCE_CITY}}</div>
       </div>
-      <div style="flex:none; padding-top:13px;">
+      <div style="flex:none; margin-bottom: 4px;">
         <span class="form-label">CAP</span>
         <div class="cell-row">
           <span class="cell">{{CAP_RES_1}}</span><span class="cell">{{CAP_RES_2}}</span>
@@ -374,7 +380,7 @@ const TEMPLATE = `
         <span class="form-label">Città</span>
         <div class="field-full">{{DOMICILE_CITY}}</div>
       </div>
-      <div style="flex:none; padding-top:13px;">
+      <div style="flex:none; margin-bottom: 4px;">
         <span class="form-label">CAP</span>
         <div class="cell-row">
           <span class="cell">{{CAP_DOM_1}}</span><span class="cell">{{CAP_DOM_2}}</span>
@@ -715,116 +721,116 @@ const TEMPLATE = `
 `;
 
 export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') => {
-    let html = TEMPLATE;
+  let html = TEMPLATE;
 
-    // Helper to format date
-    const formatDate = (date?: string | Date) => {
-        if (!date) return "";
-        const d = new Date(date);
-        return d.toLocaleDateString('it-IT');
-    };
+  // Helper to format date
+  const formatDate = (date?: string | Date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return d.toLocaleDateString('it-IT');
+  };
 
-    // Replace basic placeholders
-    const replacements: Record<string, string> = {
-        '{{LOGO_SRC}}': LOGO_URL,
-        '{{FULL_NAME}}': `${donor.firstName || ''} ${donor.lastName || ''}`.trim(),
-        '{{BIRTH_CITY}}': donor.birthPlace || '',
-        '{{BIRTH_PROVINCE}}': '',
-        '{{BIRTH_DATE}}': formatDate(donor.birthDate),
-        '{{RESIDENCE_STREET}}': donor.address || '',
-        '{{DOMICILE_STREET}}': donor.address || '', // Default to same
-        '{{RESIDENCE_CITY}}': donor.town || '',
-        '{{DOMICILE_CITY}}': donor.town || '',
-        '{{EMAIL}}': donor.email || '',
-        '{{HOME_PHONE}}': '',
-        '{{MOBILE_PHONE}}': donor.phone || '',
-        '{{HEALTH_CARD}}': '',
-        '{{WORKPLACE}}': '',
-        '{{COLLECTION_POINT}}': donor.localAvis || 'Merate',
-        '{{OTHER_ASSOCIATION}}': donor.otherAssociations || '',
-        '{{DATE}}': formatDate(new Date()),
-        '{{SIGNATURE}}': '',
-        '{{P1_HIDDEN}}': moduleType === 'privacy' ? 'no-print' : '',
-        '{{P2_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
-        '{{P3_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
-        '{{MALE_SELECTED}}': donor.gender === 'male' ? 'selected' : '',
-        '{{FEMALE_SELECTED}}': donor.gender === 'female' ? 'selected' : '',
-        '{{OTHER_ASSOC_SI}}': donor.otherAssociations ? 'selected' : '',
-        '{{OTHER_ASSOC_NO}}': !donor.otherAssociations ? 'selected' : '',
-    };
+  // Replace basic placeholders
+  const replacements: Record<string, string> = {
+    '{{LOGO_SRC}}': LOGO_URL,
+    '{{FULL_NAME}}': `${donor.firstName || ''} ${donor.lastName || ''}`.trim(),
+    '{{BIRTH_CITY}}': donor.birthPlace || '',
+    '{{BIRTH_PROVINCE}}': '',
+    '{{BIRTH_DATE}}': formatDate(donor.birthDate),
+    '{{RESIDENCE_STREET}}': donor.address || '',
+    '{{DOMICILE_STREET}}': donor.address || '', // Default to same
+    '{{RESIDENCE_CITY}}': donor.town || '',
+    '{{DOMICILE_CITY}}': donor.town || '',
+    '{{EMAIL}}': donor.email || '',
+    '{{HOME_PHONE}}': '',
+    '{{MOBILE_PHONE}}': donor.phone || '',
+    '{{HEALTH_CARD}}': '',
+    '{{WORKPLACE}}': '',
+    '{{COLLECTION_POINT}}': donor.localAvis || 'Merate',
+    '{{OTHER_ASSOCIATION}}': donor.otherAssociations || '',
+    '{{DATE}}': formatDate(new Date()),
+    '{{SIGNATURE}}': '',
+    '{{P1_HIDDEN}}': moduleType === 'privacy' ? 'no-print' : '',
+    '{{P2_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
+    '{{P3_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
+    '{{MALE_SELECTED}}': donor.gender === 'male' ? 'selected' : '',
+    '{{FEMALE_SELECTED}}': donor.gender === 'female' ? 'selected' : '',
+    '{{OTHER_ASSOC_SI}}': donor.otherAssociations && donor.otherAssociations.trim() !== '' ? 'selected' : '',
+    '{{OTHER_ASSOC_NO}}': (donor.otherAssociations && (donor.otherAssociations.trim().toLowerCase() === 'no' || donor.otherAssociations.trim().toLowerCase() === 'nessuna')) ? 'selected' : '',
+  };
 
-    // Tax Code cells
-    const cf = (donor.taxCode || "").toUpperCase();
-    for (let i = 1; i <= 16; i++) {
-        replacements[`{{FC_${i.toString().padStart(2, '0')}}}`] = cf[i - 1] || '';
+  // Tax Code cells
+  const cf = (donor.taxCode || "").toUpperCase().replace(/\s/g, '');
+  for (let i = 1; i <= 16; i++) {
+    replacements[`{{FC_${i.toString().padStart(2, '0')}}}`] = cf[i - 1] || '';
+  }
+
+  // Education Checkboxes
+  const edu = (donor.education || "").toLowerCase();
+  replacements['{{CHECK_EDU_NONE}}'] = edu === "" ? "" : ""; // don't default to none
+  replacements['{{CHECK_EDU_ELEM}}'] = edu.includes("elementare") ? "✓" : "";
+  replacements['{{CHECK_EDU_MEDIA}}'] = edu.includes("media") ? "✓" : "";
+  replacements['{{CHECK_EDU_DIPL}}'] = edu.includes("diploma") ? "✓" : "";
+  replacements['{{CHECK_EDU_LAUR}}'] = edu.includes("laurea") ? "✓" : "";
+
+  // Privacy specific
+  replacements['{{CHECK_ASPIRANTE}}'] = "✓";
+  replacements['{{CHECK_SOCIO}}'] = "";
+  replacements['{{CHECK_ASPIRANTE_P3}}'] = "✓";
+  replacements['{{CHECK_SOCIO_P3}}'] = "";
+  replacements['{{SUBSCRIBER_FULL_NAME}}'] = `${donor.firstName || ''} ${donor.lastName || ''}`.trim();
+  replacements['{{SUBSCRIBER_BIRTH_CITY}}'] = donor.birthPlace || '';
+  replacements['{{SUBSCRIBER_BIRTH_DATE}}'] = formatDate(donor.birthDate);
+  replacements['{{SUBSCRIBER_CERT_NUM}}'] = "";
+  replacements['{{SUBSCRIBER_FISCAL_CODE}}'] = cf;
+  replacements['{{SUBSCRIBER_RESIDENCE_CITY}}'] = donor.town || '';
+  replacements['{{SUBSCRIBER_STREET}}'] = donor.address || '';
+  replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = donor.localAvis || 'Merate';
+  replacements['{{SUBSCRIBER_PHONE}}'] = donor.phone || '';
+  replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
+  replacements['{{PLACE}}'] = "Merate";
+
+  // Consents (Only check strictly if necessary, otherwise leave for manual signature)
+  replacements['{{CONS_ABC_YES}}'] = "✓";
+  replacements['{{CONS_ABC_NO}}'] = "";
+  replacements['{{CONS_D_YES}}'] = "";
+  replacements['{{CONS_D_NO}}'] = "";
+  replacements['{{CONS_E_YES}}'] = "";
+  replacements['{{CONS_E_NO}}'] = "";
+  replacements['{{CONS_F_YES}}'] = "";
+  replacements['{{CONS_F_NO}}'] = "";
+  replacements['{{CONS_G_YES}}'] = "";
+  replacements['{{CONS_G_NO}}'] = "";
+
+  // Empty some other cell blocks
+  ['ISTAT_COM', 'ISTAT_RES'].forEach(prefix => {
+    for (let i = 1; i <= 6; i++) replacements[`{{${prefix}_${i}}}`] = "";
+  });
+  ['CAP_RES', 'CAP_DOM'].forEach(prefix => {
+    for (let i = 1; i <= 5; i++) replacements[`{{${prefix}_${i}}}`] = "";
+  });
+
+  // Actually replace in HTML
+  Object.entries(replacements).forEach(([key, value]) => {
+    html = html.split(key).join(value);
+  });
+
+  // Open print window
+  const printWindow = window.open('', '_blank');
+  if (printWindow) {
+    printWindow.document.write(html);
+    printWindow.document.close();
+
+    // Wait for images to load before printing
+    const img = printWindow.document.querySelector('img');
+    if (img && !img.complete) {
+      img.onload = () => {
+        printWindow.print();
+        // printWindow.close(); // Optionally close after print dialog
+      };
+    } else {
+      printWindow.print();
+      // printWindow.close();
     }
-
-    // Education Checkboxes
-    const edu = (donor.education || "").toLowerCase();
-    replacements['{{CHECK_EDU_NONE}}'] = edu === "" ? "✓" : "";
-    replacements['{{CHECK_EDU_ELEM}}'] = edu.includes("elementare") ? "✓" : "";
-    replacements['{{CHECK_EDU_MEDIA}}'] = edu.includes("media") ? "✓" : "";
-    replacements['{{CHECK_EDU_DIPL}}'] = edu.includes("diploma") ? "✓" : "";
-    replacements['{{CHECK_EDU_LAUR}}'] = edu.includes("laurea") ? "✓" : "";
-
-    // Privacy specific
-    replacements['{{CHECK_ASPIRANTE}}'] = "✓";
-    replacements['{{CHECK_SOCIO}}'] = "";
-    replacements['{{CHECK_ASPIRANTE_P3}}'] = "✓";
-    replacements['{{CHECK_SOCIO_P3}}'] = "";
-    replacements['{{SUBSCRIBER_FULL_NAME}}'] = `${donor.firstName || ''} ${donor.lastName || ''}`.trim();
-    replacements['{{SUBSCRIBER_BIRTH_CITY}}'] = donor.birthPlace || '';
-    replacements['{{SUBSCRIBER_BIRTH_DATE}}'] = formatDate(donor.birthDate);
-    replacements['{{SUBSCRIBER_CERT_NUM}}'] = "";
-    replacements['{{SUBSCRIBER_FISCAL_CODE}}'] = cf;
-    replacements['{{SUBSCRIBER_RESIDENCE_CITY}}'] = donor.town || '';
-    replacements['{{SUBSCRIBER_STREET}}'] = donor.address || '';
-    replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = donor.localAvis || 'Merate';
-    replacements['{{SUBSCRIBER_PHONE}}'] = donor.phone || '';
-    replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
-    replacements['{{PLACE}}'] = "Merate";
-
-    // Consents (Default YES for first one as per usual procedure, rest empty or can be filled)
-    replacements['{{CONS_ABC_YES}}'] = "✓";
-    replacements['{{CONS_ABC_NO}}'] = "";
-    replacements['{{CONS_D_YES}}'] = "";
-    replacements['{{CONS_D_NO}}'] = "";
-    replacements['{{CONS_E_YES}}'] = "";
-    replacements['{{CONS_E_NO}}'] = "";
-    replacements['{{CONS_F_YES}}'] = "";
-    replacements['{{CONS_F_NO}}'] = "";
-    replacements['{{CONS_G_YES}}'] = "";
-    replacements['{{CONS_G_NO}}'] = "";
-
-    // Empty some other cell blocks
-    ['ISTAT_COM', 'ISTAT_RES'].forEach(prefix => {
-        for (let i = 1; i <= 6; i++) replacements[`{{${prefix}_${i}}}`] = "";
-    });
-    ['CAP_RES', 'CAP_DOM'].forEach(prefix => {
-        for (let i = 1; i <= 5; i++) replacements[`{{${prefix}_${i}}}`] = "";
-    });
-
-    // Actually replace in HTML
-    Object.entries(replacements).forEach(([key, value]) => {
-        html = html.split(key).join(value);
-    });
-
-    // Open print window
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-        printWindow.document.write(html);
-        printWindow.document.close();
-
-        // Wait for images to load before printing
-        const img = printWindow.document.querySelector('img');
-        if (img && !img.complete) {
-            img.onload = () => {
-                printWindow.print();
-                // printWindow.close(); // Optionally close after print dialog
-            };
-        } else {
-            printWindow.print();
-            // printWindow.close();
-        }
-    }
+  }
 };
