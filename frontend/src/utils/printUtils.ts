@@ -23,9 +23,10 @@ const TEMPLATE = `
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--avis-blue);
       background: #fff;
+      -webkit-print-color-adjust: exact;
     }
 
     /* ── Page ────────────────────────────────────────── */
@@ -33,7 +34,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 8mm 10mm 8mm 10mm;
+      padding: 6mm 8mm 6mm 8mm; /* narrower margins */
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -41,13 +42,12 @@ const TEMPLATE = `
 
     /* ── Logo ────────────────────────────────────────── */
     .logo-wrap {
-      margin-bottom: 3mm;
+      margin-bottom: 2mm;
       line-height: 0;
     }
-    /* Image scales freely; layout is not broken by any size */
     .logo-wrap img {
       display: block;
-      max-height: 15mm;   /* reduced size */
+      max-height: 12mm;   /* even smaller */
       max-width: 100%;
       width: auto;
       height: auto;
@@ -58,63 +58,62 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 3px; line-height: 1.45; font-size: 10px; text-align: justify; }
+    p { margin-bottom: 3px; line-height: 1.4; font-size: 10px; text-align: justify; }
 
     .main-title {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: bold;
       color: var(--avis-blue);
       text-align: center;
       text-decoration: underline;
-      margin: 5px 0 6px;
+      margin: 4px 0 5px;
     }
     .section-title {
       font-size: 10.5px;
       font-weight: bold;
       color: var(--avis-blue);
-      margin: 5px 0 2px;
+      margin: 4px 0 2px;
     }
 
     /* ── Checkbox square ─────────────────────────────── */
-    /* Program replaces {{CHECK_xxx}} with "✓" or "" */
     .sq {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 10px; height: 10px;
+      width: 11px; height: 11px;
       border: 1.2px solid var(--avis-blue);
       vertical-align: middle;
-      font-size: 9px;
+      font-size: 9.5px;
       line-height: 1;
       flex-shrink: 0;
+      background: #fff;
     }
 
     /* ── Underline field ─────────────────────────────── */
     .field {
       display: inline-block;
       border-bottom: 1px solid var(--avis-blue);
-      min-width: 30mm;
+      min-width: 20mm;
       height: 14px;
-      vertical-align: bottom;
+      vertical-align: baseline;
       font-size: 10px;
-      color: #444;
+      color: #333;
       font-style: italic;
-      padding-left: 4px; /* better readability */
-      padding-bottom: 1px;
+      padding-left: 3px;
+      padding-right: 3px;
     }
     .field-full {
       display: block;
       border-bottom: 1px solid var(--avis-blue);
       width: 100%;
       min-height: 14px;
-      margin: 2px 0 4px;
+      margin: 1px 0 3px;
       font-size: 10px;
-      color: #444;
+      color: #333;
       font-style: italic;
       overflow: hidden;
       white-space: nowrap;
-      padding-left: 4px;
-      padding-bottom: 1px;
+      padding-left: 3px;
     }
 
     /* ── Boxed cells (ISTAT / CF / CAP) ─────────────── */
@@ -123,33 +122,34 @@ const TEMPLATE = `
       gap: 0;
     }
     .cell {
-      width: 6.5mm; height: 6mm;
+      width: 6.4mm; height: 5.5mm;
       border: 1px solid var(--avis-blue);
       border-right: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
-      color: #444;
+      font-size: 9.5px;
+      color: #333;
       font-style: italic;
       font-weight: bold;
+      background: #fff;
     }
     .cell:last-child { border-right: 1px solid var(--avis-blue); }
 
     /* ── Form wrapper (page 1) ───────────────────────── */
     .form-box {
       border: 1.5px solid var(--avis-blue);
-      padding: 3mm 4mm;
+      padding: 2mm 4mm;
     }
     .form-title {
       text-align: center;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: bold;
       color: var(--avis-red);
       letter-spacing: 1px;
       border-bottom: 1.5px solid var(--avis-blue);
-      padding-bottom: 2mm;
-      margin-bottom: 2mm;
+      padding-bottom: 1.5mm;
+      margin-bottom: 1.5mm;
     }
     .form-label {
       font-size: 9px;
@@ -162,14 +162,14 @@ const TEMPLATE = `
     .form-row {
       display: flex;
       gap: 3mm;
-      margin-bottom: 2mm;
+      margin-bottom: 1.5mm;
       align-items: flex-end;
     }
     .gender-box {
       border: 1.5px solid var(--avis-blue);
       padding: 1px 4px;
       font-weight: bold;
-      font-size: 11px;
+      font-size: 10.5px;
       display: inline-block;
       min-width: 18px;
       text-align: center;
@@ -179,7 +179,7 @@ const TEMPLATE = `
         color: white;
     }
 
-    /* ── Three-column table ──────────────────────────── */
+    /* ── Column Tables ──────────────────────────── */
     .three-cols {
       display: flex;
       border: 1px solid var(--avis-blue);
@@ -197,13 +197,13 @@ const TEMPLATE = `
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
       margin-bottom: 3px;
-      padding-bottom: 2px;
+      padding-bottom: 1.5px;
     }
     .col-item {
       display: flex;
       align-items: center;
       gap: 3px;
-      margin: 2px 0;
+      margin: 1.5px 0;
       font-size: 9px;
     }
     .col-inner { display: flex; gap: 4mm; }
@@ -239,13 +239,13 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 9px; line-height: 1.6; margin-bottom: 2mm; }
+    .chiede-section { font-size: 9.5px; line-height: 1.5; margin-bottom: 2mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
     .sign-row { display: flex; justify-content: space-between; margin-top: 3mm; }
     .sign-block { width: 46%; }
-    .sign-line { border-bottom: 1px solid var(--avis-blue); margin-top: 6mm; }
+    .sign-line { border-bottom: 1px solid var(--avis-blue); margin-top: 5mm; }
 
     /* ── Footer ──────────────────────────────────────── */
     .footer-sede {
@@ -253,34 +253,35 @@ const TEMPLATE = `
       text-align: center;
       color: var(--avis-blue);
       border-top: 1px solid var(--avis-blue);
-      padding-top: 2mm;
-      margin-top: 3mm;
+      padding-top: 1.5mm;
+      margin-top: 2mm;
     }
 
     /* ── Privacy consent section ─────────────────────── */
     .consent-title {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: bold;
       text-align: center;
-      margin: 10px 0 6px;
+      margin: 8px 0 6px;
     }
     .cb-label {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border: 1.5px solid var(--avis-blue);
-      width: 11px; height: 11px;
+      width: 12px; height: 12px;
       vertical-align: middle;
       margin-right: 2px;
       font-size: 10px;
+      background: #fff;
     }
-    .consent-group { margin: 6px 0; font-size: 10px; }
-    .consent-row { display: flex; gap: 8mm; margin-bottom: 3px; align-items: center; }
+    .consent-group { margin: 5px 0; font-size: 10px; }
+    .consent-row { display: flex; gap: 8mm; margin-bottom: 2px; align-items: center; }
     .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 10px; }
 
     @media print {
       body { background: #fff; }
-      .page { margin: 0; box-shadow: none; page-break-after: always; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 5mm 5mm; }
       .no-print { display: none; }
     }
   </style>
@@ -837,10 +838,25 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   }
 
 
+  // Ensure all CHECK and CONS placeholders are set to empty if not already defined
+  // This prevents layout breaking if a placeholder is missing from the logic
+  const placeholderRegex = /{{([A-Z0-9_]+)}}/g;
+  let match;
+  const tempReplacements: Record<string, string> = { ...replacements };
+  while ((match = placeholderRegex.exec(html)) !== null) {
+    const p = match[0];
+    if (!(p in tempReplacements)) {
+      tempReplacements[p] = "";
+    }
+  }
+
   // Actually replace in HTML
-  Object.entries(replacements).forEach(([key, value]) => {
+  Object.entries(tempReplacements).forEach(([key, value]) => {
     html = html.split(key).join(value);
   });
+
+  // Final emergency scrub for anything missed
+  html = html.replace(/{{[A-Z0-9_]+}}/g, "");
 
   // Open print window
   const printWindow = window.open('', '_blank');
@@ -853,11 +869,12 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     if (img && !img.complete) {
       img.onload = () => {
         printWindow.print();
-        // printWindow.close(); // Optionally close after print dialog
       };
     } else {
-      printWindow.print();
-      // printWindow.close();
+      // Small timeout to ensure browser has rendered the styles
+      setTimeout(() => {
+        printWindow.print();
+      }, 300);
     }
   }
 };
