@@ -15,8 +15,8 @@ const TEMPLATE = `
   <style>
     /* ── Brand palette ──────────────────────────────── */
     :root {
-      --avis-blue:  #0057A8;   /* Pantone 300 */
-      --avis-red:   #EF3340;   /* Pantone 032 */
+      --avis-blue:  #0075bf;   /* New standard blue */
+      --avis-red:   #e30613;   /* New standard red */
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
