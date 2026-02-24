@@ -141,6 +141,29 @@
     color: #ffffff !important;
 }
 
+/* Global input fixes */
+input,
+.p-inputtext,
+.p-dropdown,
+.p-calendar input {
+    caret-color: #e63946 !important;
+}
+
+.convocation-cell-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.convocation-calendar {
+    flex: 1;
+}
+
+.convocation-button {
+    white-space: nowrap;
+}
+
 @media (max-width: 768px) {
     .reserved-sidebar {
         width: 80px;

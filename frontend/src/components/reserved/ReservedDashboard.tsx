@@ -146,7 +146,10 @@ const ReservedDashboard: React.FC = () => {
         }
     };
 
-    const sendConvocation = async (donor: any) => {
+    const sendConvocation = async (rowData: any) => {
+        // Find the latest donor data from state to be sure we have the updated date
+        const donor = donors.find(d => d.email === rowData.email) || rowData;
+
         if (!donor.convocationDate) {
             toast.current?.show({ severity: 'warn', summary: 'Attenzione', detail: 'Inserire prima la data della convocazione' });
             return;
@@ -154,6 +157,14 @@ const ReservedDashboard: React.FC = () => {
 
         setSendingConvocation(donor.email);
         try {
+            // First update the donor in DB to ensure the date is saved
+            await fetch('/api/updateDonor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(donor)
+            });
+
+            // Then send the email
             const res = await fetch('/api/sendConvocation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -230,31 +241,27 @@ const ReservedDashboard: React.FC = () => {
 
     const convocationCell = (rowData: any) => {
         return (
-            <div className="flex align-items-center gap-2">
+            <div className="convocation-cell-container">
                 <Calendar
                     value={rowData.convocationDate ? new Date(rowData.convocationDate) : null}
                     onChange={(e) => {
                         const newDonors = donors.map((d: any) => d.email === rowData.email ? { ...d, convocationDate: e.value } : d);
                         setDonors(newDonors);
-                        fetch('/api/updateDonor', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ ...rowData, convocationDate: e.value })
-                        });
                     }}
                     showTime
                     hourFormat="24"
                     placeholder="Data e Ora"
-                    className="p-inputtext-sm w-full"
+                    className="convocation-calendar p-inputtext-sm"
                     appendTo={document.body}
                 />
                 <Button
-                    label="Invio convocazione"
+                    label="Invia"
                     icon={sendingConvocation === rowData.email ? "pi pi-spin pi-spinner" : "pi pi-send"}
                     onClick={() => sendConvocation(rowData)}
                     disabled={sendingConvocation === rowData.email}
                     severity="danger"
                     size="small"
+                    className="convocation-button"
                 />
             </div>
         );
@@ -328,12 +335,12 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={unsummonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato da convocare.">
+                                        <Column body={actionCell} style={{ width: '50px' }} />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
                                         <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity={getStatusSeverity(r.convocationStatus)} value={getStatusLabel(r.convocationStatus)} />} />
-                                        <Column header="Convocazione" body={convocationCell} style={{ minWidth: '350px' }} />
-                                        <Column body={actionCell} style={{ width: '50px' }} />
+                                        <Column header="Convocazione" body={convocationCell} style={{ minWidth: '400px' }} />
                                     </DataTable>
                                 </div>
 
@@ -344,13 +351,13 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={summonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato già convocato.">
+                                        <Column body={actionCell} style={{ width: '50px' }} />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
                                         <Column field="convocationDate" header="Data Convocazione"
                                             body={(rowData) => rowData.convocationDate ? new Date(rowData.convocationDate).toLocaleString('it-IT') : '-'} />
                                         <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity="success" value="Inviata" />} />
-                                        <Column body={actionCell} style={{ width: '50px' }} />
                                     </DataTable>
                                 </div>
                             </section>
