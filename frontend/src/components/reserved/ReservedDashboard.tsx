@@ -297,14 +297,14 @@ const ReservedDashboard: React.FC = () => {
 
     const actionCell = (rowData: any) => {
         return (
-            <div className="flex gap-2">
+            <div className="flex gap-2 align-items-center">
                 <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
                     const donor = { ...rowData };
                     if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
                     setSelectedDonor(donor);
                     setDonorDialog(true);
-                }} tooltip="Modifica" />
-                <Button label="Stampa" icon="pi pi-print" rounded severity="warning" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="print-module-button shadow-2" />
+                }} tooltip="Modifica" className="p-button-sm" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
             </div>
         );
     };
