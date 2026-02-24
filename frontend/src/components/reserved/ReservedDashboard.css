@@ -164,6 +164,23 @@ input,
     white-space: nowrap;
 }
 
+.print-module-button {
+    background: #f39c12 !important;
+    /* Arancione AVIS like */
+    border-color: #f39c12 !important;
+    font-weight: 600 !important;
+    padding: 0.4rem 1rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.print-module-button:hover {
+    background: #e67e22 !important;
+    /* Arancione più scuro */
+    border-color: #e67e22 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4) !important;
+}
+
 @media (max-width: 768px) {
     .reserved-sidebar {
         width: 80px;

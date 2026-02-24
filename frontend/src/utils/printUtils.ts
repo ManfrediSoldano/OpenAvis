@@ -650,25 +650,22 @@ const TEMPLATE = `
     <span>&nbsp;, il</span>
     <span class="field" style="min-width:22mm;">{{SUBSCRIBER_BIRTH_DATE}}</span>
     <br/>
-    <span class="field" style="min-width:18mm;">{{SUBSCRIBER_CERT_NUM}}</span>
-    <span>&nbsp;, C.F.</span>
+    <span>C.F.</span>
     <span class="field" style="min-width:55mm;">{{SUBSCRIBER_FISCAL_CODE}}</span>
     <span>&nbsp;, residente in</span>
-    <br/>
     <span class="field" style="min-width:75mm;">{{SUBSCRIBER_RESIDENCE_CITY}}</span>
-    <span>&nbsp;via/piazza</span>
-    <span class="field" style="min-width:55mm;">{{SUBSCRIBER_STREET}}</span>
+    <br/>
+    <span>via/piazza</span>
+    <span class="field" style="min-width:75mm;">{{SUBSCRIBER_STREET}}</span>
     <span>&nbsp;, già iscritto/a</span>
     <br/>
     <span>all'Avis Comunale di</span>
-    <span class="field" style="min-width:55mm;">{{SUBSCRIBER_AVIS_MUNICIPALITY}}</span>
-    <span>&nbsp;,</span>
-    <br/>
-    <span>tel./cell.</span>
+    <span class="field" style="min-width:75mm;">{{SUBSCRIBER_AVIS_MUNICIPALITY}}</span>
+    <span>&nbsp;, tel./cell.</span>
     <span class="field" style="min-width:50mm;">{{SUBSCRIBER_PHONE}}</span>
-    <span>&nbsp;e-mail</span>
     <br/>
-    <span class="field" style="min-width:80mm;">{{SUBSCRIBER_EMAIL}}</span>
+    <span>e-mail</span>
+    <span class="field" style="min-width:130mm;">{{SUBSCRIBER_EMAIL}}</span>
   </div>
 
   <p style="margin-top:5px;">dichiaro di aver preso visione dell'informativa su riportata, di averla letta e ben compresa e:</p>
@@ -719,7 +716,7 @@ const TEMPLATE = `
     <div style="width:44%;">
       <div style="font-size:9.5px; font-weight:bold; color:var(--avis-blue); text-decoration: underline;">Luogo e data</div>
       <div class="sign-line" style="gap:2mm;">
-        <span>{{PLACE}}</span><span>,</span><span>{{DATE}}</span>
+        <span>{{SUBSCRIBER_PLACE}}</span><span>,</span><span>{{SUBSCRIBER_DATE}}</span>
       </div>
     </div>
     <div style="width:44%;">
@@ -734,7 +731,7 @@ const TEMPLATE = `
 </html>
 `;
 
-export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') => {
+export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' | 'completo' = 'completo') => {
   let html = TEMPLATE;
 
   // Helper to format date
@@ -799,10 +796,11 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   replacements['{{SUBSCRIBER_FISCAL_CODE}}'] = cf;
   replacements['{{SUBSCRIBER_RESIDENCE_CITY}}'] = donor.town || '';
   replacements['{{SUBSCRIBER_STREET}}'] = donor.address || '';
-  replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = donor.localAvis || 'Merate';
+  replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = ""; // Keep empty as requested for new registrations
   replacements['{{SUBSCRIBER_PHONE}}'] = donor.phone || '';
   replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
-  replacements['{{PLACE}}'] = "Merate";
+  replacements['{{SUBSCRIBER_PLACE}}'] = "Merate";
+  replacements['{{SUBSCRIBER_DATE}}'] = formatDate(new Date());
 
   // Consents (Leave for manual signature)
   replacements['{{CONS_ABC_YES}}'] = "";

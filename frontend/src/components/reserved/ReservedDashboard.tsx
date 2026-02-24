@@ -297,15 +297,14 @@ const ReservedDashboard: React.FC = () => {
 
     const actionCell = (rowData: any) => {
         return (
-            <div className="flex gap-1">
+            <div className="flex gap-2">
                 <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
                     const donor = { ...rowData };
                     if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" />
-                <Button icon="pi pi-file-edit" rounded text severity="info" onClick={() => printModule(rowData, 'iscrizione')} tooltip="Domanda Iscrizione" />
-                <Button icon="pi pi-shield" rounded text severity="help" onClick={() => printModule(rowData, 'privacy')} tooltip="Informativa Privacy" />
+                <Button label="Stampa" icon="pi pi-print" rounded severity="warning" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="print-module-button shadow-2" />
             </div>
         );
     };
@@ -367,7 +366,7 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={unsummonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato da convocare.">
-                                        <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
+                                        <Column body={actionCell} style={{ width: '180px' }} header="Azioni" />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
@@ -384,7 +383,7 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={summonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato già convocato.">
-                                        <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
+                                        <Column body={actionCell} style={{ width: '180px' }} header="Azioni" />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />

@@ -64,7 +64,7 @@ const Header: React.FC = () => {
         openMenuButtonColor="#333333"
         changeMenuColorOnOpen={true}
         colors={['#f8f9fa', '#e9ecef']}
-        logoUrl="/images/Logo_AVIS.svg"
+        logoUrl="https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS_Merate_bianco.png"
         accentColor="#0075be"
       />
     </>
