@@ -15,6 +15,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
+import { printModule } from '../../utils/printUtils';
 
 interface UserInfo {
     clientPrincipal: {
@@ -274,12 +275,16 @@ const ReservedDashboard: React.FC = () => {
 
     const actionCell = (rowData: any) => {
         return (
-            <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
-                const donor = { ...rowData };
-                if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
-                setSelectedDonor(donor);
-                setDonorDialog(true);
-            }} />
+            <div className="flex gap-1">
+                <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
+                    const donor = { ...rowData };
+                    if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
+                    setSelectedDonor(donor);
+                    setDonorDialog(true);
+                }} tooltip="Modifica" />
+                <Button icon="pi pi-file-edit" rounded text severity="info" onClick={() => printModule(rowData, 'iscrizione')} tooltip="Domanda Iscrizione" />
+                <Button icon="pi pi-shield" rounded text severity="help" onClick={() => printModule(rowData, 'privacy')} tooltip="Informativa Privacy" />
+            </div>
         );
     };
 
@@ -340,7 +345,7 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={unsummonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato da convocare.">
-                                        <Column body={actionCell} style={{ width: '50px' }} />
+                                        <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
@@ -357,7 +362,7 @@ const ReservedDashboard: React.FC = () => {
                                     <DataTable value={summonedDonors} loading={loadingDonors} paginator rows={5}
                                         className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                         emptyMessage="Nessun candidato già convocato.">
-                                        <Column body={actionCell} style={{ width: '50px' }} />
+                                        <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
