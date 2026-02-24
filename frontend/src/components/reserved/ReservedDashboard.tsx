@@ -39,6 +39,7 @@ const donorFields = [
     { name: 'profession', label: 'Professione', type: 'text' },
     { name: 'donationPreferences', label: 'Preferenze Donazione', type: 'text' },
     { name: 'otherAssociations', label: 'Altre Associazioni', type: 'text' },
+    { name: 'localAvis', label: 'AVIS Comunale', type: 'select', options: [{ label: 'Merate', value: 'Merate' }, { label: 'Brivio', value: 'Brivio' }, { label: 'Missaglia', value: 'Missaglia' }] },
 ];
 
 const ReservedDashboard: React.FC = () => {
@@ -327,7 +328,7 @@ const ReservedDashboard: React.FC = () => {
                                     </div>
                                     <div className="flex gap-2">
                                         <Button label="Nuovo Candidato" icon="pi pi-plus" severity="danger" onClick={() => {
-                                            setSelectedDonor({ firstName: '', lastName: '', email: '', createdAt: new Date().toISOString() });
+                                            setSelectedDonor({ firstName: '', lastName: '', email: '', localAvis: 'Merate', createdAt: new Date().toISOString() });
                                             setDonorDialog(true);
                                         }} />
                                         <Button icon="pi pi-refresh" rounded text onClick={fetchDonors} loading={loadingDonors} />
@@ -343,6 +344,7 @@ const ReservedDashboard: React.FC = () => {
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
+                                        <Column field="localAvis" header="AVIS Comunale" sortable />
                                         <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity={getStatusSeverity(r.convocationStatus)} value={getStatusLabel(r.convocationStatus)} />} />
                                         <Column header="Convocazione" body={convocationCell} style={{ minWidth: '400px' }} />
                                     </DataTable>
@@ -359,6 +361,7 @@ const ReservedDashboard: React.FC = () => {
                                         <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                         <Column field="firstName" header="Nome" sortable />
                                         <Column field="email" header="Email" />
+                                        <Column field="localAvis" header="AVIS Comunale" sortable />
                                         <Column field="convocationDate" header="Data Convocazione"
                                             body={(rowData) => rowData.convocationDate ? new Date(rowData.convocationDate).toLocaleString('it-IT') : '-'} />
                                         <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity="success" value="Inviata" />} />

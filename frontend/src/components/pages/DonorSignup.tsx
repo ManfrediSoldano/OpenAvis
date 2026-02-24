@@ -582,7 +582,8 @@ const DonorSignup: React.FC = () => {
     donationPreferences: "",
     profession: "",
     nonProfessionalStatus: "",
-    otherAssociations: ""
+    otherAssociations: "",
+    localAvis: 'Merate'
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

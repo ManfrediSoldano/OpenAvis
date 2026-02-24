@@ -22,4 +22,5 @@ export interface Donor {
     // New fields
     convocationDate?: string | Date;
     convocationStatus?: ConvocationStatus;
+    localAvis?: 'Merate' | 'Brivio' | 'Missaglia';
 }
