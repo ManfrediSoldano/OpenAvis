@@ -16,6 +16,7 @@ import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { Divider } from 'primereact/divider';
 import { printModule } from '../../utils/printUtils';
+import { searchComuni } from 'italian-locations';
 
 interface UserInfo {
     clientPrincipal: {
@@ -32,10 +33,14 @@ const donorFields = [
     { name: 'gender', label: 'Sesso', type: 'select', options: [{ label: 'Maschio', value: 'male' }, { label: 'Femmina', value: 'female' }] },
     { name: 'birthDate', label: 'Data di Nascita', type: 'date' },
     { name: 'birthPlace', label: 'Luogo di Nascita', type: 'text' },
+    { name: 'birthProvince', label: 'Provincia di Nascita', type: 'text' },
     { name: 'taxCode', label: 'Codice Fiscale', type: 'text' },
     { name: 'phone', label: 'Telefono', type: 'text' },
-    { name: 'town', label: 'Comune', type: 'text' },
-    { name: 'address', label: 'Indirizzo', type: 'text' },
+    { name: 'town', label: 'Comune di residenza', type: 'text' },
+    { name: 'province', label: 'Provincia di residenza', type: 'text' },
+    { name: 'address', label: 'Indirizzo di residenza', type: 'text' },
+    { name: 'domicileTown', label: 'Comune di domicilio', type: 'text' },
+    { name: 'domicileAddress', label: 'Indirizzo di domicilio', type: 'text' },
     { name: 'education', label: 'Titolo di Studio', type: 'text' },
     { name: 'profession', label: 'Professione', type: 'text' },
     { name: 'donationPreferences', label: 'Preferenze Donazione', type: 'text' },
@@ -192,7 +197,24 @@ const ReservedDashboard: React.FC = () => {
     };
 
     const updateDonorField = (name: string, value: any) => {
-        setSelectedDonor((prev: any) => ({ ...prev, [name]: value }));
+        setSelectedDonor((prev: any) => {
+            const updated = { ...prev, [name]: value };
+
+            // Auto-populate province based on city
+            if (name === 'birthPlace' && value) {
+                const results = searchComuni(value);
+                if (results.length > 0) {
+                    updated.birthProvince = results[0].item.siglaProvincia;
+                }
+            } else if (name === 'town' && value) {
+                const results = searchComuni(value);
+                if (results.length > 0) {
+                    updated.province = results[0].item.siglaProvincia;
+                }
+            }
+
+            return updated;
+        });
     };
 
     const items = [

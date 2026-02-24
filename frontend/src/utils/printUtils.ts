@@ -367,11 +367,11 @@ const TEMPLATE = `
     <!-- Residenza / Domicilio -->
     <div class="form-row">
       <div style="flex:1;">
-        <span class="form-label">Residenza in via</span>
+        <span class="form-label">Via e numero di residenza</span>
         <div class="field-full">{{RESIDENCE_STREET}}</div>
       </div>
       <div style="flex:1;">
-        <span class="form-label">Domicilio in via</span>
+        <span class="form-label">Via e numero di domicilio</span>
         <div class="field-full">{{DOMICILE_STREET}}</div>
       </div>
     </div>
@@ -379,7 +379,7 @@ const TEMPLATE = `
     <!-- Città + CAP residenza / Città + CAP domicilio -->
     <div class="form-row" style="align-items:flex-end;">
       <div style="flex:2;">
-        <span class="form-label">Città</span>
+        <span class="form-label">Comune di residenza</span>
         <div class="field-full">{{RESIDENCE_CITY}}</div>
       </div>
       <div style="flex:none; margin-bottom: 3.5px; display:flex; align-items:center; gap:2mm;">
@@ -391,7 +391,7 @@ const TEMPLATE = `
         </div>
       </div>
       <div style="flex:2; margin-left:3mm;">
-        <span class="form-label">Città</span>
+        <span class="form-label">Comune di domicilio</span>
         <div class="field-full">{{DOMICILE_CITY}}</div>
       </div>
       <div style="flex:none; margin-bottom: 3.5px; display:flex; align-items:center; gap:2mm;">
@@ -749,12 +749,12 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     '{{LOGO_SRC}}': LOGO_URL,
     '{{FULL_NAME}}': `${donor.firstName || ''} ${donor.lastName || ''}`.trim(),
     '{{BIRTH_CITY}}': donor.birthPlace || '',
-    '{{BIRTH_PROVINCE}}': '',
+    '{{BIRTH_PROVINCE}}': donor.birthProvince || '',
     '{{BIRTH_DATE}}': formatDate(donor.birthDate),
     '{{RESIDENCE_STREET}}': donor.address || '',
-    '{{DOMICILE_STREET}}': donor.address || '', // Default to same
+    '{{DOMICILE_STREET}}': donor.domicileAddress || donor.address || '',
     '{{RESIDENCE_CITY}}': donor.town || '',
-    '{{DOMICILE_CITY}}': donor.town || '',
+    '{{DOMICILE_CITY}}': donor.domicileTown || donor.town || '',
     '{{EMAIL}}': donor.email || '',
     '{{HOME_PHONE}}': '',
     '{{MOBILE_PHONE}}': donor.phone || '',
@@ -824,15 +824,18 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     }
   };
 
-  // Birth Town ISTAT
+  // Birth Town ISTAT and Province (Automatic lookup if missing)
   const birthTownData = donor.birthPlace ? searchComuni(donor.birthPlace) : [];
   if (birthTownData.length > 0) {
     fillBoxes('ISTAT_COM', birthTownData[0].item.codiceIstat, 6);
+    if (!replacements['{{BIRTH_PROVINCE}}']) {
+      replacements['{{BIRTH_PROVINCE}}'] = birthTownData[0].item.siglaProvincia;
+    }
   } else {
     for (let i = 1; i <= 6; i++) replacements[`{{ISTAT_COM_${i}}}`] = "";
   }
 
-  // Residence Town ISTAT
+  // Residence Town ISTAT, CAP and Province
   const resTownData = donor.town ? searchComuni(donor.town) : [];
   if (resTownData.length > 0) {
     fillBoxes('ISTAT_RES', resTownData[0].item.codiceIstat, 6);
@@ -840,6 +843,14 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     const cap = resTownData[0].item.cap || "";
     fillBoxes('CAP_RES', cap, 5);
     fillBoxes('CAP_DOM', cap, 5);
+
+    // Add province to residential city if possible (some templates might expect it)
+    const prov = donor.province || (resTownData[0] ? resTownData[0].item.siglaProvincia : "");
+    if (replacements['{{RESIDENCE_CITY}}'] && prov && !replacements['{{RESIDENCE_CITY}}'].includes(`(${prov})`)) {
+      replacements['{{RESIDENCE_CITY}}'] = `${donor.town} (${prov})`;
+      replacements['{{DOMICILE_CITY}}'] = `${donor.town} (${prov})`;
+      replacements['{{SUBSCRIBER_RESIDENCE_CITY}}'] = `${donor.town} (${prov})`;
+    }
   } else {
     for (let i = 1; i <= 6; i++) replacements[`{{ISTAT_RES_${i}}}`] = "";
     for (let i = 1; i <= 5; i++) {

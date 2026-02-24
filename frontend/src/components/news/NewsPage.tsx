@@ -158,6 +158,10 @@ const NewsPage: React.FC = () => {
                 </div>
             </header>
 
+            <div className="news-content-markdown">
+                <ReactMarkdown>{newsDetail.contentMarkdown}</ReactMarkdown>
+            </div>
+
             <div className="news-interaction-bar mt-4 mb-4">
                 <div className="flex align-items-center gap-3">
                     <Button
@@ -176,10 +180,6 @@ const NewsPage: React.FC = () => {
                         <Button icon="pi pi-linkedin" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('linkedin')} tooltip="Condividi su LinkedIn" />
                     </div>
                 </div>
-            </div>
-
-            <div className="news-content-markdown">
-                <ReactMarkdown>{newsDetail.contentMarkdown}</ReactMarkdown>
             </div>
 
 

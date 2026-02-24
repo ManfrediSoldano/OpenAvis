@@ -36,6 +36,7 @@ interface FormState extends Donor {
   donateInMerate: boolean | null;
   transfusionCenter: string;
   nonProfessionalStatus: string;
+  residenceSameAsDomicile: boolean;
 }
 
 
@@ -170,7 +171,7 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
   const validate = () => {
     return form.firstName && form.lastName && form.gender && form.birthDate &&
       form.birthPlace && form.taxCode && form.town && form.address &&
-      form.phone && form.email;
+      form.phone && form.email && (form.residenceSameAsDomicile || (form.domicileTown && form.domicileAddress));
   };
 
   const validateTaxCode = () => {
@@ -342,7 +343,7 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
               <InputWithIcon icon="pi pi-home">
                 <InputText value={form.town} onChange={e => setForm({ ...form, town: e.target.value })} className={isInvalid(form.town) ? 'p-invalid' : ''} />
               </InputWithIcon>
-              <label>Comune*</label>
+              <label>Comune di residenza*</label>
             </FloatLabel>
             {isInvalid(form.town) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
           </span>
@@ -351,11 +352,41 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
               <InputWithIcon icon="pi pi-building">
                 <InputText value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} className={isInvalid(form.address) ? 'p-invalid' : ''} />
               </InputWithIcon>
-              <label>Via e numero*</label>
+              <label>Via e numero di residenza*</label>
             </FloatLabel>
             {isInvalid(form.address) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
           </span>
         </div>
+
+        <div className="donor-step-form-row" style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Checkbox inputId="residenceSameAsDomicile" checked={form.residenceSameAsDomicile} onChange={e => setForm(f => ({ ...f, residenceSameAsDomicile: e.checked || false }))} />
+            <label htmlFor="residenceSameAsDomicile">La residenza e il domicilio combaciano</label>
+          </div>
+        </div>
+
+        {!form.residenceSameAsDomicile && (
+          <div className="donor-step-form-row" style={{ marginBottom: '1.5rem', animation: 'fadeIn 0.3s' }}>
+            <span>
+              <FloatLabel>
+                <InputWithIcon icon="pi pi-home">
+                  <InputText value={form.domicileTown} onChange={e => setForm({ ...form, domicileTown: e.target.value })} className={isInvalid(form.domicileTown) ? 'p-invalid' : ''} />
+                </InputWithIcon>
+                <label>Comune di domicilio*</label>
+              </FloatLabel>
+              {isInvalid(form.domicileTown) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            </span>
+            <span>
+              <FloatLabel>
+                <InputWithIcon icon="pi pi-building">
+                  <InputText value={form.domicileAddress} onChange={e => setForm({ ...form, domicileAddress: e.target.value })} className={isInvalid(form.domicileAddress) ? 'p-invalid' : ''} />
+                </InputWithIcon>
+                <label>Via e numero di domicilio*</label>
+              </FloatLabel>
+              {isInvalid(form.domicileAddress) && <small className="p-error" style={{ display: 'block', marginTop: '5px' }}>Campo obbligatorio</small>}
+            </span>
+          </div>
+        )}
         <div className="donor-step-form-row">
           <span>
             <FloatLabel>
@@ -576,6 +607,8 @@ const DonorSignup: React.FC = () => {
     taxCode: "",
     address: "",
     town: "",
+    domicileAddress: "",
+    domicileTown: "",
     phone: "",
     email: "",
     education: "",
@@ -583,7 +616,8 @@ const DonorSignup: React.FC = () => {
     profession: "",
     nonProfessionalStatus: "",
     otherAssociations: "",
-    localAvis: 'Merate'
+    localAvis: 'Merate',
+    residenceSameAsDomicile: true
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

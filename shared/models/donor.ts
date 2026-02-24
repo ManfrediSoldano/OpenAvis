@@ -9,9 +9,13 @@ export interface Donor {
     gender?: string;
     birthDate?: string | Date;
     birthPlace?: string;
+    birthProvince?: string;
     taxCode?: string;
     address?: string;
     town?: string;
+    domicileAddress?: string;
+    domicileTown?: string;
+    province?: string;
     phone?: string;
     education?: string;
     donationPreferences?: string;
