@@ -113,9 +113,13 @@
 
 .sm-logo-img {
   display: block;
-  height: 40px;
+  height: 170px;
   width: auto;
   object-fit: contain;
+  z-index: 2030;
+  position: relative;
+  top: 5px;
+  left: -50px;
 }
 
 .sm-toggle {
@@ -368,6 +372,7 @@
     padding-left: 0.2rem;
     padding-right: 0.2rem;
     height: 60px;
+    top: 10px;
   }
 
   .staggered-menu-panel,

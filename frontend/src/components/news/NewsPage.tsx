@@ -162,27 +162,6 @@ const NewsPage: React.FC = () => {
                 <ReactMarkdown>{newsDetail.contentMarkdown}</ReactMarkdown>
             </div>
 
-            <div className="news-interaction-bar mt-4 mb-4">
-                <div className="flex align-items-center gap-3">
-                    <Button
-                        icon={isLiked ? "pi pi-heart-fill" : "pi pi-heart"}
-                        label={likes.toString()}
-                        className={`p-button-rounded ${isLiked ? 'p-button-danger' : 'p-button-outlined p-button-secondary'} like-button`}
-                        onClick={handleLike}
-                        disabled={isLiked}
-                        tooltip="Mi piace"
-                        tooltipOptions={{ position: 'bottom' }}
-                    />
-                    <div className="sharing-options flex gap-2">
-                        <Button icon="pi pi-facebook" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('facebook')} tooltip="Condividi su Facebook" />
-                        <Button icon="pi pi-twitter" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('twitter')} tooltip="Condividi su Twitter" />
-                        <Button icon="pi pi-whatsapp" className="p-button-rounded p-button-success p-button-text" onClick={() => handleShare('whatsapp')} tooltip="Condividi su WhatsApp" />
-                        <Button icon="pi pi-linkedin" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('linkedin')} tooltip="Condividi su LinkedIn" />
-                    </div>
-                </div>
-            </div>
-
-
             {newsDetail.attachments?.filter(a => a.url).length > 0 && (
                 <section className="news-attachments">
                     <h3 className="attachments-title">
@@ -203,6 +182,25 @@ const NewsPage: React.FC = () => {
                 </section>
             )}
 
+            <div className="news-interaction-bar">
+                <div className="flex align-items-center justify-content-center gap-4">
+                    <Button
+                        icon={isLiked ? "pi pi-heart-fill" : "pi pi-heart"}
+                        label={likes.toString()}
+                        className={`p-button-rounded ${isLiked ? 'p-button-danger' : 'p-button-outlined p-button-secondary'} like-button`}
+                        onClick={handleLike}
+                        disabled={isLiked}
+                        tooltip="Mi piace"
+                        tooltipOptions={{ position: 'bottom' }}
+                    />
+                    <div className="sharing-options flex gap-2">
+                        <Button icon="pi pi-facebook" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('facebook')} tooltip="Condividi su Facebook" />
+                        <Button icon="pi pi-twitter" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('twitter')} tooltip="Condividi su Twitter" />
+                        <Button icon="pi pi-whatsapp" className="p-button-rounded p-button-success p-button-text" onClick={() => handleShare('whatsapp')} tooltip="Condividi su WhatsApp" />
+                        <Button icon="pi pi-linkedin" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('linkedin')} tooltip="Condividi su LinkedIn" />
+                    </div>
+                </div>
+            </div>
 
             <div className="text-center mt-5">
                 <Button label="Torna alle News" icon="pi pi-list" onClick={() => navigate('/news')} text />

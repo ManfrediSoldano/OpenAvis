@@ -59,7 +59,7 @@ const Header: React.FC = () => {
         items={items}
         socialItems={socialItems}
         displaySocials={true}
-        displayItemNumbering={true}
+        displayItemNumbering={false}
         menuButtonColor="#ffffff"
         openMenuButtonColor="#333333"
         changeMenuColorOnOpen={true}

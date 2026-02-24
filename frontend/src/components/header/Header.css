@@ -25,7 +25,9 @@
 }
 
 @media (min-width: 1904px) {
-  .site-header, .header-content {
+
+  .site-header,
+  .header-content {
     max-width: 90%;
   }
 }

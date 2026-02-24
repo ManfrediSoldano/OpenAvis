@@ -152,10 +152,8 @@
 .news-interaction-bar {
     display: flex;
     justify-content: center;
-    border-top: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0;
-    padding: 1.5rem 0;
-    margin: 3rem 0;
+    padding: 1rem 0;
+    margin: 1.5rem 0;
 }
 
 .like-button {
