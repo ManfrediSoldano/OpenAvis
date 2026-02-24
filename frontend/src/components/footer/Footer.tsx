@@ -31,7 +31,7 @@ const Footer = () => (
       <h4>LINK UTILI</h4>
       <ul>
         <li><a href="#">FAQ</a></li>
-        <li><Link to="/login">INTRANET</Link></li>
+        <li><a href="/login">INTRANET</a></li>
         <li><a href="#">ORGANISMO DI VIGILANZA</a></li>
       </ul>
       <div className="footer-social">

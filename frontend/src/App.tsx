@@ -13,7 +13,19 @@ import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import ReservedDashboard from './components/reserved/ReservedDashboard';
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import ScrollToTop from './components/common/ScrollToTop';
+
+const LoginPageRedirect: React.FC = () => {
+  React.useEffect(() => {
+    window.location.replace("/.auth/login/aad");
+  }, []);
+  return (
+    <div className="flex align-items-center justify-content-center h-screen">
+      <ProgressSpinner />
+    </div>
+  );
+}
 
 const AppContent: React.FC = () => {
   const location = useLocation();
@@ -35,6 +47,7 @@ const AppContent: React.FC = () => {
               <Route path="/news/:id" element={<NewsPage />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/reserved" element={<ReservedDashboard />} />
+              <Route path="/login" element={<LoginPageRedirect />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>

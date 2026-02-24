@@ -50,6 +50,7 @@ const ReservedDashboard: React.FC = () => {
     const [donorDialog, setDonorDialog] = useState(false);
     const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
     const [sendingConvocation, setSendingConvocation] = useState<string | null>(null);
+    const [savingDonor, setSavingDonor] = useState(false);
     const toast = useRef<Toast>(null);
 
     const hasRole = (role: string) => user?.roles.includes('admin') || user?.roles.includes(role);
@@ -126,6 +127,7 @@ const ReservedDashboard: React.FC = () => {
     }, [user, activeSection]);
 
     const saveDonor = async () => {
+        setSavingDonor(true);
         try {
             const res = await fetch('/api/updateDonor', {
                 method: 'POST',
@@ -143,6 +145,8 @@ const ReservedDashboard: React.FC = () => {
             }
         } catch (e) {
             toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Errore di rete' });
+        } finally {
+            setSavingDonor(false);
         }
     };
 
@@ -256,9 +260,9 @@ const ReservedDashboard: React.FC = () => {
                 />
                 <Button
                     label="Invia"
-                    icon={sendingConvocation === rowData.email ? "pi pi-spin pi-spinner" : "pi pi-send"}
+                    icon="pi pi-send"
+                    loading={sendingConvocation === rowData.email}
                     onClick={() => sendConvocation(rowData)}
-                    disabled={sendingConvocation === rowData.email}
                     severity="danger"
                     size="small"
                     className="convocation-button"
@@ -379,7 +383,7 @@ const ReservedDashboard: React.FC = () => {
             </div>
 
             <Dialog header="Dettagli Candidato" visible={donorDialog} style={{ width: '50vw' }} onHide={() => setDonorDialog(false)}
-                footer={<Button label="Salva" icon="pi pi-check" onClick={saveDonor} severity="danger" />}>
+                footer={<Button label="Salva" icon="pi pi-check" onClick={saveDonor} severity="danger" loading={savingDonor} />}>
                 <div className="grid p-fluid">
                     {donorFields.map(field => (
                         <div key={field.name} className="field col-12 md:col-6 mb-3">
