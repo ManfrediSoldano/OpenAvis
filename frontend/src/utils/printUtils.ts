@@ -815,7 +815,7 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   // Birth Town ISTAT
   const birthTownData = donor.birthPlace ? searchComuni(donor.birthPlace) : [];
   if (birthTownData.length > 0) {
-    fillBoxes('ISTAT_COM', birthTownData[0].codiceIstat, 6);
+    fillBoxes('ISTAT_COM', birthTownData[0].item.codiceIstat, 6);
   } else {
     for (let i = 1; i <= 6; i++) replacements[`{{ISTAT_COM_${i}}}`] = "";
   }
@@ -823,9 +823,9 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   // Residence Town ISTAT
   const resTownData = donor.town ? searchComuni(donor.town) : [];
   if (resTownData.length > 0) {
-    fillBoxes('ISTAT_RES', resTownData[0].codiceIstat, 6);
+    fillBoxes('ISTAT_RES', resTownData[0].item.codiceIstat, 6);
     // Fill CAP if not already present or as default
-    const cap = resTownData[0].cap[0] || "";
+    const cap = resTownData[0].item.cap || "";
     fillBoxes('CAP_RES', cap, 5);
     fillBoxes('CAP_DOM', cap, 5);
   } else {
