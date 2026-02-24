@@ -15,6 +15,7 @@ import { Fieldset } from 'primereact/fieldset';
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import CodiceFiscale from "codice-fiscale-js";
+import { Donor } from "../../../../shared/models/donor";
 
 
 const exclusionPdf = "https://lineeguida.avis.it/wp-content/uploads/2025/01/Approfondimento-4.-Criteri-di-esclusione-temporanea-e-permanente-dalla-donazione.pdf";
@@ -27,7 +28,6 @@ const transfusionCenters = [
 ];
 
 
-import { Donor } from "../../../../shared/models/donor";
 
 interface FormState extends Donor {
   age: number | null;
