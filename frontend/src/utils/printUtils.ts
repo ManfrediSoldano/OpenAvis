@@ -1,5 +1,7 @@
 
 import { Donor } from '../../../shared/models/donor';
+import { searchComuni } from 'italian-locations';
+
 
 const LOGO_URL = "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png";
 
@@ -802,13 +804,38 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   replacements['{{CONS_G_YES}}'] = "";
   replacements['{{CONS_G_NO}}'] = "";
 
-  // Empty some other cell blocks
-  ['ISTAT_COM', 'ISTAT_RES'].forEach(prefix => {
-    for (let i = 1; i <= 6; i++) replacements[`{{${prefix}_${i}}}`] = "";
-  });
-  ['CAP_RES', 'CAP_DOM'].forEach(prefix => {
-    for (let i = 1; i <= 5; i++) replacements[`{{${prefix}_${i}}}`] = "";
-  });
+  // Automatic ISTAT and CAP population
+  const fillBoxes = (prefix: string, value: string, length: number) => {
+    const val = (value || "").replace(/\s/g, '');
+    for (let i = 1; i <= length; i++) {
+      replacements[`{{${prefix}_${i}}}`] = val[i - 1] || '';
+    }
+  };
+
+  // Birth Town ISTAT
+  const birthTownData = donor.birthPlace ? searchComuni(donor.birthPlace) : [];
+  if (birthTownData.length > 0) {
+    fillBoxes('ISTAT_COM', birthTownData[0].codiceIstat, 6);
+  } else {
+    for (let i = 1; i <= 6; i++) replacements[`{{ISTAT_COM_${i}}}`] = "";
+  }
+
+  // Residence Town ISTAT
+  const resTownData = donor.town ? searchComuni(donor.town) : [];
+  if (resTownData.length > 0) {
+    fillBoxes('ISTAT_RES', resTownData[0].codiceIstat, 6);
+    // Fill CAP if not already present or as default
+    const cap = resTownData[0].cap[0] || "";
+    fillBoxes('CAP_RES', cap, 5);
+    fillBoxes('CAP_DOM', cap, 5);
+  } else {
+    for (let i = 1; i <= 6; i++) replacements[`{{ISTAT_RES_${i}}}`] = "";
+    for (let i = 1; i <= 5; i++) {
+      replacements[`{{CAP_RES_${i}}}`] = "";
+      replacements[`{{CAP_DOM_${i}}}`] = "";
+    }
+  }
+
 
   // Actually replace in HTML
   Object.entries(replacements).forEach(([key, value]) => {

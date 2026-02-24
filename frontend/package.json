@@ -8,6 +8,7 @@
     "codice-fiscale-js": "^2.3.23",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
+    "italian-locations": "^1.2.1",
     "motion": "^12.23.12",
     "primeicons": "^7.0.0",
     "primereact": "^10.9.7",
