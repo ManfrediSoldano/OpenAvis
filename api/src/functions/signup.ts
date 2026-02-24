@@ -1,6 +1,7 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DatabaseService } from "../services/database";
 import { EmailService } from "../services/email";
+import { Donor } from "../../../shared/models/donor";
 
 /**
  * POST /api/signup

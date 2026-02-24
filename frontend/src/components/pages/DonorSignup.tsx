@@ -27,27 +27,15 @@ const transfusionCenters = [
 ];
 
 
-interface FormState {
+import { Donor } from "../../../../shared/models/donor";
+
+interface FormState extends Donor {
   age: number | null;
   weight: number | null;
   noPermanentExclusion: boolean;
   donateInMerate: boolean | null;
   transfusionCenter: string;
-  firstName: string;
-  lastName: string;
-  gender: string;
-  birthDate: Date | null;
-  birthPlace: string;
-  taxCode: string;
-  address: string;
-  town: string;
-  phone: string;
-  email: string;
-  education: string;
-  donationPreferences: string;
-  profession: string;
   nonProfessionalStatus: string;
-  otherAssociations: string;
 }
 
 
@@ -186,14 +174,15 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
   };
 
   const validateTaxCode = () => {
+    if (!form.taxCode || !form.firstName || !form.lastName || !form.birthPlace) return "Dati mancanti";
     const cfStr = form.taxCode.trim().toUpperCase();
     if (!cfStr) return "Codice fiscale obbligatorio";
     if (cfStr.length !== 16) return "Il codice fiscale deve essere di 16 caratteri";
 
     try {
       const g = form.gender === "male" ? "M" : "F";
-      const bDate = form.birthDate;
-      if (!bDate) return "Data di nascita non valida";
+      const bDate = form.birthDate instanceof Date ? form.birthDate : (form.birthDate ? new Date(form.birthDate) : null);
+      if (!bDate || isNaN(bDate.getTime())) return "Data di nascita non valida";
 
       const cf = new CodiceFiscale({
         name: form.firstName,
@@ -315,7 +304,7 @@ const Step3: React.FC<StepProps> = ({ form, setForm, setStep }) => {
           <span>
             <FloatLabel>
               <InputWithIcon icon="pi pi-calendar">
-                <Calendar value={form.birthDate} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} className={(isInvalid(form.birthDate) || !!birthDateError) ? 'p-invalid' : ''} readOnlyInput={false} mask="99/99/9999" />
+                <Calendar value={form.birthDate instanceof Date ? form.birthDate : (form.birthDate ? new Date(form.birthDate) : null)} onChange={e => setForm(f => ({ ...f, birthDate: e.value as Date }))} dateFormat="dd/mm/yy" showIcon showButtonBar maxDate={new Date()} className={(isInvalid(form.birthDate) || !!birthDateError) ? 'p-invalid' : ''} readOnlyInput={false} mask="99/99/9999" />
               </InputWithIcon>
               <label>Data di nascita*</label>
             </FloatLabel>
@@ -582,7 +571,7 @@ const DonorSignup: React.FC = () => {
     firstName: "",
     lastName: "",
     gender: "",
-    birthDate: null,
+    birthDate: undefined,
     birthPlace: "",
     taxCode: "",
     address: "",

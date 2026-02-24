@@ -34,8 +34,15 @@ export class DatabaseService {
 
         if (donorData.email) donorData.email = donorData.email.toLowerCase();
 
-        // Add timestamp
-        donorData.createdAt = new Date().toISOString();
+        // Generate alphanumeric ID if not exists
+        if (!donorData.id) {
+            donorData.id = crypto.randomUUID();
+        }
+
+        // Add timestamp if missing
+        if (!donorData.createdAt) {
+            donorData.createdAt = new Date().toISOString();
+        }
 
         // Upsert
         const { resource: createdItem } = await container.items.upsert(donorData);
@@ -51,11 +58,15 @@ export class DatabaseService {
         const container = database.container(this.donorsContainerId);
 
         try {
-            const { resource } = await container.item(email.toLowerCase(), email.toLowerCase()).read();
-            return resource;
+            const querySpec = {
+                query: "SELECT * FROM c WHERE c.email = @email",
+                parameters: [{ name: "@email", value: email.toLowerCase() }]
+            };
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources.length > 0 ? resources[0] : null;
         } catch (error: any) {
-            if (error.code === 404) return null;
-            throw error;
+            console.error(`Error retrieving donor ${email}:`, error);
+            return null;
         }
     }
 

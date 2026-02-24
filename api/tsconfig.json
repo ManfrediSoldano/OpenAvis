@@ -3,7 +3,6 @@
         "module": "commonjs",
         "target": "ES2022",
         "outDir": "dist",
-        "rootDir": ".",
         "sourceMap": true,
         "strict": false,
         "esModuleInterop": true,
@@ -12,7 +11,8 @@
         "resolveJsonModule": true
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "../shared/**/*"
     ],
     "exclude": [
         "node_modules",

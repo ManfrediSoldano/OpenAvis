@@ -152,4 +152,51 @@ export class EmailService {
         const poller = await this.client.beginSend(emailMessage);
         return await poller.pollUntilDone();
     }
+
+    async sendConvocation(toEmail: string, firstName: string, convocationDate: string) {
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
+        const formattedDate = new Date(convocationDate).toLocaleString('it-IT', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        if (!isProduction) {
+            console.log(`[DEV MODE] Convocation Email Simulation -> To: ${toEmail}, Date: ${formattedDate}`);
+            return;
+        }
+
+        if (!this.client.beginSend) throw new Error("Email Client not initialized (Missing ACS_CONNECTION_STRING)");
+
+        const htmlContent = `
+            <p>Ciao ${firstName},</p>
+            <p>Ti confermiamo la data della tua convocazione per l'aspirante donazione presso la sede AVIS di Merate.</p>
+            <div style="background-color: #fff4e5; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0; font-size: 18px;"><strong>Data e Ora:</strong></p>
+                <p style="margin: 10px 0 0; font-size: 20px; color: #e65100;">${formattedDate}</p>
+            </div>
+            <p>Ti aspettiamo presso la nostra sede in Piazza Don Giovanni Minzoni, 5, Merate.</p>
+            <p>Ricordati di portare con te un documento d'identità valido e la tessera sanitaria.</p>
+            <br/>
+            <p>Cordiali saluti,<br/>AVIS Comunale di Merate</p>
+        `;
+
+        const emailMessage = {
+            senderAddress: this.senderAddress,
+            content: {
+                subject: "Convocazione Aspirante Donatore - AVIS Merate",
+                plainText: `Ti confermiamo la tua convocazione per il giorno ${formattedDate} presso AVIS Merate.`,
+                html: this.getTemplate("Convocazione Aspirante Donatore", htmlContent)
+            },
+            recipients: {
+                to: [{ address: toEmail }]
+            }
+        };
+
+        const poller = await this.client.beginSend(emailMessage);
+        return await poller.pollUntilDone();
+    }
 }
