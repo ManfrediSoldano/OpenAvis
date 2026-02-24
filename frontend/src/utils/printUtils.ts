@@ -173,13 +173,12 @@ const TEMPLATE = `
       padding: 1px 4px;
       font-weight: bold;
       font-size: 10.5px;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-width: 18px;
       text-align: center;
-    }
-    .gender-box.selected {
-        background-color: var(--avis-blue);
-        color: white;
+      background: #fff;
     }
 
     /* ── Column Tables ──────────────────────────── */
@@ -237,10 +236,11 @@ const TEMPLATE = `
       font-weight: bold;
       min-width: 12mm;
       text-align: center;
-    }
-    .si-no-btn.selected {
-        background-color: var(--avis-blue);
-        color: white;
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2mm;
     }
 
     /* ── Chiede section ──────────────────────────────── */
@@ -248,9 +248,19 @@ const TEMPLATE = `
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
-    .sign-row { display: flex; justify-content: space-between; margin-top: 3mm; }
+    .sign-row { display: flex; justify-content: space-between; margin-top: 3mm; align-items: flex-start; }
     .sign-block { width: 46%; }
-    .sign-line { border-bottom: 1px solid var(--avis-blue); margin-top: 5mm; }
+    .sign-line { 
+      border-bottom: 1px solid var(--avis-blue); 
+      margin-top: 4mm; 
+      height: 20px; 
+      display: flex; 
+      align-items: flex-end; 
+      padding-bottom: 4.5px;
+      font-size: 8.5px; 
+      color: #333; 
+      font-style: italic;
+    }
 
     /* ── Footer ──────────────────────────────────────── */
     .footer-sede {
@@ -311,9 +321,9 @@ const TEMPLATE = `
         <span class="form-label">IL/LA SOTTOSCRITTO/A</span>
         <div class="field-full">{{FULL_NAME}}</div>
       </div>
-      <div style="display:flex; gap:3px; margin-bottom:4px;">
-        <span class="gender-box {{MALE_SELECTED}}">M</span>
-        <span class="gender-box {{FEMALE_SELECTED}}">F</span>
+      <div style="display:flex; gap:3mm; margin-bottom:4px; align-items:center;">
+        <div class="col-item" style="margin:0;"><span class="sq">{{CHECK_MALE}}</span> M</div>
+        <div class="col-item" style="margin:0;"><span class="sq">{{CHECK_FEMALE}}</span> F</div>
       </div>
     </div>
 
@@ -335,7 +345,7 @@ const TEMPLATE = `
 
     <!-- CODICE ISTAT comune -->
     <div style="margin-bottom:2mm; display:flex; justify-content:space-between; align-items:center;">
-      <span class="form-label red" style="margin:0;">CODICE ISTAT** (**Riservato)</span>
+      <span class="form-label red" style="margin:0;">CODICE ISTAT** del comune o dello stato estero (**Riservato Avis)</span>
       <div class="cell-row">
         <span class="cell">{{ISTAT_COM_1}}</span><span class="cell">{{ISTAT_COM_2}}</span>
         <span class="cell">{{ISTAT_COM_3}}</span><span class="cell">{{ISTAT_COM_4}}</span>
@@ -349,9 +359,8 @@ const TEMPLATE = `
       <div style="display:flex; gap:1.5mm;">
         <div class="cell-row"><span class="cell">{{FC_01}}</span><span class="cell">{{FC_02}}</span><span class="cell">{{FC_03}}</span></div>
         <div class="cell-row"><span class="cell">{{FC_04}}</span><span class="cell">{{FC_05}}</span><span class="cell">{{FC_06}}</span></div>
-        <div class="cell-row"><span class="cell">{{FC_07}}</span><span class="cell">{{FC_08}}</span><span class="cell">{{FC_09}}</span><span class="cell">{{FC_10}}</span></div>
-        <div class="cell-row"><span class="cell">{{FC_11}}</span><span class="cell">{{FC_12}}</span><span class="cell">{{FC_13}}</span></div>
-        <div class="cell-row"><span class="cell">{{FC_14}}</span><span class="cell">{{FC_15}}</span><span class="cell">{{FC_16}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_07}}</span><span class="cell">{{FC_08}}</span><span class="cell">{{FC_09}}</span><span class="cell">{{FC_10}}</span><span class="cell">{{FC_11}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_12}}</span><span class="cell">{{FC_13}}</span><span class="cell">{{FC_14}}</span><span class="cell">{{FC_15}}</span><span class="cell">{{FC_16}}</span></div>
       </div>
     </div>
 
@@ -484,8 +493,8 @@ const TEMPLATE = `
       <div class="two-col-box">
         <div class="col-box-title">Iscrizione ad altre associazioni di volontariato<br/>(Facoltativo)</div>
         <div class="si-no-row">
-          <span class="si-no-btn {{OTHER_ASSOC_SI}}">SI</span>
-          <span class="si-no-btn {{OTHER_ASSOC_NO}}">NO</span>
+          <div class="col-item" style="margin:0;"><span class="sq">{{CHECK_OTHER_ASSOC_SI}}</span> SI</div>
+          <div class="col-item" style="margin:0;"><span class="sq">{{CHECK_OTHER_ASSOC_NO}}</span> NO</div>
           <span style="font-size:8.5px;">Se SI, quale</span>
           <span class="field" style="flex:1; min-width:20mm;">{{OTHER_ASSOCIATION}}</span>
         </div>
@@ -507,11 +516,11 @@ const TEMPLATE = `
     <div class="sign-row">
       <div class="sign-block">
         <div style="font-size:8.5px; text-decoration:underline; font-weight:bold;">Data</div>
-        <div class="sign-line" style="font-size:8.5px; color:#444; font-style:italic; padding-bottom:1px;">{{DATE}}</div>
+        <div class="sign-line">{{DATE}}</div>
       </div>
       <div class="sign-block" style="text-align:right;">
         <div style="font-size:8.5px; text-decoration:underline; font-weight:bold;">Firma</div>
-        <div class="sign-line" style="font-size:8.5px; color:#444; font-style:italic; padding-bottom:1px;">{{SIGNATURE}}</div>
+        <div class="sign-line" style="justify-content: flex-end;">{{SIGNATURE}}</div>
       </div>
     </div>
 
@@ -708,14 +717,14 @@ const TEMPLATE = `
   <!-- Luogo/data + firma -->
   <div style="display:flex; justify-content:space-between; margin-top:10mm;">
     <div style="width:44%;">
-      <div style="font-size:9px; font-weight:bold; color:var(--avis-blue);">Luogo e data</div>
-      <div style="border-bottom:1px solid var(--avis-blue); margin-top:8mm; display:flex; gap:4mm; font-size:8.5px; color:#444; font-style:italic; padding-bottom:1px;">
+      <div style="font-size:9.5px; font-weight:bold; color:var(--avis-blue); text-decoration: underline;">Luogo e data</div>
+      <div class="sign-line" style="gap:2mm;">
         <span>{{PLACE}}</span><span>,</span><span>{{DATE}}</span>
       </div>
     </div>
     <div style="width:44%;">
-      <div style="font-size:9px; font-weight:bold; color:var(--avis-blue);">Firma dell'interessato</div>
-      <div style="border-bottom:1px solid var(--avis-blue); margin-top:8mm; font-size:8.5px; color:#444; font-style:italic; padding-bottom:1px;">{{SIGNATURE}}</div>
+      <div style="font-size:9.5px; font-weight:bold; color:var(--avis-blue); text-align:right; text-decoration: underline;">Firma dell'interessato</div>
+      <div class="sign-line" style="justify-content: flex-end;">{{SIGNATURE}}</div>
     </div>
   </div>
 
@@ -758,10 +767,10 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     '{{P1_HIDDEN}}': moduleType === 'privacy' ? 'no-print' : '',
     '{{P2_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
     '{{P3_HIDDEN}}': moduleType === 'iscrizione' ? 'no-print' : '',
-    '{{MALE_SELECTED}}': donor.gender === 'male' ? 'selected' : '',
-    '{{FEMALE_SELECTED}}': donor.gender === 'female' ? 'selected' : '',
-    '{{OTHER_ASSOC_SI}}': donor.otherAssociations && donor.otherAssociations.trim() !== '' ? 'selected' : '',
-    '{{OTHER_ASSOC_NO}}': (donor.otherAssociations && (donor.otherAssociations.trim().toLowerCase() === 'no' || donor.otherAssociations.trim().toLowerCase() === 'nessuna')) ? 'selected' : '',
+    '{{CHECK_MALE}}': donor.gender === 'male' ? 'X' : '',
+    '{{CHECK_FEMALE}}': donor.gender === 'female' ? 'X' : '',
+    '{{CHECK_OTHER_ASSOC_SI}}': donor.otherAssociations && donor.otherAssociations.trim() !== '' ? 'X' : '',
+    '{{CHECK_OTHER_ASSOC_NO}}': (donor.otherAssociations && (donor.otherAssociations.trim().toLowerCase() === 'no' || donor.otherAssociations.trim().toLowerCase() === 'nessuna')) ? 'X' : '',
   };
 
   // Tax Code cells

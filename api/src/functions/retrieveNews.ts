@@ -24,6 +24,9 @@ export async function retrieveNews(request: HttpRequest, context: InvocationCont
             };
         }
 
+        // Increment view count asynchronously (don't block the response)
+        dbService.incrementNewsView(id).catch(err => context.log("Error incrementing view in background:", err));
+
         return {
             status: 200,
             jsonBody: newsItem

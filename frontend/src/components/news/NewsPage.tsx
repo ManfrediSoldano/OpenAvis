@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { retrieveNews, NewsDetail } from '../../services/newsService';
+import { retrieveNews, NewsDetail, likeNews } from '../../services/newsService';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import './NewsPage.css';
@@ -14,6 +14,8 @@ const NewsPage: React.FC = () => {
     const navigate = useNavigate();
     const [newsDetail, setNewsDetail] = useState<NewsDetail | null>(null);
     const [loading, setLoading] = useState(true);
+    const [likes, setLikes] = useState(0);
+    const [isLiked, setIsLiked] = useState(false);
 
     useEffect(() => {
         const fetchNewsDetail = async () => {
@@ -21,17 +23,57 @@ const NewsPage: React.FC = () => {
             try {
                 setLoading(true);
                 const data = await retrieveNews(id);
-                setNewsDetail(data);
+                if (data) {
+                    setNewsDetail(data);
+                    setLikes(data.likes || 0);
+                }
             } catch (error) {
                 console.error("Error fetching news detail:", error);
             } finally {
-                // Simulate a slight delay for better UX if needed, but not required by user
                 setLoading(false);
             }
         };
 
         fetchNewsDetail();
     }, [id]);
+
+    const handleLike = async () => {
+        if (!id || isLiked) return;
+        try {
+            const updated = await likeNews(id);
+            if (updated) {
+                setLikes(updated.likes || (likes + 1));
+                setIsLiked(true);
+            }
+        } catch (error) {
+            console.error("Error liking news:", error);
+        }
+    };
+
+    const handleShare = (platform: string) => {
+        const url = window.location.href;
+        const text = newsDetail?.title || "Leggi questa notizia su OpenAvis";
+        let shareUrl = "";
+
+        switch (platform) {
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                break;
+            case 'whatsapp':
+                shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`;
+                break;
+            case 'linkedin':
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                break;
+        }
+
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'noopener,noreferrer');
+        }
+    };
 
     if (loading) {
         return (
@@ -51,10 +93,6 @@ const NewsPage: React.FC = () => {
                     <Skeleton width="90%" height="1.2rem" className="mb-2" />
                     <Skeleton width="100%" height="1.2rem" className="mb-2" />
                     <Skeleton width="80%" height="1.2rem" className="mb-4" />
-                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
-                    <Skeleton width="95%" height="1.2rem" className="mb-2" />
-                    <Skeleton width="100%" height="1.2rem" className="mb-2" />
-                    <Skeleton width="85%" height="1.2rem" />
                 </div>
             </div>
         );
@@ -84,22 +122,13 @@ const NewsPage: React.FC = () => {
                     <h2 className="notfound-subtitle">Notizia non trovata</h2>
                     <p className="notfound-description">
                         Spiacenti, la notizia che stai cercando non esiste o è stata rimossa.
-                        Torna all'elenco delle notizie per scoprire le ultime novità di AVIS.
                     </p>
-                    <div className="flex flex-column gap-2">
-                        <Button
-                            label="Vai alle Notizie"
-                            icon="pi pi-list"
-                            className="home-button mb-2"
-                            onClick={() => navigate("/news")}
-                        />
-                        <Button
-                            label="Torna alla Home"
-                            icon="pi pi-home"
-                            onClick={() => navigate("/")}
-                            text
-                        />
-                    </div>
+                    <Button
+                        label="Vai alle Notizie"
+                        icon="pi pi-list"
+                        className="home-button mb-2"
+                        onClick={() => navigate("/news")}
+                    />
                 </motion.div>
             </div>
         );
@@ -129,6 +158,26 @@ const NewsPage: React.FC = () => {
                 </div>
             </header>
 
+            <div className="news-interaction-bar mt-4 mb-4">
+                <div className="flex align-items-center gap-3">
+                    <Button
+                        icon={isLiked ? "pi pi-heart-fill" : "pi pi-heart"}
+                        label={likes.toString()}
+                        className={`p-button-rounded ${isLiked ? 'p-button-danger' : 'p-button-outlined p-button-secondary'} like-button`}
+                        onClick={handleLike}
+                        disabled={isLiked}
+                        tooltip="Mi piace"
+                        tooltipOptions={{ position: 'bottom' }}
+                    />
+                    <div className="sharing-options flex gap-2">
+                        <Button icon="pi pi-facebook" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('facebook')} tooltip="Condividi su Facebook" />
+                        <Button icon="pi pi-twitter" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('twitter')} tooltip="Condividi su Twitter" />
+                        <Button icon="pi pi-whatsapp" className="p-button-rounded p-button-success p-button-text" onClick={() => handleShare('whatsapp')} tooltip="Condividi su WhatsApp" />
+                        <Button icon="pi pi-linkedin" className="p-button-rounded p-button-info p-button-text" onClick={() => handleShare('linkedin')} tooltip="Condividi su LinkedIn" />
+                    </div>
+                </div>
+            </div>
+
             <div className="news-content-markdown">
                 <ReactMarkdown>{newsDetail.contentMarkdown}</ReactMarkdown>
             </div>
@@ -156,7 +205,8 @@ const NewsPage: React.FC = () => {
 
 
             <div className="text-center mt-5">
-                <Button label="Torna alla Home" icon="pi pi-home" onClick={() => navigate('/')} text />
+                <Button label="Torna alle News" icon="pi pi-list" onClick={() => navigate('/news')} text />
+                <Button label="Home" icon="pi pi-home" onClick={() => navigate('/')} text />
             </div>
         </article>
     );

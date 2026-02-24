@@ -21,6 +21,8 @@ export interface NewsDetail {
         url: string;
     }[];
     date: string;
+    views?: number;
+    likes?: number;
 }
 
 
@@ -42,6 +44,16 @@ export const retrieveNews = async (id: string): Promise<NewsDetail | null> => {
     } catch (error) {
         if ((error as any).response?.status === 404) return null;
         console.error("Failed to retrieve news", error);
+        return null;
+    }
+};
+
+export const likeNews = async (id: string): Promise<NewsDetail | null> => {
+    try {
+        const response = await client.post(`/api/interactNews?id=${id}&action=like`);
+        return response.data as NewsDetail;
+    } catch (error) {
+        console.error("Failed to like news", error);
         return null;
     }
 };

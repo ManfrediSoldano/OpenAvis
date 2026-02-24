@@ -10,6 +10,7 @@ import './functions/verifyOtp';
 import './functions/signup';
 import './functions/getHighlights';
 import './functions/retrieveNews';
+import './functions/interactNews';
 import './functions/seedNews';
 import './functions/getDonors';
 import './functions/updateDonor';

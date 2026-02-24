@@ -15,4 +15,6 @@ export interface NewsItem {
     date: string;
     isHighlight: boolean;
     createdAt: string;
+    views?: number;
+    likes?: number;
 }

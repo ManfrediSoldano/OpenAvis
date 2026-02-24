@@ -223,4 +223,46 @@ export class DatabaseService {
         const { resource } = await container.items.upsert(newsItem);
         return resource;
     }
+
+    /**
+     * Increment views for a news item
+     */
+    async incrementNewsView(id: string) {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.newsContainerId);
+
+            // Increment views using patch
+            const { resource } = await container.item(id, id).patch([
+                { op: 'incr', path: '/views', value: 1 }
+            ]);
+            return resource;
+        } catch (error: any) {
+            // If field doesn't exist, patch incr might fail depending on version/settings
+            // Fallback to upsert if needed, but usually incr creates if null/undefined
+            console.error(`Error incrementing views for ${id}:`, error);
+            return null;
+        }
+    }
+
+    /**
+     * Increment likes for a news item
+     */
+    async incrementNewsLike(id: string) {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.newsContainerId);
+
+            // Increment likes using patch
+            const { resource } = await container.item(id, id).patch([
+                { op: 'incr', path: '/likes', value: 1 }
+            ]);
+            return resource;
+        } catch (error: any) {
+            console.error(`Error incrementing likes for ${id}:`, error);
+            return null;
+        }
+    }
 }
