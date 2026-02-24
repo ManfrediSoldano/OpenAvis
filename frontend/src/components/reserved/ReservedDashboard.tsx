@@ -306,7 +306,7 @@ const ReservedDashboard: React.FC = () => {
             <Toast ref={toast} position="top-right" />
             <header className="reserved-header">
                 <div className="header-left">
-                    <img src="/images/Logo_AVIS.svg" alt="Logo" className="reserved-logo" />
+                    <img src="/images/Logo_AVIS.png" alt="Logo" className="reserved-logo" />
                     <span className="area-title">Area Riservata OpenAvis</span>
                 </div>
                 <div className="header-right">

@@ -329,8 +329,8 @@ const TEMPLATE = `
     </div>
 
     <!-- CODICE ISTAT comune -->
-    <div style="margin-bottom:3mm; display:flex; justify-content:space-between; align-items:flex-end;">
-      <span class="form-label red" style="display:inline;">CODICE ISTAT** (**Riservato)</span>
+    <div style="margin-bottom:2mm; display:flex; justify-content:space-between; align-items:center;">
+      <span class="form-label red" style="margin:0;">CODICE ISTAT** (**Riservato)</span>
       <div class="cell-row">
         <span class="cell">{{ISTAT_COM_1}}</span><span class="cell">{{ISTAT_COM_2}}</span>
         <span class="cell">{{ISTAT_COM_3}}</span><span class="cell">{{ISTAT_COM_4}}</span>
@@ -339,17 +339,14 @@ const TEMPLATE = `
     </div>
 
     <!-- Codice Fiscale -->
-    <div style="margin-bottom:3mm;">
-      <span class="form-label">Codice Fiscale</span>
-      <div class="cell-row">
-        <span class="cell">{{FC_01}}</span><span class="cell">{{FC_02}}</span>
-        <span class="cell">{{FC_03}}</span><span class="cell">{{FC_04}}</span>
-        <span class="cell">{{FC_05}}</span><span class="cell">{{FC_06}}</span>
-        <span class="cell">{{FC_07}}</span><span class="cell">{{FC_08}}</span>
-        <span class="cell">{{FC_09}}</span><span class="cell">{{FC_10}}</span>
-        <span class="cell">{{FC_11}}</span><span class="cell">{{FC_12}}</span>
-        <span class="cell">{{FC_13}}</span><span class="cell">{{FC_14}}</span>
-        <span class="cell">{{FC_15}}</span><span class="cell">{{FC_16}}</span>
+    <div style="margin-bottom:2mm; display:flex; align-items:center; gap:2mm;">
+      <span class="form-label" style="margin:0; white-space:nowrap;">Codice Fiscale</span>
+      <div style="display:flex; gap:1.5mm;">
+        <div class="cell-row"><span class="cell">{{FC_01}}</span><span class="cell">{{FC_02}}</span><span class="cell">{{FC_03}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_04}}</span><span class="cell">{{FC_05}}</span><span class="cell">{{FC_06}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_07}}</span><span class="cell">{{FC_08}}</span><span class="cell">{{FC_09}}</span><span class="cell">{{FC_10}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_11}}</span><span class="cell">{{FC_12}}</span><span class="cell">{{FC_13}}</span></div>
+        <div class="cell-row"><span class="cell">{{FC_14}}</span><span class="cell">{{FC_15}}</span><span class="cell">{{FC_16}}</span></div>
       </div>
     </div>
 
@@ -366,13 +363,13 @@ const TEMPLATE = `
     </div>
 
     <!-- Città + CAP residenza / Città + CAP domicilio -->
-    <div class="form-row" style="align-items:flex-end; flex-wrap:nowrap;">
+    <div class="form-row" style="align-items:flex-end;">
       <div style="flex:2;">
         <span class="form-label">Città</span>
         <div class="field-full">{{RESIDENCE_CITY}}</div>
       </div>
-      <div style="flex:none; margin-bottom: 4px;">
-        <span class="form-label">CAP</span>
+      <div style="flex:none; margin-bottom: 3.5px; display:flex; align-items:center; gap:2mm;">
+        <span class="form-label" style="margin:0;">CAP</span>
         <div class="cell-row">
           <span class="cell">{{CAP_RES_1}}</span><span class="cell">{{CAP_RES_2}}</span>
           <span class="cell">{{CAP_RES_3}}</span><span class="cell">{{CAP_RES_4}}</span>
@@ -383,8 +380,8 @@ const TEMPLATE = `
         <span class="form-label">Città</span>
         <div class="field-full">{{DOMICILE_CITY}}</div>
       </div>
-      <div style="flex:none; margin-bottom: 4px;">
-        <span class="form-label">CAP</span>
+      <div style="flex:none; margin-bottom: 3.5px; display:flex; align-items:center; gap:2mm;">
+        <span class="form-label" style="margin:0;">CAP</span>
         <div class="cell-row">
           <span class="cell">{{CAP_DOM_1}}</span><span class="cell">{{CAP_DOM_2}}</span>
           <span class="cell">{{CAP_DOM_3}}</span><span class="cell">{{CAP_DOM_4}}</span>
@@ -394,8 +391,8 @@ const TEMPLATE = `
     </div>
 
     <!-- CODICE ISTAT città di residenza -->
-    <div style="margin-bottom:3mm; display:flex; justify-content:space-between; align-items:flex-end;">
-      <span class="form-label red" style="display:inline;">CODICE ISTAT** per la città di residenza (**Riservato Avis)</span>
+    <div style="margin-bottom:2mm; display:flex; justify-content:space-between; align-items:center;">
+      <span class="form-label red" style="margin:0;">CODICE ISTAT** per la città di residenza (**Riservato Avis)</span>
       <div class="cell-row">
         <span class="cell">{{ISTAT_RES_1}}</span><span class="cell">{{ISTAT_RES_2}}</span>
         <span class="cell">{{ISTAT_RES_3}}</span><span class="cell">{{ISTAT_RES_4}}</span>
@@ -631,7 +628,7 @@ const TEMPLATE = `
   </div>
 
   <!-- Personal fields -->
-  <div style="font-size:8.5px; line-height:2.1;">
+  <div style="font-size:9.5px; line-height:2.4; margin-top:5mm;">
     <span>Io sottoscritto/a</span>
     <span class="field" style="min-width:55mm;">{{SUBSCRIBER_FULL_NAME}}</span>
     <span>&nbsp;, nato/a a</span>
@@ -749,7 +746,7 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
     '{{MOBILE_PHONE}}': donor.phone || '',
     '{{HEALTH_CARD}}': '',
     '{{WORKPLACE}}': '',
-    '{{COLLECTION_POINT}}': donor.localAvis || 'Merate',
+    '{{COLLECTION_POINT}}': 'Ospedale Mandic Merate',
     '{{OTHER_ASSOCIATION}}': donor.otherAssociations || '',
     '{{DATE}}': formatDate(new Date()),
     '{{SIGNATURE}}': '',
@@ -793,8 +790,8 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy') 
   replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
   replacements['{{PLACE}}'] = "Merate";
 
-  // Consents (Only check strictly if necessary, otherwise leave for manual signature)
-  replacements['{{CONS_ABC_YES}}'] = "✓";
+  // Consents (Leave for manual signature)
+  replacements['{{CONS_ABC_YES}}'] = "";
   replacements['{{CONS_ABC_NO}}'] = "";
   replacements['{{CONS_D_YES}}'] = "";
   replacements['{{CONS_D_NO}}'] = "";
