@@ -61,9 +61,53 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
   text-align: left;
+}
+
+.donor-step-form-row>span {
+  min-width: 350px;
+}
+
+/* Make inputs comfortable but not overly tall */
+.donor-signup-container .p-inputtext,
+.donor-signup-container .p-dropdown,
+.donor-signup-container .p-calendar,
+.donor-signup-container .p-inputnumber input {
+  font-size: 1.15rem !important;
+  padding: 0.65rem 1rem 0.65rem 1rem !important;
+  border-radius: 10px !important;
+  width: 100% !important;
+}
+
+.donor-signup-container .p-icon-field .p-inputtext {
+  padding-left: 2.8rem !important;
+}
+
+.donor-signup-container .p-inputicon {
+  font-size: 1.1rem;
+  left: 1rem !important;
+  margin-top: -0.55rem !important;
+}
+
+/* Adjust FloatLabel for new input height */
+.donor-signup-container .p-float-label label {
+  font-size: 1.05rem;
+  left: 1rem;
+}
+
+.donor-signup-container .p-float-label>.p-icon-field+label {
+  left: 2.8rem;
+}
+
+.donor-signup-container .p-float-label input:focus~label,
+.donor-signup-container .p-float-label input.p-filled~label,
+.donor-signup-container .p-float-label .p-inputwrapper-focus~label,
+.donor-signup-container .p-float-label .p-inputwrapper-filled~label {
+  transform: translateY(-120%) scale(0.85);
+  background: white;
+  padding: 0 5px;
 }
 
 /* Fix for floating label overlap with IconField */

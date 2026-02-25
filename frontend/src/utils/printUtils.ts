@@ -82,7 +82,7 @@ const TEMPLATE = `
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 14.5px;
+      font-size: 13.5px;
       color: var(--avis-blue);
       background: #fff;
       -webkit-print-color-adjust: exact;
@@ -93,7 +93,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 6mm 7mm;
+      padding: 3mm 7mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -101,7 +101,7 @@ const TEMPLATE = `
 
     /* ── Logo ────────────────────────────────────────── */
     .logo-wrap {
-      margin-bottom: 1mm;
+      margin-bottom: 0.5mm;
       line-height: 0;
     }
     .logo-wrap img {
@@ -117,21 +117,21 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 2px; line-height: 1.3; font-size: 13.5px; text-align: justify; }
+    p { margin-bottom: 2px; line-height: 1.3; font-size: 12.5px; text-align: justify; }
 
     .main-title {
-      font-size: 16px;
+      font-size: 14.5px;
       font-weight: bold;
       color: var(--avis-blue);
       text-align: center;
       text-decoration: underline;
-      margin: 4px 0 5px;
+      margin: 2px 0 3px;
     }
     .section-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       color: var(--avis-blue);
-      margin: 4px 0 2px;
+      margin: 2px 0 1px;
     }
 
     /* ── Checkbox square ─────────────────────────────── */
@@ -156,7 +156,7 @@ const TEMPLATE = `
       min-width: 20mm;
       height: 18px; /* higher to allow lifting text */
       vertical-align: bottom;
-      font-size: 14px;
+      font-size: 13.5px;
       color: #333;
       font-style: italic;
       padding-left: 3px;
@@ -169,7 +169,7 @@ const TEMPLATE = `
       width: 100%;
       min-height: 18px;
       margin: 1px 0 3px;
-      font-size: 14px;
+      font-size: 13.5px;
       color: #333;
       font-style: italic;
       overflow: hidden;
@@ -210,11 +210,11 @@ const TEMPLATE = `
       color: var(--avis-red);
       letter-spacing: 1px;
       border: 1.5px solid var(--avis-blue); /* full border */
-      padding: 1.5mm 0;
-      margin-bottom: 2mm;
+      padding: 1mm 0;
+      margin-bottom: 1mm;
     }
     .form-label {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: bold;
       color: var(--avis-blue);
       margin-bottom: 1px;
@@ -224,7 +224,7 @@ const TEMPLATE = `
     .form-row {
       display: flex;
       gap: 3mm;
-      margin-bottom: 1.5mm;
+      margin-bottom: 1mm;
       align-items: flex-end;
     }
     .gender-box {
@@ -244,7 +244,7 @@ const TEMPLATE = `
     .three-cols {
       display: flex;
       border: 1px solid var(--avis-blue);
-      margin-bottom: 2mm;
+      margin-bottom: 1mm;
     }
     .col-box {
       flex: 1;
@@ -273,7 +273,7 @@ const TEMPLATE = `
     .two-cols {
       display: flex;
       border: 1px solid var(--avis-blue);
-      margin-bottom: 2mm;
+      margin-bottom: 1mm;
     }
     .two-col-box {
       flex: 1;
@@ -303,11 +303,11 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 13.5px; line-height: 1.4; margin-bottom: 1.5mm; }
+    .chiede-section { font-size: 12.5px; line-height: 1.35; margin-bottom: 1mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
-    .sign-row { display: flex; justify-content: space-between; margin-top: 3mm; align-items: flex-start; }
+    .sign-row { display: flex; justify-content: space-between; margin-top: 1.5mm; align-items: flex-start; }
     .sign-block { width: 46%; }
     .sign-line { 
       border-bottom: 1px solid var(--avis-blue); 
@@ -328,7 +328,7 @@ const TEMPLATE = `
       color: var(--avis-blue);
       border-top: 1px solid var(--avis-blue);
       padding-top: 1.5mm;
-      margin-top: 2mm;
+      margin-top: 1mm;
     }
 
     /* ── Privacy consent section ─────────────────────── */
@@ -355,7 +355,7 @@ const TEMPLATE = `
 
     @media print {
       body { background: #fff; }
-      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 6mm 7mm; border: none; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 3mm 7mm; border: none; }
       .no-print { display: none; }
     }
   </style>
@@ -892,7 +892,7 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' |
   replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = ""; // Keep empty as requested for new registrations
   replacements['{{SUBSCRIBER_PHONE}}'] = donor.phone || '';
   replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
-  replacements['{{SUBSCRIBER_PLACE}}'] = avis.city;
+  replacements['{{SUBSCRIBER_PLACE}}'] = "Merate";
   replacements['{{SUBSCRIBER_DATE}}'] = formatDate(new Date());
 
   // Consents (Leave for manual signature)

@@ -124,7 +124,6 @@ const Step1: React.FC<StepProps> = ({ form, setForm, setStep }) => (
             max={70}
             showButtons
             suffix=" anni"
-            inputStyle={{ width: 250 }}
           />
         </FloatLabel>
       </span>
@@ -139,7 +138,6 @@ const Step1: React.FC<StepProps> = ({ form, setForm, setStep }) => (
             max={200}
             showButtons
             suffix=" kg"
-            inputStyle={{ width: 250 }}
           />
         </FloatLabel>
       </span>
