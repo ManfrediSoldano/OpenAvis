@@ -82,7 +82,7 @@ const TEMPLATE = `
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 13.5px;
+      font-size: 14.5px;
       color: var(--avis-blue);
       background: #fff;
       -webkit-print-color-adjust: exact;
@@ -93,7 +93,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 2mm 2mm 1mm 2mm;
+      padding: 6mm 7mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -117,7 +117,7 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 2px; line-height: 1.35; font-size: 13px; text-align: justify; }
+    p { margin-bottom: 2px; line-height: 1.3; font-size: 13.5px; text-align: justify; }
 
     .main-title {
       font-size: 16px;
@@ -128,7 +128,7 @@ const TEMPLATE = `
       margin: 4px 0 5px;
     }
     .section-title {
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: bold;
       color: var(--avis-blue);
       margin: 4px 0 2px;
@@ -156,7 +156,7 @@ const TEMPLATE = `
       min-width: 20mm;
       height: 18px; /* higher to allow lifting text */
       vertical-align: bottom;
-      font-size: 13.5px;
+      font-size: 14px;
       color: #333;
       font-style: italic;
       padding-left: 3px;
@@ -169,7 +169,7 @@ const TEMPLATE = `
       width: 100%;
       min-height: 18px;
       margin: 1px 0 3px;
-      font-size: 13.5px;
+      font-size: 14px;
       color: #333;
       font-style: italic;
       overflow: hidden;
@@ -214,7 +214,7 @@ const TEMPLATE = `
       margin-bottom: 2mm;
     }
     .form-label {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: bold;
       color: var(--avis-blue);
       margin-bottom: 1px;
@@ -254,7 +254,7 @@ const TEMPLATE = `
     .col-box:last-child { border-right: none; }
     .col-box-title {
       font-weight: bold;
-      font-size: 12.5px;
+      font-size: 13px;
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
       margin-bottom: 4px;
@@ -265,7 +265,7 @@ const TEMPLATE = `
       align-items: center;
       gap: 3px;
       margin: 2.5px 0;
-      font-size: 12.5px;
+      font-size: 13px;
     }
     .col-inner { display: flex; gap: 4mm; }
 
@@ -303,7 +303,7 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 13px; line-height: 1.5; margin-bottom: 2mm; }
+    .chiede-section { font-size: 13.5px; line-height: 1.4; margin-bottom: 1.5mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
@@ -355,7 +355,7 @@ const TEMPLATE = `
 
     @media print {
       body { background: #fff; }
-      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 0; border: none; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 6mm 7mm; border: none; }
       .no-print { display: none; }
     }
   </style>
