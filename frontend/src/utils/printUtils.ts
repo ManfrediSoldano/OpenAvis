@@ -23,7 +23,7 @@ const TEMPLATE = `
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 11.5px;
+      font-size: 12.5px;
       color: var(--avis-blue);
       background: #fff;
       -webkit-print-color-adjust: exact;
@@ -34,7 +34,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 6mm 8mm 6mm 8mm;
+      padding: 4mm 4mm 4mm 4mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -58,10 +58,10 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 3px; line-height: 1.4; font-size: 11.5px; text-align: justify; }
+    p { margin-bottom: 3px; line-height: 1.4; font-size: 12px; text-align: justify; }
 
     .main-title {
-      font-size: 13.5px;
+      font-size: 14.5px;
       font-weight: bold;
       color: var(--avis-blue);
       text-align: center;
@@ -69,7 +69,7 @@ const TEMPLATE = `
       margin: 4px 0 5px;
     }
     .section-title {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: bold;
       color: var(--avis-blue);
       margin: 4px 0 2px;
@@ -97,7 +97,7 @@ const TEMPLATE = `
       min-width: 20mm;
       height: 18px; /* higher to allow lifting text */
       vertical-align: bottom;
-      font-size: 11px;
+      font-size: 12px;
       color: #333;
       font-style: italic;
       padding-left: 3px;
@@ -110,7 +110,7 @@ const TEMPLATE = `
       width: 100%;
       min-height: 18px;
       margin: 1px 0 3px;
-      font-size: 11px;
+      font-size: 12px;
       color: #333;
       font-style: italic;
       overflow: hidden;
@@ -131,7 +131,7 @@ const TEMPLATE = `
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
       color: #333;
       font-style: italic;
       font-weight: bold;
@@ -146,7 +146,7 @@ const TEMPLATE = `
     }
     .form-title {
       text-align: center;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: bold;
       color: var(--avis-red);
       letter-spacing: 1px;
@@ -155,7 +155,7 @@ const TEMPLATE = `
       margin-bottom: 2mm;
     }
     .form-label {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: bold;
       color: var(--avis-blue);
       margin-bottom: 1px;
@@ -195,7 +195,7 @@ const TEMPLATE = `
     .col-box:last-child { border-right: none; }
     .col-box-title {
       font-weight: bold;
-      font-size: 10px;
+      font-size: 11px;
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
       margin-bottom: 4px;
@@ -206,7 +206,7 @@ const TEMPLATE = `
       align-items: center;
       gap: 3px;
       margin: 2.5px 0;
-      font-size: 10px;
+      font-size: 11px;
     }
     .col-inner { display: flex; gap: 4mm; }
 
@@ -244,7 +244,7 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 11px; line-height: 1.5; margin-bottom: 2mm; }
+    .chiede-section { font-size: 12px; line-height: 1.5; margin-bottom: 2mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
@@ -257,14 +257,14 @@ const TEMPLATE = `
       display: flex; 
       align-items: flex-end; 
       padding-bottom: 4.5px;
-      font-size: 10px; 
+      font-size: 11px; 
       color: #333; 
       font-style: italic;
     }
 
     /* ── Footer ──────────────────────────────────────── */
     .footer-sede {
-      font-size: 9px;
+      font-size: 10px;
       text-align: center;
       color: var(--avis-blue);
       border-top: 1px solid var(--avis-blue);
@@ -274,7 +274,7 @@ const TEMPLATE = `
 
     /* ── Privacy consent section ─────────────────────── */
     .consent-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
       text-align: center;
       margin: 10px 0 8px;
@@ -290,13 +290,13 @@ const TEMPLATE = `
       font-size: 11px;
       background: #fff;
     }
-    .consent-group { margin: 6px 0; font-size: 11.5px; }
+    .consent-group { margin: 6px 0; font-size: 12.5px; }
     .consent-row { display: flex; gap: 8mm; margin-bottom: 2px; align-items: center; }
-    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 11.5px; }
+    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 12.5px; }
 
     @media print {
       body { background: #fff; }
-      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 5mm 5mm; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 3mm 3mm; }
       .no-print { display: none; }
     }
   </style>
@@ -515,16 +515,16 @@ const TEMPLATE = `
     <!-- Data / Firma -->
     <div class="sign-row">
       <div class="sign-block">
-        <div style="font-size:10px; text-decoration:underline; font-weight:bold;">Data</div>
+        <div style="font-size:11px; text-decoration:underline; font-weight:bold;">Data</div>
         <div class="sign-line">{{DATE}}</div>
       </div>
       <div class="sign-block" style="text-align:right;">
-        <div style="font-size:10px; text-decoration:underline; font-weight:bold;">Firma</div>
+        <div style="font-size:11px; text-decoration:underline; font-weight:bold;">Firma</div>
         <div class="sign-line" style="justify-content: flex-end;">{{SIGNATURE}}</div>
       </div>
     </div>
 
-    <p style="font-size:8.5px; margin-top:3mm;">
+    <p style="font-size:9.5px; margin-top:3mm;">
       Il richiedente deve leggere l'informativa riportata nel retro e firmare il consenso al trattamento dei dati personali. Si impegna
       altresì a conoscere e rispettare lo Statuto, il Regolamento e il Codice Etico sia della propria sede comunale, sia dell'Avis
       Provinciale di riferimento, sia dell'Avis Regionale, sia dell'AVIS Nazionale.
@@ -642,7 +642,7 @@ const TEMPLATE = `
   </div>
 
   <!-- Personal fields -->
-  <div style="font-size:11px; line-height:2.4; margin-top:5mm;">
+  <div style="font-size:12px; line-height:2.4; margin-top:5mm;">
     <span>Io sottoscritto/a</span>
     <span class="field" style="min-width:55mm;">{{SUBSCRIBER_FULL_NAME}}</span>
     <span>&nbsp;, nato/a a</span>
@@ -714,13 +714,13 @@ const TEMPLATE = `
   <!-- Luogo/data + firma -->
   <div style="display:flex; justify-content:space-between; margin-top:10mm;">
     <div style="width:44%;">
-      <div style="font-size:11px; font-weight:bold; color:var(--avis-blue); text-decoration: underline;">Luogo e data</div>
+      <div style="font-size:12px; font-weight:bold; color:var(--avis-blue); text-decoration: underline;">Luogo e data</div>
       <div class="sign-line" style="gap:2mm;">
         <span>{{SUBSCRIBER_PLACE}}</span><span>,</span><span>{{SUBSCRIBER_DATE}}</span>
       </div>
     </div>
     <div style="width:44%;">
-      <div style="font-size:11px; font-weight:bold; color:var(--avis-blue); text-align:right; text-decoration: underline;">Firma dell'interessato</div>
+      <div style="font-size:12px; font-weight:bold; color:var(--avis-blue); text-align:right; text-decoration: underline;">Firma dell'interessato</div>
       <div class="sign-line" style="justify-content: flex-end;">{{SIGNATURE}}</div>
     </div>
   </div>
