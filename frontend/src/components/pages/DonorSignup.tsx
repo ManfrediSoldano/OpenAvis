@@ -7,6 +7,7 @@ import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
 import { Checkbox } from "primereact/checkbox";
 import { Message } from "primereact/message";
+import { Dropdown } from "primereact/dropdown";
 import { useNavigate } from "react-router-dom";
 import BloodPlasmaBanner from "./BloodPlasmaBanner";
 import "./DonorSignup.css";
@@ -27,6 +28,44 @@ const transfusionCenters = [
   { label: "Ospedali di Bergamo", value: "AvisBergamo", url: "https://avisbergamo.it/" }
 ];
 
+const educationOptions = [
+  { label: "Nessuno", value: "none" },
+  { label: "Licenza Elementare", value: "primary_school" },
+  { label: "Licenza Media Inferiore", value: "middle_school" },
+  { label: "Diploma", value: "diploma" },
+  { label: "Laurea", value: "degree" }
+];
+
+const donationPreferencesOptions = [
+  { label: "Lunedì", value: "monday" },
+  { label: "Martedì", value: "tuesday" },
+  { label: "Mercoledì", value: "wednesday" },
+  { label: "Giovedì", value: "thursday" },
+  { label: "Venerdì", value: "friday" },
+  { label: "Sabato", value: "saturday" },
+  { label: "Domenica", value: "sunday" }
+];
+
+const professionOptions = [
+  { label: "Agricoltore", value: "farmer" },
+  { label: "Artigiano", value: "artisan" },
+  { label: "Commerciante", value: "merchant" },
+  { label: "Impiegato", value: "employee" },
+  { label: "Insegnante", value: "teacher" },
+  { label: "Operaio", value: "worker" },
+  { label: "Professionista", value: "professional" },
+  { label: "Militare", value: "military" },
+  { label: "Religioso", value: "religious" },
+  { label: "Altro", value: "other" }
+];
+
+const nonProfessionalConditionOptions = [
+  { label: "Disoccupato", value: "unemployed" },
+  { label: "Studente", value: "student" },
+  { label: "Casalinga", value: "housewife" },
+  { label: "Pensionato", value: "pensioner" }
+];
+
 
 
 interface FormState extends Donor {
@@ -35,7 +74,6 @@ interface FormState extends Donor {
   noPermanentExclusion: boolean;
   donateInMerate: boolean | null;
   transfusionCenter: string;
-  nonProfessionalStatus: string;
   residenceSameAsDomicile: boolean;
 }
 
@@ -427,17 +465,33 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
       <span>
         <FloatLabel>
           <InputWithIcon icon="pi pi-book">
-            <InputText value={form.education} onChange={e => setForm({ ...form, education: e.target.value })} />
+            <Dropdown
+              id="education"
+              value={form.education}
+              options={educationOptions}
+              onChange={e => setForm({ ...form, education: e.value })}
+              placeholder="Seleziona"
+              showClear
+              className="w-full"
+            />
           </InputWithIcon>
-          <label>Titolo di studio</label>
+          <label htmlFor="education">Titolo di studio</label>
         </FloatLabel>
       </span>
       <span>
         <FloatLabel>
           <InputWithIcon icon="pi pi-heart">
-            <InputText value={form.donationPreferences} onChange={e => setForm({ ...form, donationPreferences: e.target.value })} />
+            <Dropdown
+              id="donationPreferences"
+              value={form.donationPreferences}
+              options={donationPreferencesOptions}
+              onChange={e => setForm({ ...form, donationPreferences: e.value })}
+              placeholder="Seleziona"
+              showClear
+              className="w-full"
+            />
           </InputWithIcon>
-          <label>Preferenze per la donazione</label>
+          <label htmlFor="donationPreferences">Preferenze per la donazione</label>
         </FloatLabel>
       </span>
     </div>
@@ -445,9 +499,33 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
       <span>
         <FloatLabel>
           <InputWithIcon icon="pi pi-briefcase">
-            <InputText value={form.profession} onChange={e => setForm({ ...form, profession: e.target.value })} />
+            <Dropdown
+              id="profession"
+              value={form.profession}
+              options={professionOptions}
+              onChange={e => setForm({ ...form, profession: e.value })}
+              placeholder="Seleziona"
+              showClear
+              className="w-full"
+            />
           </InputWithIcon>
-          <label>Professione</label>
+          <label htmlFor="profession">Professione</label>
+        </FloatLabel>
+      </span>
+      <span>
+        <FloatLabel>
+          <InputWithIcon icon="pi pi-briefcase">
+            <Dropdown
+              id="nonProfessionalCondition"
+              value={form.nonProfessionalCondition}
+              options={nonProfessionalConditionOptions}
+              onChange={e => setForm({ ...form, nonProfessionalCondition: e.value })}
+              placeholder="Seleziona"
+              showClear
+              className="w-full"
+            />
+          </InputWithIcon>
+          <label htmlFor="nonProfessionalCondition">Condizione non professionale</label>
         </FloatLabel>
       </span>
     </div>
@@ -611,10 +689,10 @@ const DonorSignup: React.FC = () => {
     domicileTown: "",
     phone: "",
     email: "",
-    education: "",
-    donationPreferences: "",
-    profession: "",
-    nonProfessionalStatus: "",
+    education: undefined,
+    donationPreferences: undefined,
+    profession: undefined,
+    nonProfessionalCondition: undefined,
     otherAssociations: "",
     localAvis: 'Merate',
     residenceSameAsDomicile: true

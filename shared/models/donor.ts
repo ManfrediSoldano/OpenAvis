@@ -17,9 +17,10 @@ export interface Donor {
     domicileTown?: string;
     province?: string;
     phone?: string;
-    education?: string;
-    donationPreferences?: string;
-    profession?: string;
+    education?: 'none' | 'primary_school' | 'middle_school' | 'diploma' | 'degree';
+    donationPreferences?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+    profession?: 'farmer' | 'artisan' | 'merchant' | 'employee' | 'teacher' | 'worker' | 'professional' | 'military' | 'religious' | 'other';
+    nonProfessionalCondition?: 'unemployed' | 'student' | 'housewife' | 'pensioner';
     otherAssociations?: string;
     createdAt?: string;
 

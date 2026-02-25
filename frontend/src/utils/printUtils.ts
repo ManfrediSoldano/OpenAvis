@@ -3,7 +3,61 @@ import { Donor } from '../../../shared/models/donor';
 import { searchComuni } from 'italian-locations';
 
 
-const LOGO_URL = "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png";
+interface AvisBranch {
+  logo: string;
+  name: string;
+  fullName: string;
+  address: string;
+  phone: string;
+  email: string;
+  pec: string;
+  fiscalCode: string;
+  city: string;
+  street: string;
+  collectionPoint: string;
+}
+
+const AVIS_BRANCH_CONFIG: Record<string, AvisBranch> = {
+  'Merate': {
+    logo: "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS.png",
+    name: "Merate",
+    fullName: "AVIS COMUNALE DI MERATE ODV",
+    address: "Piazza Don Giovanni Minzoni 5 – 23807 Merate (Lc)",
+    phone: "039.5986891",
+    email: "merate.comunale@avis.it",
+    pec: "merate.comunale@pec.avis.it",
+    fiscalCode: "94003940130",
+    city: "Merate",
+    street: "piazza don Minzoni, 5",
+    collectionPoint: "Ospedale Mandic Merate"
+  },
+  'Missaglia': {
+    logo: "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS_Missaglia.PNG",
+    name: "Missaglia",
+    fullName: "AVIS COMUNALE DI MISSAGLIA ODV",
+    address: "Via Alessandro manzoni 27 - 23873 Missaglia (Lc)",
+    phone: "",
+    email: "missaglia.comunale@avis.it",
+    pec: "",
+    fiscalCode: "",
+    city: "Missaglia",
+    street: "Via Alessandro manzoni 27",
+    collectionPoint: ""
+  },
+  'Brivio': {
+    logo: "https://openavismeratestorage.blob.core.windows.net/public-assets/Logo_AVIS_Brivio.PNG",
+    name: "Brivio",
+    fullName: "AVIS COMUNALE DI BRIVIO ODV",
+    address: "Via Vittorio Emanuele 27 - 23883 Brivio (Lc)",
+    phone: "039/5320604",
+    email: "brivio.comunale@avis.it",
+    pec: "",
+    fiscalCode: "",
+    city: "Brivio",
+    street: "Via Vittorio Emanuele 27",
+    collectionPoint: ""
+  }
+};
 
 const TEMPLATE = `
 <!DOCTYPE html>
@@ -11,7 +65,7 @@ const TEMPLATE = `
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AVIS Comunale di Merate – Moduli</title>
+  <title>AVIS Comunale di {{AVIS_BRANCH_NAME}} – Moduli</title>
   <style>
     /* ── Brand palette ──────────────────────────────── */
     :root {
@@ -19,11 +73,16 @@ const TEMPLATE = `
       --avis-red:   #e30613;   /* New standard red */
     }
 
+    @page {
+      margin: 0;
+      size: A4;
+    }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: Arial, sans-serif;
-      font-size: 12.5px;
+      font-size: 13.5px;
       color: var(--avis-blue);
       background: #fff;
       -webkit-print-color-adjust: exact;
@@ -34,7 +93,7 @@ const TEMPLATE = `
       width: 210mm;
       min-height: 297mm;
       margin: 0 auto;
-      padding: 4mm 4mm 4mm 4mm;
+      padding: 2mm 2mm 1mm 2mm;
       background: #fff;
       page-break-after: always;
       position: relative;
@@ -42,7 +101,7 @@ const TEMPLATE = `
 
     /* ── Logo ────────────────────────────────────────── */
     .logo-wrap {
-      margin-bottom: 2mm;
+      margin-bottom: 1mm;
       line-height: 0;
     }
     .logo-wrap img {
@@ -58,10 +117,10 @@ const TEMPLATE = `
     /* ── Typography helpers ──────────────────────────── */
     hr.thin { border: none; border-top: 1px solid var(--avis-blue); margin: 3px 0; }
 
-    p { margin-bottom: 3px; line-height: 1.4; font-size: 12px; text-align: justify; }
+    p { margin-bottom: 2px; line-height: 1.35; font-size: 13px; text-align: justify; }
 
     .main-title {
-      font-size: 14.5px;
+      font-size: 16px;
       font-weight: bold;
       color: var(--avis-blue);
       text-align: center;
@@ -69,7 +128,7 @@ const TEMPLATE = `
       margin: 4px 0 5px;
     }
     .section-title {
-      font-size: 13px;
+      font-size: 14.5px;
       font-weight: bold;
       color: var(--avis-blue);
       margin: 4px 0 2px;
@@ -83,7 +142,7 @@ const TEMPLATE = `
       width: 14px; height: 14px; /* bigger */
       border: 1.5px solid var(--avis-blue);
       vertical-align: middle;
-      font-size: 11px;
+      font-size: 12px;
       line-height: 1;
       flex-shrink: 0;
       background: #fff;
@@ -97,7 +156,7 @@ const TEMPLATE = `
       min-width: 20mm;
       height: 18px; /* higher to allow lifting text */
       vertical-align: bottom;
-      font-size: 12px;
+      font-size: 13.5px;
       color: #333;
       font-style: italic;
       padding-left: 3px;
@@ -110,7 +169,7 @@ const TEMPLATE = `
       width: 100%;
       min-height: 18px;
       margin: 1px 0 3px;
-      font-size: 12px;
+      font-size: 13.5px;
       color: #333;
       font-style: italic;
       overflow: hidden;
@@ -131,7 +190,7 @@ const TEMPLATE = `
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       color: #333;
       font-style: italic;
       font-weight: bold;
@@ -142,11 +201,11 @@ const TEMPLATE = `
     /* ── Form wrapper ───────────────────────── */
     .form-box {
       border: 1.5px solid var(--avis-blue);
-      padding: 2mm 4mm;
+      padding: 1mm 3mm;
     }
     .form-title {
       text-align: center;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
       color: var(--avis-red);
       letter-spacing: 1px;
@@ -155,7 +214,7 @@ const TEMPLATE = `
       margin-bottom: 2mm;
     }
     .form-label {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: bold;
       color: var(--avis-blue);
       margin-bottom: 1px;
@@ -172,7 +231,7 @@ const TEMPLATE = `
       border: 1.5px solid var(--avis-blue);
       padding: 1px 4px;
       font-weight: bold;
-      font-size: 11.5px;
+      font-size: 13px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -195,7 +254,7 @@ const TEMPLATE = `
     .col-box:last-child { border-right: none; }
     .col-box-title {
       font-weight: bold;
-      font-size: 11px;
+      font-size: 12.5px;
       text-align: center;
       border-bottom: 1px solid var(--avis-blue);
       margin-bottom: 4px;
@@ -206,7 +265,7 @@ const TEMPLATE = `
       align-items: center;
       gap: 3px;
       margin: 2.5px 0;
-      font-size: 11px;
+      font-size: 12.5px;
     }
     .col-inner { display: flex; gap: 4mm; }
 
@@ -244,7 +303,7 @@ const TEMPLATE = `
     }
 
     /* ── Chiede section ──────────────────────────────── */
-    .chiede-section { font-size: 12px; line-height: 1.5; margin-bottom: 2mm; }
+    .chiede-section { font-size: 13px; line-height: 1.5; margin-bottom: 2mm; }
     .chiede-section .hl { font-weight: bold; }
 
     /* ── Sign row ────────────────────────────────────── */
@@ -290,13 +349,13 @@ const TEMPLATE = `
       font-size: 11px;
       background: #fff;
     }
-    .consent-group { margin: 6px 0; font-size: 12.5px; }
+    .consent-group { margin: 6px 0; font-size: 13.5px; }
     .consent-row { display: flex; gap: 8mm; margin-bottom: 2px; align-items: center; }
-    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 12.5px; }
+    .consent-opt { display: flex; align-items: center; gap: 4px; font-size: 13.5px; }
 
     @media print {
       body { background: #fff; }
-      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 3mm 3mm; }
+      .page { margin: 0; box-shadow: none; page-break-after: always; padding: 0; border: none; }
       .no-print { display: none; }
     }
   </style>
@@ -309,7 +368,7 @@ const TEMPLATE = `
 <div class="page {{P1_HIDDEN}}">
 
   <div class="logo-wrap">
-    <img src="{{LOGO_SRC}}" alt="AVIS Comunale di Merate" />
+    <img src="{{LOGO_SRC}}" alt="AVIS Comunale di {{AVIS_BRANCH_NAME}}" />
   </div>
 
   <div class="form-box">
@@ -504,8 +563,8 @@ const TEMPLATE = `
     <!-- CHIEDE -->
     <div class="chiede-section">
       <p><span class="hl">CHIEDE</span> di essere iscritto come <span class="hl">SOCIO DONATORE / SOCIO NON DONATORE</span></p>
-      <p>&gt; ad <span class="hl">AVIS COMUNALE DI MERATE ODV</span> con sede in Piazza Don Giovanni Minzoni 5 – 23807 Merate (Lc)</p>
-      <p style="margin-left:4mm;">Telefono: 039/9902171 -- Email: merate.comunale@avis.it -- Pec: merate.comunale@pec.avis.it;</p>
+      <p>&gt; ad <span class="hl">{{AVIS_FULL_NAME}}</span> con sede in {{AVIS_ADDRESS}}</p>
+      <p style="margin-left:4mm;">{{AVIS_CONTACT_INFO}}</p>
       <p>&gt; di aderire ad <span class="hl">AVIS PROVINCIALE DI LECCO ODV;</span></p>
       <p>&gt; di aderire ad <span class="hl">AVIS REGIONALE LOMBARDIA ODV;</span></p>
       <p>&gt; di aderire ad <span class="hl">AVIS NAZIONALE ODV</span> con sede in Viale Enrico Forlanini 23 – 20134 Milano (Mi)</p>
@@ -532,7 +591,7 @@ const TEMPLATE = `
   </div><!-- /form-box -->
 
   <div class="footer-sede">
-    SEDE: Piazza Don Minzoni, 5 23807 Merate (LC) - Tel. 039.5986891 - e-mail: merate.comunale@avis.it - PEC: merate.comunale@pec.avis.it - C.F 94003940130
+    {{FOOTER_INFO}}
   </div>
 </div><!-- /page 1 -->
 
@@ -543,7 +602,7 @@ const TEMPLATE = `
 <div class="page {{P2_HIDDEN}}">
 
   <div class="logo-wrap">
-    <img src="{{LOGO_SRC}}" alt="AVIS Comunale di Merate" />
+    <img src="{{LOGO_SRC}}" alt="AVIS Comunale di {{AVIS_BRANCH_NAME}}" />
   </div>
 
   <hr class="thin"/>
@@ -567,9 +626,9 @@ const TEMPLATE = `
 
   <div class="section-title">1. Titolare del trattamento</div>
   <p>Titolare del trattamento dei dati è l'<strong>AVIS Comunale di</strong>
-    <span class="field" style="min-width:20mm;">Merate</span> Odv – con sede legale in
-    <span class="field" style="min-width:18mm;">Merate</span>
-    <span class="field" style="min-width:30mm;">piazza don Minzoni, 5</span>
+    <span class="field" style="min-width:20mm;">{{AVIS_BRANCH_NAME}}</span> Odv – con sede legale in
+    <span class="field" style="min-width:18mm;">{{AVIS_BRANCH_CITY}}</span>
+    <span class="field" style="min-width:30mm;">{{AVIS_BRANCH_STREET}}</span>
   </p>
 
   <div class="section-title">2. Responsabile della protezione dei dati (DPO)</div>
@@ -733,6 +792,7 @@ const TEMPLATE = `
 
 export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' | 'completo' = 'completo') => {
   let html = TEMPLATE;
+  const avis = AVIS_BRANCH_CONFIG[donor.localAvis || 'Merate'] || AVIS_BRANCH_CONFIG['Merate'];
 
   // Helper to format date
   const formatDate = (date?: string | Date) => {
@@ -743,7 +803,14 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' |
 
   // Replace basic placeholders
   const replacements: Record<string, string> = {
-    '{{LOGO_SRC}}': LOGO_URL,
+    '{{LOGO_SRC}}': avis.logo,
+    '{{AVIS_BRANCH_NAME}}': avis.name,
+    '{{AVIS_FULL_NAME}}': avis.fullName,
+    '{{AVIS_ADDRESS}}': avis.address,
+    '{{AVIS_BRANCH_CITY}}': avis.city,
+    '{{AVIS_BRANCH_STREET}}': avis.street,
+    '{{AVIS_CONTACT_INFO}}': `Telefono: ${avis.phone} -- Email: ${avis.email} ${avis.pec ? `-- Pec: ${avis.pec}` : ''};`,
+    '{{FOOTER_INFO}}': `SEDE: ${avis.address} ${avis.phone ? `- Tel. ${avis.phone}` : ''} - e-mail: ${avis.email} ${avis.pec ? `- PEC: ${avis.pec}` : ''} ${avis.fiscalCode ? `- C.F ${avis.fiscalCode}` : ''}`,
     '{{FULL_NAME}}': `${donor.firstName || ''} ${donor.lastName || ''}`.trim(),
     '{{BIRTH_CITY}}': donor.birthPlace || '',
     '{{BIRTH_PROVINCE}}': donor.birthProvince || '',
@@ -757,7 +824,7 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' |
     '{{MOBILE_PHONE}}': donor.phone || '',
     '{{HEALTH_CARD}}': '',
     '{{WORKPLACE}}': '',
-    '{{COLLECTION_POINT}}': 'Ospedale Mandic Merate',
+    '{{COLLECTION_POINT}}': avis.collectionPoint || 'Ospedale Mandic Merate',
     '{{OTHER_ASSOCIATION}}': donor.otherAssociations || '',
     '{{DATE}}': formatDate(new Date()),
     '{{SIGNATURE}}': '',
@@ -777,12 +844,38 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' |
   }
 
   // Education Checkboxes
-  const edu = (donor.education || "").toLowerCase();
-  replacements['{{CHECK_EDU_NONE}}'] = edu === "" ? "" : ""; // don't default to none
-  replacements['{{CHECK_EDU_ELEM}}'] = edu.includes("elementare") ? "✓" : "";
-  replacements['{{CHECK_EDU_MEDIA}}'] = edu.includes("media") ? "✓" : "";
-  replacements['{{CHECK_EDU_DIPL}}'] = edu.includes("diploma") ? "✓" : "";
-  replacements['{{CHECK_EDU_LAUR}}'] = edu.includes("laurea") ? "✓" : "";
+  replacements['{{CHECK_EDU_NONE}}'] = donor.education === 'none' ? "✓" : "";
+  replacements['{{CHECK_EDU_ELEM}}'] = donor.education === 'primary_school' ? "✓" : "";
+  replacements['{{CHECK_EDU_MEDIA}}'] = donor.education === 'middle_school' ? "✓" : "";
+  replacements['{{CHECK_EDU_DIPL}}'] = donor.education === 'diploma' ? "✓" : "";
+  replacements['{{CHECK_EDU_LAUR}}'] = donor.education === 'degree' ? "✓" : "";
+
+  // Donation Preferences
+  replacements['{{CHECK_DON_MON}}'] = donor.donationPreferences === 'monday' ? "✓" : "";
+  replacements['{{CHECK_DON_TUE}}'] = donor.donationPreferences === 'tuesday' ? "✓" : "";
+  replacements['{{CHECK_DON_WED}}'] = donor.donationPreferences === 'wednesday' ? "✓" : "";
+  replacements['{{CHECK_DON_THU}}'] = donor.donationPreferences === 'thursday' ? "✓" : "";
+  replacements['{{CHECK_DON_FRI}}'] = donor.donationPreferences === 'friday' ? "✓" : "";
+  replacements['{{CHECK_DON_SAT}}'] = donor.donationPreferences === 'saturday' ? "✓" : "";
+  replacements['{{CHECK_DON_SUN}}'] = donor.donationPreferences === 'sunday' ? "✓" : "";
+
+  // Profession Checkboxes
+  replacements['{{CHECK_PROF_AGR}}'] = donor.profession === 'farmer' ? "✓" : "";
+  replacements['{{CHECK_PROF_ART}}'] = donor.profession === 'artisan' ? "✓" : "";
+  replacements['{{CHECK_PROF_COM}}'] = donor.profession === 'merchant' ? "✓" : "";
+  replacements['{{CHECK_PROF_IMP}}'] = donor.profession === 'employee' ? "✓" : "";
+  replacements['{{CHECK_PROF_INS}}'] = donor.profession === 'teacher' ? "✓" : "";
+  replacements['{{CHECK_PROF_OPE}}'] = donor.profession === 'worker' ? "✓" : "";
+  replacements['{{CHECK_PROF_PRO}}'] = donor.profession === 'professional' ? "✓" : "";
+  replacements['{{CHECK_PROF_MIL}}'] = donor.profession === 'military' ? "✓" : "";
+  replacements['{{CHECK_PROF_REL}}'] = donor.profession === 'religious' ? "✓" : "";
+  replacements['{{CHECK_PROF_ALT}}'] = donor.profession === 'other' ? "✓" : "";
+
+  // Condition Checkboxes
+  replacements['{{CHECK_COND_DIS}}'] = donor.nonProfessionalCondition === 'unemployed' ? "✓" : "";
+  replacements['{{CHECK_COND_STU}}'] = donor.nonProfessionalCondition === 'student' ? "✓" : "";
+  replacements['{{CHECK_COND_CAS}}'] = donor.nonProfessionalCondition === 'housewife' ? "✓" : "";
+  replacements['{{CHECK_COND_PEN}}'] = donor.nonProfessionalCondition === 'pensioner' ? "✓" : "";
 
   // Privacy specific
   replacements['{{CHECK_ASPIRANTE}}'] = "✓";
@@ -799,7 +892,7 @@ export const printModule = (donor: Donor, moduleType: 'iscrizione' | 'privacy' |
   replacements['{{SUBSCRIBER_AVIS_MUNICIPALITY}}'] = ""; // Keep empty as requested for new registrations
   replacements['{{SUBSCRIBER_PHONE}}'] = donor.phone || '';
   replacements['{{SUBSCRIBER_EMAIL}}'] = donor.email || '';
-  replacements['{{SUBSCRIBER_PLACE}}'] = "Merate";
+  replacements['{{SUBSCRIBER_PLACE}}'] = avis.city;
   replacements['{{SUBSCRIBER_DATE}}'] = formatDate(new Date());
 
   // Consents (Leave for manual signature)

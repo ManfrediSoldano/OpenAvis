@@ -41,9 +41,48 @@ const donorFields = [
     { name: 'address', label: 'Indirizzo di residenza', type: 'text' },
     { name: 'domicileTown', label: 'Comune di domicilio', type: 'text' },
     { name: 'domicileAddress', label: 'Indirizzo di domicilio', type: 'text' },
-    { name: 'education', label: 'Titolo di Studio', type: 'text' },
-    { name: 'profession', label: 'Professione', type: 'text' },
-    { name: 'donationPreferences', label: 'Preferenze Donazione', type: 'text' },
+    {
+        name: 'education', label: 'Titolo di Studio', type: 'select', options: [
+            { label: 'Nessuno', value: 'none' },
+            { label: 'Licenza Elementare', value: 'primary_school' },
+            { label: 'Licenza Media Inferiore', value: 'middle_school' },
+            { label: 'Diploma', value: 'diploma' },
+            { label: 'Laurea', value: 'degree' }
+        ]
+    },
+    {
+        name: 'profession', label: 'Professione', type: 'select', options: [
+            { label: 'Agricoltore', value: 'farmer' },
+            { label: 'Artigiano', value: 'artisan' },
+            { label: 'Commerciante', value: 'merchant' },
+            { label: 'Impiegato', value: 'employee' },
+            { label: 'Insegnante', value: 'teacher' },
+            { label: 'Operaio', value: 'worker' },
+            { label: 'Professionista', value: 'professional' },
+            { label: 'Militare', value: 'military' },
+            { label: 'Religioso', value: 'religious' },
+            { label: 'Altro', value: 'other' }
+        ]
+    },
+    {
+        name: 'nonProfessionalCondition', label: 'Condizione non professionale', type: 'select', options: [
+            { label: 'Disoccupato', value: 'unemployed' },
+            { label: 'Studente', value: 'student' },
+            { label: 'Casalinga', value: 'housewife' },
+            { label: 'Pensionato', value: 'pensioner' }
+        ]
+    },
+    {
+        name: 'donationPreferences', label: 'Preferenze Donazione', type: 'select', options: [
+            { label: 'Lunedì', value: 'monday' },
+            { label: 'Martedì', value: 'tuesday' },
+            { label: 'Mercoledì', value: 'wednesday' },
+            { label: 'Giovedì', value: 'thursday' },
+            { label: 'Venerdì', value: 'friday' },
+            { label: 'Sabato', value: 'saturday' },
+            { label: 'Domenica', value: 'sunday' }
+        ]
+    },
     { name: 'otherAssociations', label: 'Altre Associazioni', type: 'text' },
     { name: 'localAvis', label: 'AVIS Comunale', type: 'select', options: [{ label: 'Merate', value: 'Merate' }, { label: 'Brivio', value: 'Brivio' }, { label: 'Missaglia', value: 'Missaglia' }] },
 ];
@@ -420,7 +459,7 @@ const ReservedDashboard: React.FC = () => {
                             {field.type === 'text' || field.type === 'email' ? (
                                 <InputText value={selectedDonor?.[field.name] || ''} onChange={(e) => updateDonorField(field.name, e.target.value)} />
                             ) : field.type === 'select' ? (
-                                <Dropdown value={selectedDonor?.[field.name]} options={field.options} onChange={(e) => updateDonorField(field.name, e.value)} placeholder="Seleziona" />
+                                <Dropdown value={selectedDonor?.[field.name]} options={field.options} onChange={(e) => updateDonorField(field.name, e.value)} placeholder="Seleziona" showClear />
                             ) : field.type === 'date' ? (
                                 <Calendar value={selectedDonor?.[field.name] ? new Date(selectedDonor[field.name]) : null} onChange={(e) => updateDonorField(field.name, e.value)} dateFormat="dd/mm/yy" showIcon />
                             ) : null}
