@@ -187,6 +187,26 @@ export class DatabaseService {
     }
 
     /**
+     * Get all news items
+     */
+    async getAllNews() {
+        if (!this.databaseId) return [];
+        const database = this.client.database(this.databaseId);
+        const container = database.container(this.newsContainerId);
+
+        try {
+            const querySpec = {
+                query: "SELECT * FROM c ORDER BY c.createdAt DESC"
+            };
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources;
+        } catch (error) {
+            console.error("Error fetching all news:", error);
+            return [];
+        }
+    }
+
+    /**
      * Get specific news by ID
      */
     async getNews(id: string) {

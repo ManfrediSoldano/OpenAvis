@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getHighlights, NewsHighlight } from '../../services/newsService';
+import { getNewsList, NewsHighlight } from '../../services/newsService';
 import './NewsPage.css';
 import { Skeleton } from 'primereact/skeleton';
 import { Button } from 'primereact/button';
@@ -18,7 +18,7 @@ const NewsListPage: React.FC = () => {
             try {
                 setLoading(true);
                 setError(false);
-                const data = await getHighlights();
+                const data = await getNewsList();
                 setNews(data);
                 if (!data || data.length === 0) {
                     // We could distinguish between "no data" and "error", 

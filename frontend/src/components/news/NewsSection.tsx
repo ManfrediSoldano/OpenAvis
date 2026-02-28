@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getHighlights, NewsHighlight } from '../../services/newsService';
+import { getNewsList, NewsHighlight } from '../../services/newsService';
 import './NewsSection.css';
 import { Skeleton } from 'primereact/skeleton';
 
@@ -12,7 +12,7 @@ const NewsSection: React.FC = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const data = await getHighlights();
+                const data = await getNewsList();
                 setNews(data);
             } catch (error) {
                 console.error("Error fetching news:", error);

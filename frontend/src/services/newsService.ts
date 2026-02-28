@@ -37,6 +37,16 @@ export const getHighlights = async (): Promise<NewsHighlight[]> => {
     }
 };
 
+export const getNewsList = async (): Promise<NewsHighlight[]> => {
+    try {
+        const response = await client.get('/api/getNewsList');
+        return response.data as NewsHighlight[];
+    } catch (error) {
+        console.error("Failed to fetch news list", error);
+        return [];
+    }
+};
+
 export const retrieveNews = async (id: string): Promise<NewsDetail | null> => {
     try {
         const response = await client.get(`/api/retrieveNews?id=${id}`);

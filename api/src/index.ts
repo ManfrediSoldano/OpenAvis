@@ -9,6 +9,7 @@ import './functions/sendOtp';
 import './functions/verifyOtp';
 import './functions/signup';
 import './functions/getHighlights';
+import './functions/getNewsList';
 import './functions/retrieveNews';
 import './functions/interactNews';
 import './functions/seedNews';
