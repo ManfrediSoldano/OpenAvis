@@ -75,6 +75,7 @@ interface FormState extends Donor {
   donateInMerate: boolean | null;
   transfusionCenter: string;
   residenceSameAsDomicile: boolean;
+  privacyAccepted: boolean;
 }
 
 
@@ -108,7 +109,7 @@ const Step1: React.FC<StepProps> = ({ form, setForm, setStep }) => (
   <div className="donor-signup-container">
     <div className="donor-step-banner">
       <i className="pi pi-info-circle" />
-      Le risposte non saranno salvate da AVIS, servono solo per guidarti nella compilazione. Solo il medico può valutare l'idoneità definitiva.
+      Le risposte in questa schermata non saranno salvate da AVIS, servono solo per guidarti nella compilazione. Solo il medico può valutare l'idoneità definitiva.
     </div>
     <div className="donor-step-title">Controllo dei requisiti</div>
     <div className="donor-step-desc">Per candidarti devi avere tra 18 e 60 anni, pesare almeno 50kg e non avere criteri di esclusione permanente. <a href={exclusionPdf} target="_blank" rel="noopener noreferrer">Consulta i criteri di esclusione</a>.</div>
@@ -562,11 +563,12 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
 );
 
 
-const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => {
+const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => {
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [resending, setResending] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const privacyCheckboxRef = React.useRef<any>(null);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -628,9 +630,21 @@ const Step5: React.FC<StepProps> = ({ form, setStep, otp, setOtp, otpError, setO
         />
       </div>
 
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', marginBottom: '2rem', padding: '0 1rem' }}>
+        <Checkbox
+          inputId="privacyAccepted"
+          checked={form.privacyAccepted}
+          onChange={e => setForm(f => ({ ...f, privacyAccepted: e.checked ?? false }))}
+        />
+        <label htmlFor="privacyAccepted" style={{ fontSize: '0.9rem', cursor: 'pointer' }}>
+          Dichiaro di aver letto e accettato la <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#d32f2f', fontWeight: 'bold', textDecoration: 'underline' }}>Privacy Policy</a> per il trattamento dei miei dati personali.
+        </label>
+      </div>
+
       <div className="donor-step-actions">
         <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} disabled={isSubmitting} />
-        <Button label="Conferma Iscrizione" icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"} loading={isSubmitting} onClick={async () => {
+        <Button label="Conferma Iscrizione" icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"} loading={isSubmitting} disabled={!form.privacyAccepted} onClick={async () => {
+          if (!form.privacyAccepted) return;
           try {
             setIsSubmitting(true);
             setOtpError("");
@@ -693,7 +707,8 @@ const DonorSignup: React.FC = () => {
     nonProfessionalCondition: undefined,
     otherAssociations: "",
     localAvis: 'Merate',
-    residenceSameAsDomicile: true
+    residenceSameAsDomicile: true,
+    privacyAccepted: false
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

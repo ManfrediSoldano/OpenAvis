@@ -61,6 +61,11 @@ const PrivacyPolicy: React.FC = () => {
                         Il trattamento dei dati personali si fonda sul consenso dell'interessato (art. 6 par. 1 lett. a) del GDPR), sull'esecuzione di un contratto o di misure precontrattuali (art. 6 par. 1 lett. b) del GDPR), sull'adempimento di un obbligo legale (art. 6 par. 1 lett. c) del GDPR) o sul legittimo interesse del Titolare.
                     </p>
 
+                    <h2>Periodo di conservazione</h2>
+                    <p>
+                        I dati personali saranno conservati per il tempo necessario a conseguire le finalità per cui sono stati raccolti e, successivamente, per il tempo previsto dalle normative vigenti (es. conservazione dei registri associativi e fiscali).
+                    </p>
+
                     <h2>Destinatari dei dati</h2>
                     <p>
                         I dati personali potranno essere comunicati a:
@@ -75,6 +80,7 @@ const PrivacyPolicy: React.FC = () => {
                     <h2>Diritti degli interessati</h2>
                     <p>
                         Gli interessati hanno il diritto di ottenere da Avis Comunale di Merate Odv, nei casi previsti, l'accesso ai propri dati personali e la rettifica o la cancellazione degli stessi o la limitazione del trattamento che li riguarda o di opporsi al trattamento (artt. 15 e ss. del Regolamento).
+                        Hanno inoltre il <strong>diritto di revocare il consenso</strong> in qualsiasi momento, senza pregiudicare la liceità del trattamento basata sul consenso prestato prima della revoca.
                         L'apposita istanza è presentata contattando il Responsabile della protezione dei dati presso Avis Provinciale Lecco o direttamente il Titolare del trattamento ai recapiti sopra indicati.
                     </p>
 
