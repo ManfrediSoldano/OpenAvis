@@ -1,4 +1,5 @@
 export type ConvocationStatus = 'not_sent' | 'sent' | 'error';
+export type DonorPhase = 'non_convocato' | 'convocato' | 'idoneita';
 
 export interface Donor {
     [key: string]: any;
@@ -24,7 +25,8 @@ export interface Donor {
     otherAssociations?: string;
     createdAt?: string;
 
-    // New fields
+    // Workflow fields
+    phase?: DonorPhase;
     convocationDate?: string | Date;
     convocationStatus?: ConvocationStatus;
     localAvis?: 'Merate' | 'Brivio' | 'Missaglia';

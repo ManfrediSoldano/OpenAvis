@@ -6,15 +6,15 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
+import { TabView, TabPanel } from 'primereact/tabview';
 import './ReservedDashboard.css';
-import { Donor } from '../../../../shared/models/donor';
+import { Donor, DonorPhase } from '../../../../shared/models/donor';
 
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
-import { Divider } from 'primereact/divider';
 import { printModule } from '../../utils/printUtils';
 import { searchComuni } from 'italian-locations';
 
@@ -87,6 +87,13 @@ const donorFields = [
     { name: 'localAvis', label: 'AVIS Comunale', type: 'select', options: [{ label: 'Merate', value: 'Merate' }, { label: 'Brivio', value: 'Brivio' }, { label: 'Missaglia', value: 'Missaglia' }] },
 ];
 
+/** Maps phase value to a display configuration */
+const PHASE_CONFIG: Record<DonorPhase, { label: string; icon: string; color: string; severity: 'info' | 'warning' | 'success' }> = {
+    non_convocato: { label: 'Non ancora convocato', icon: 'pi pi-clock', color: '#6366f1', severity: 'info' },
+    convocato: { label: 'Convocato', icon: 'pi pi-envelope', color: '#f59e0b', severity: 'warning' },
+    idoneita: { label: 'Idoneità', icon: 'pi pi-check-circle', color: '#22c55e', severity: 'success' },
+};
+
 const ReservedDashboard: React.FC = () => {
     const [activeSection, setActiveSection] = useState<'candidati' | 'notizie'>('candidati');
     const [user, setUser] = useState<{ details: string, roles: string[] } | null>(null);
@@ -97,9 +104,20 @@ const ReservedDashboard: React.FC = () => {
     const [selectedDonor, setSelectedDonor] = useState<Donor | null>(null);
     const [sendingConvocation, setSendingConvocation] = useState<string | null>(null);
     const [savingDonor, setSavingDonor] = useState(false);
+    const [activeTab, setActiveTab] = useState(0);
+    const [barcodeFilter, setBarcodeFilter] = useState('');
+    const [markingIdoneita, setMarkingIdoneita] = useState<string | null>(null);
     const toast = useRef<Toast>(null);
+    const barcodeInputRef = useRef<HTMLInputElement>(null);
 
     const hasRole = (role: string) => user?.roles.includes('admin') || user?.roles.includes(role);
+
+    // Derive the phase from existing data for backward compatibility
+    const getDonorPhase = (donor: Donor): DonorPhase => {
+        if (donor.phase) return donor.phase;
+        if (donor.convocationStatus === 'sent') return 'convocato';
+        return 'non_convocato';
+    };
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -211,7 +229,7 @@ const ReservedDashboard: React.FC = () => {
             await fetch('/api/updateDonor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(donor)
+                body: JSON.stringify({ ...donor, phase: 'convocato' })
             });
 
             // Then send the email
@@ -232,6 +250,29 @@ const ReservedDashboard: React.FC = () => {
             toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Errore di rete nell\'invio' });
         } finally {
             setSendingConvocation(null);
+        }
+    };
+
+    const markAsIdoneita = async (rowData: Donor) => {
+        setMarkingIdoneita(rowData.email);
+        try {
+            const res = await fetch('/api/updateDonor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...rowData, phase: 'idoneita' })
+            });
+
+            if (res.ok) {
+                toast.current?.show({ severity: 'success', summary: 'Successo', detail: `${rowData.firstName} ${rowData.lastName} spostato/a in Idoneità` });
+                fetchDonors();
+            } else {
+                const err = await res.text();
+                toast.current?.show({ severity: 'error', summary: 'Errore', detail: err });
+            }
+        } catch (e) {
+            toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Errore di rete' });
+        } finally {
+            setMarkingIdoneita(null);
         }
     };
 
@@ -348,8 +389,70 @@ const ReservedDashboard: React.FC = () => {
         );
     };
 
-    const unsummonedDonors = donors.filter(d => !d.convocationStatus || d.convocationStatus === 'not_sent' || d.convocationStatus === 'error');
-    const summonedDonors = donors.filter(d => d.convocationStatus === 'sent');
+    const idoneitaActionCell = (rowData: any) => {
+        return (
+            <div className="flex gap-2 align-items-center">
+                <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
+                    const donor = { ...rowData };
+                    if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
+                    setSelectedDonor(donor);
+                    setDonorDialog(true);
+                }} tooltip="Modifica" className="p-button-sm" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+            </div>
+        );
+    };
+
+    const convocatoActionCell = (rowData: any) => {
+        return (
+            <div className="flex gap-2 align-items-center">
+                <Button icon="pi pi-pencil" rounded text severity="secondary" onClick={() => {
+                    const donor = { ...rowData };
+                    if (donor.birthDate) donor.birthDate = new Date(donor.birthDate);
+                    setSelectedDonor(donor);
+                    setDonorDialog(true);
+                }} tooltip="Modifica" className="p-button-sm" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button
+                    icon="pi pi-arrow-right"
+                    rounded
+                    severity="success"
+                    onClick={() => markAsIdoneita(rowData)}
+                    loading={markingIdoneita === rowData.email}
+                    tooltip="Segna come Idoneità"
+                    className="p-button-sm shadow-2"
+                />
+            </div>
+        );
+    };
+
+    // Filter donors into phases
+    const nonConvocatiDonors = donors.filter(d => getDonorPhase(d) === 'non_convocato');
+    const convocatiDonors = donors.filter(d => getDonorPhase(d) === 'convocato');
+    const idoneitaDonors = donors.filter(d => getDonorPhase(d) === 'idoneita');
+
+    // Apply barcode (tax code) filter
+    const filterByBarcode = (list: Donor[]) => {
+        if (!barcodeFilter.trim()) return list;
+        const filter = barcodeFilter.trim().toUpperCase();
+        return list.filter(d => d.taxCode?.toUpperCase().includes(filter));
+    };
+
+    const filteredNonConvocati = filterByBarcode(nonConvocatiDonors);
+    const filteredConvocati = filterByBarcode(convocatiDonors);
+    const filteredIdoneita = filterByBarcode(idoneitaDonors);
+
+    // Tab header template with count badge
+    const tabHeaderTemplate = (phase: DonorPhase, count: number) => {
+        const config = PHASE_CONFIG[phase];
+        return (
+            <div className="tab-header-custom">
+                <i className={`${config.icon} tab-header-icon`} style={{ color: config.color }}></i>
+                <span className="tab-header-label">{config.label}</span>
+                <span className="tab-header-badge" style={{ backgroundColor: config.color }}>{count}</span>
+            </div>
+        );
+    };
 
     if (loading) {
         return (
@@ -393,45 +496,120 @@ const ReservedDashboard: React.FC = () => {
                                     </div>
                                     <div className="flex gap-2">
                                         <Button label="Nuovo Candidato" icon="pi pi-plus" severity="danger" onClick={() => {
-                                            setSelectedDonor({ firstName: '', lastName: '', email: '', localAvis: 'Merate', createdAt: new Date().toISOString() });
+                                            setSelectedDonor({ firstName: '', lastName: '', email: '', localAvis: 'Merate', phase: 'non_convocato', createdAt: new Date().toISOString() });
                                             setDonorDialog(true);
                                         }} />
                                         <Button icon="pi pi-refresh" rounded text onClick={fetchDonors} loading={loadingDonors} />
                                     </div>
                                 </div>
 
-                                <div className="mb-5">
-                                    <h3 className="text-xl font-bold mb-3">Aspiranti non ancora convocati</h3>
-                                    <DataTable value={unsummonedDonors} loading={loadingDonors} paginator rows={5}
-                                        className="p-datatable-sm shadow-1 border-round overflow-hidden"
-                                        emptyMessage="Nessun candidato da convocare.">
-                                        <Column body={actionCell} style={{ width: '180px' }} header="Azioni" />
-                                        <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
-                                        <Column field="firstName" header="Nome" sortable />
-                                        <Column field="email" header="Email" />
-                                        <Column field="localAvis" header="AVIS Comunale" sortable />
-                                        <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity={getStatusSeverity(r.convocationStatus)} value={getStatusLabel(r.convocationStatus)} />} />
-                                        <Column header="Convocazione" body={convocationCell} style={{ minWidth: '400px' }} />
-                                    </DataTable>
+                                {/* Barcode / Tax Code Filter */}
+                                <div className="barcode-filter-container">
+                                    <div className="barcode-input-wrapper">
+                                        <i className="pi pi-barcode barcode-icon"></i>
+                                        <InputText
+                                            ref={barcodeInputRef}
+                                            value={barcodeFilter}
+                                            onChange={(e) => setBarcodeFilter(e.target.value)}
+                                            placeholder="Scansiona o digita il codice fiscale per filtrare..."
+                                            className="barcode-input"
+                                        />
+                                        {barcodeFilter && (
+                                            <Button
+                                                icon="pi pi-times"
+                                                rounded
+                                                text
+                                                severity="secondary"
+                                                onClick={() => {
+                                                    setBarcodeFilter('');
+                                                    barcodeInputRef.current?.focus();
+                                                }}
+                                                className="barcode-clear-btn"
+                                                tooltip="Cancella filtro"
+                                            />
+                                        )}
+                                    </div>
+                                    {barcodeFilter && (
+                                        <span className="barcode-filter-status">
+                                            <i className="pi pi-filter"></i>
+                                            Filtro attivo: <strong>{barcodeFilter.toUpperCase()}</strong>
+                                        </span>
+                                    )}
                                 </div>
 
-                                <Divider />
+                                {/* Tabbed View for Phases */}
+                                <TabView activeIndex={activeTab} onTabChange={(e) => setActiveTab(e.index)} className="phase-tabview">
 
-                                <div className="mt-5">
-                                    <h3 className="text-xl font-bold mb-3">Aspiranti già convocati</h3>
-                                    <DataTable value={summonedDonors} loading={loadingDonors} paginator rows={5}
-                                        className="p-datatable-sm shadow-1 border-round overflow-hidden"
-                                        emptyMessage="Nessun candidato già convocato.">
-                                        <Column body={actionCell} style={{ width: '180px' }} header="Azioni" />
-                                        <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
-                                        <Column field="firstName" header="Nome" sortable />
-                                        <Column field="email" header="Email" />
-                                        <Column field="localAvis" header="AVIS Comunale" sortable />
-                                        <Column field="convocationDate" header="Data Convocazione"
-                                            body={(rowData) => rowData.convocationDate ? new Date(rowData.convocationDate).toLocaleString('it-IT') : '-'} />
-                                        <Column field="convocationStatus" header="Stato" body={(r) => <Tag severity="success" value="Inviata" />} />
-                                    </DataTable>
-                                </div>
+                                    {/* Tab 1: Non ancora convocato */}
+                                    <TabPanel header={tabHeaderTemplate('non_convocato', filteredNonConvocati.length)}>
+                                        <div className="phase-tab-content">
+                                            <div className="phase-description">
+                                                <Tag severity="info" value="Non ancora convocato" icon="pi pi-clock" className="phase-tag" />
+                                                <span>Candidati registrati in attesa di essere convocati per la visita.</span>
+                                            </div>
+                                            <DataTable value={filteredNonConvocati} loading={loadingDonors} paginator rows={10}
+                                                className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                                                emptyMessage="Nessun candidato da convocare."
+                                                sortField="lastName" sortOrder={1}>
+                                                <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
+                                                <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
+                                                <Column field="firstName" header="Nome" sortable />
+                                                <Column field="taxCode" header="Codice Fiscale" sortable />
+                                                <Column field="email" header="Email" />
+                                                <Column field="localAvis" header="AVIS Comunale" sortable />
+                                                <Column field="convocationStatus" header="Stato Conv." body={(r) => <Tag severity={getStatusSeverity(r.convocationStatus)} value={getStatusLabel(r.convocationStatus)} />} />
+                                                <Column header="Convocazione" body={convocationCell} style={{ minWidth: '400px' }} />
+                                            </DataTable>
+                                        </div>
+                                    </TabPanel>
+
+                                    {/* Tab 2: Convocato */}
+                                    <TabPanel header={tabHeaderTemplate('convocato', filteredConvocati.length)}>
+                                        <div className="phase-tab-content">
+                                            <div className="phase-description">
+                                                <Tag severity="warning" value="Convocato" icon="pi pi-envelope" className="phase-tag" />
+                                                <span>Candidati convocati per la visita. Usa il pulsante verde per segnarli come idonei.</span>
+                                            </div>
+                                            <DataTable value={filteredConvocati} loading={loadingDonors} paginator rows={10}
+                                                className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                                                emptyMessage="Nessun candidato convocato."
+                                                sortField="convocationDate" sortOrder={-1}>
+                                                <Column body={convocatoActionCell} style={{ width: '180px' }} header="Azioni" />
+                                                <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
+                                                <Column field="firstName" header="Nome" sortable />
+                                                <Column field="taxCode" header="Codice Fiscale" sortable />
+                                                <Column field="email" header="Email" />
+                                                <Column field="localAvis" header="AVIS Comunale" sortable />
+                                                <Column field="convocationDate" header="Data Convocazione"
+                                                    body={(rowData) => rowData.convocationDate ? new Date(rowData.convocationDate).toLocaleString('it-IT') : '-'} sortable />
+                                            </DataTable>
+                                        </div>
+                                    </TabPanel>
+
+                                    {/* Tab 3: Idoneità */}
+                                    <TabPanel header={tabHeaderTemplate('idoneita', filteredIdoneita.length)}>
+                                        <div className="phase-tab-content">
+                                            <div className="phase-description">
+                                                <Tag severity="success" value="Idoneità" icon="pi pi-check-circle" className="phase-tag" />
+                                                <span>Candidati che hanno completato la visita e sono stati dichiarati idonei.</span>
+                                            </div>
+                                            <DataTable value={filteredIdoneita} loading={loadingDonors} paginator rows={10}
+                                                className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                                                emptyMessage="Nessun candidato in fase di idoneità."
+                                                sortField="lastName" sortOrder={1}>
+                                                <Column body={idoneitaActionCell} style={{ width: '120px' }} header="Azioni" />
+                                                <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
+                                                <Column field="firstName" header="Nome" sortable />
+                                                <Column field="taxCode" header="Codice Fiscale" sortable />
+                                                <Column field="email" header="Email" />
+                                                <Column field="localAvis" header="AVIS Comunale" sortable />
+                                                <Column field="convocationDate" header="Data Convocazione"
+                                                    body={(rowData) => rowData.convocationDate ? new Date(rowData.convocationDate).toLocaleString('it-IT') : '-'} />
+                                            </DataTable>
+                                        </div>
+                                    </TabPanel>
+
+                                </TabView>
                             </section>
                         )}
 
