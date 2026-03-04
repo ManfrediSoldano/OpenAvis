@@ -167,7 +167,7 @@ const ReservedDashboard: React.FC = () => {
                 toast.current?.show({
                     severity: 'error',
                     summary: 'Errore Caricamento',
-                    detail: `Impossibile recuperare i candidati (Status: ${res.status})`,
+                    detail: `Impossibile recuperare gli aspiranti (Status: ${res.status})`,
                     life: 5000
                 });
             }
@@ -200,7 +200,7 @@ const ReservedDashboard: React.FC = () => {
             });
 
             if (res.ok) {
-                toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Candidato salvato' });
+                toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Aspirante salvato' });
                 setDonorDialog(false);
                 fetchDonors();
             } else {
@@ -302,7 +302,7 @@ const ReservedDashboard: React.FC = () => {
             label: 'Gestionale',
             items: [
                 {
-                    label: 'Candidati',
+                    label: 'Aspiranti',
                     icon: 'pi pi-users',
                     visible: hasRole('candidates-manager'),
                     className: activeSection === 'candidati' ? 'active-menu-item' : '',
@@ -489,52 +489,42 @@ const ReservedDashboard: React.FC = () => {
                     <div className="content-card p-4">
                         {activeSection === 'candidati' && hasRole('candidates-manager') && (
                             <section className="dashboard-section">
-                                <div className="flex justify-content-between align-items-center mb-4">
+                                <div className="toolbar-row">
                                     <div>
-                                        <h2 className="section-title m-0"><i className="pi pi-users mr-2"></i>Gestione Candidati</h2>
+                                        <h2 className="section-title m-0"><i className="pi pi-users mr-2"></i>Gestione Aspiranti</h2>
                                         <p className="text-secondary mt-1">Gestisci gli aspiranti donatori e le convocazioni.</p>
                                     </div>
-                                    <div className="flex gap-2">
-                                        <Button label="Nuovo Candidato" icon="pi pi-plus" severity="danger" onClick={() => {
+                                    <div className="toolbar-actions">
+                                        <Button label="Nuovo Aspirante" icon="pi pi-plus" severity="danger" onClick={() => {
                                             setSelectedDonor({ firstName: '', lastName: '', email: '', localAvis: 'Merate', phase: 'non_convocato', createdAt: new Date().toISOString() });
                                             setDonorDialog(true);
                                         }} />
-                                        <Button icon="pi pi-refresh" rounded text onClick={fetchDonors} loading={loadingDonors} />
-                                    </div>
-                                </div>
-
-                                {/* Barcode / Tax Code Filter */}
-                                <div className="barcode-filter-container">
-                                    <div className="barcode-input-wrapper">
-                                        <i className="pi pi-barcode barcode-icon"></i>
-                                        <InputText
-                                            ref={barcodeInputRef}
-                                            value={barcodeFilter}
-                                            onChange={(e) => setBarcodeFilter(e.target.value)}
-                                            placeholder="Scansiona o digita il codice fiscale per filtrare..."
-                                            className="barcode-input"
-                                        />
-                                        {barcodeFilter && (
-                                            <Button
-                                                icon="pi pi-times"
-                                                rounded
-                                                text
-                                                severity="secondary"
-                                                onClick={() => {
-                                                    setBarcodeFilter('');
-                                                    barcodeInputRef.current?.focus();
-                                                }}
-                                                className="barcode-clear-btn"
-                                                tooltip="Cancella filtro"
+                                        <div className="barcode-input-wrapper">
+                                            <i className="pi pi-barcode barcode-icon"></i>
+                                            <InputText
+                                                ref={barcodeInputRef}
+                                                value={barcodeFilter}
+                                                onChange={(e) => setBarcodeFilter(e.target.value)}
+                                                placeholder="Codice fiscale..."
+                                                className="barcode-input"
                                             />
-                                        )}
+                                            {barcodeFilter && (
+                                                <Button
+                                                    icon="pi pi-times"
+                                                    rounded
+                                                    text
+                                                    severity="secondary"
+                                                    onClick={() => {
+                                                        setBarcodeFilter('');
+                                                        barcodeInputRef.current?.focus();
+                                                    }}
+                                                    className="barcode-clear-btn"
+                                                    tooltip="Cancella filtro"
+                                                />
+                                            )}
+                                        </div>
+                                        <Button icon="pi pi-refresh" rounded text onClick={fetchDonors} loading={loadingDonors} tooltip="Aggiorna" />
                                     </div>
-                                    {barcodeFilter && (
-                                        <span className="barcode-filter-status">
-                                            <i className="pi pi-filter"></i>
-                                            Filtro attivo: <strong>{barcodeFilter.toUpperCase()}</strong>
-                                        </span>
-                                    )}
                                 </div>
 
                                 {/* Tabbed View for Phases */}
@@ -545,11 +535,11 @@ const ReservedDashboard: React.FC = () => {
                                         <div className="phase-tab-content">
                                             <div className="phase-description">
                                                 <Tag severity="info" value="Non ancora convocato" icon="pi pi-clock" className="phase-tag" />
-                                                <span>Candidati registrati in attesa di essere convocati per la visita.</span>
+                                                <span>Aspiranti registrati in attesa di essere convocati per il primo incontro in sede AVIS.</span>
                                             </div>
                                             <DataTable value={filteredNonConvocati} loading={loadingDonors} paginator rows={10}
                                                 className="p-datatable-sm shadow-1 border-round overflow-hidden"
-                                                emptyMessage="Nessun candidato da convocare."
+                                                emptyMessage="Nessun aspirante da convocare."
                                                 sortField="lastName" sortOrder={1}>
                                                 <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
                                                 <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
@@ -568,11 +558,11 @@ const ReservedDashboard: React.FC = () => {
                                         <div className="phase-tab-content">
                                             <div className="phase-description">
                                                 <Tag severity="warning" value="Convocato" icon="pi pi-envelope" className="phase-tag" />
-                                                <span>Candidati convocati per la visita. Usa il pulsante verde per segnarli come idonei.</span>
+                                                <span>Aspiranti convocati per il primo incontro in sede AVIS. Usa il pulsante verde per spostarli in Idoneità.</span>
                                             </div>
                                             <DataTable value={filteredConvocati} loading={loadingDonors} paginator rows={10}
                                                 className="p-datatable-sm shadow-1 border-round overflow-hidden"
-                                                emptyMessage="Nessun candidato convocato."
+                                                emptyMessage="Nessun aspirante convocato."
                                                 sortField="convocationDate" sortOrder={-1}>
                                                 <Column body={convocatoActionCell} style={{ width: '180px' }} header="Azioni" />
                                                 <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
@@ -591,11 +581,11 @@ const ReservedDashboard: React.FC = () => {
                                         <div className="phase-tab-content">
                                             <div className="phase-description">
                                                 <Tag severity="success" value="Idoneità" icon="pi pi-check-circle" className="phase-tag" />
-                                                <span>Candidati che hanno completato la visita e sono stati dichiarati idonei.</span>
+                                                <span>Aspiranti inviati in ospedale per verificare l'idoneità. Da questo punto vengono tracciati da AvisNet.</span>
                                             </div>
                                             <DataTable value={filteredIdoneita} loading={loadingDonors} paginator rows={10}
                                                 className="p-datatable-sm shadow-1 border-round overflow-hidden"
-                                                emptyMessage="Nessun candidato in fase di idoneità."
+                                                emptyMessage="Nessun aspirante in fase di idoneità."
                                                 sortField="lastName" sortOrder={1}>
                                                 <Column body={idoneitaActionCell} style={{ width: '120px' }} header="Azioni" />
                                                 <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
@@ -628,7 +618,7 @@ const ReservedDashboard: React.FC = () => {
                 </main>
             </div>
 
-            <Dialog header="Dettagli Candidato" visible={donorDialog} style={{ width: '50vw' }} onHide={() => setDonorDialog(false)}
+            <Dialog header="Dettagli Aspirante" visible={donorDialog} style={{ width: '50vw' }} onHide={() => setDonorDialog(false)}
                 footer={<Button label="Salva" icon="pi pi-check" onClick={saveDonor} severity="danger" loading={savingDonor} />}>
                 <div className="grid p-fluid">
                     {donorFields.map(field => (

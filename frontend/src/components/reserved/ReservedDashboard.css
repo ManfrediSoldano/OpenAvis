@@ -165,24 +165,36 @@ input,
 }
 
 /* ═══════════════════════════════════════════════════
-   BARCODE / TAX CODE FILTER
+   TOOLBAR ROW
    ═══════════════════════════════════════════════════ */
-.barcode-filter-container {
+.toolbar-row {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
+.toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   BARCODE / TAX CODE FILTER (inline compact)
+   ═══════════════════════════════════════════════════ */
 .barcode-input-wrapper {
     display: flex;
     align-items: center;
     background: #f8f9fb;
     border: 2px solid #e2e8f0;
     border-radius: 0.75rem;
-    padding: 0.1rem 1rem;
+    padding: 0.1rem 0.75rem;
     transition: all 0.25s ease;
     position: relative;
+    width: 260px;
 }
 
 .barcode-input-wrapper:focus-within {
@@ -192,9 +204,9 @@ input,
 }
 
 .barcode-icon {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #a0aec0;
-    margin-right: 0.75rem;
+    margin-right: 0.5rem;
     transition: color 0.25s ease;
 }
 
@@ -207,11 +219,12 @@ input,
     border: none !important;
     background: transparent !important;
     box-shadow: none !important;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     letter-spacing: 0.5px;
-    padding: 0.75rem 0 !important;
+    padding: 0.5rem 0 !important;
     font-family: 'Courier New', Courier, monospace;
     text-transform: uppercase;
+    min-width: 0;
 }
 
 .barcode-input::placeholder {
@@ -219,24 +232,11 @@ input,
     font-family: inherit;
     letter-spacing: normal;
     color: #b0bbc8;
+    font-size: 0.85rem;
 }
 
 .barcode-clear-btn {
     flex-shrink: 0;
-}
-
-.barcode-filter-status {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: #718096;
-    padding-left: 0.5rem;
-}
-
-.barcode-filter-status i {
-    color: #e63946;
-    font-size: 0.8rem;
 }
 
 /* ═══════════════════════════════════════════════════
