@@ -164,8 +164,194 @@ input,
     white-space: nowrap;
 }
 
-/* CSS for print-module-button removed to use standard severity styles */
+/* ═══════════════════════════════════════════════════
+   TOOLBAR ROW
+   ═══════════════════════════════════════════════════ */
+.toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
 
+.toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   BARCODE / TAX CODE FILTER (inline compact)
+   ═══════════════════════════════════════════════════ */
+.barcode-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: #f8f9fb;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 0.1rem 0.75rem;
+    transition: all 0.25s ease;
+    position: relative;
+    width: 260px;
+}
+
+.barcode-input-wrapper:focus-within {
+    border-color: #e63946;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.12);
+}
+
+.barcode-icon {
+    font-size: 1.2rem;
+    color: #a0aec0;
+    margin-right: 0.5rem;
+    transition: color 0.25s ease;
+}
+
+.barcode-input-wrapper:focus-within .barcode-icon {
+    color: #e63946;
+}
+
+.barcode-input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0 !important;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    min-width: 0;
+}
+
+.barcode-input::placeholder {
+    text-transform: none;
+    font-family: inherit;
+    letter-spacing: normal;
+    color: #b0bbc8;
+    font-size: 0.85rem;
+}
+
+.barcode-clear-btn {
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   PHASE TABVIEW
+   ═══════════════════════════════════════════════════ */
+.phase-tabview .p-tabview-nav {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #edf2f7;
+    gap: 0;
+}
+
+.phase-tabview .p-tabview-nav li {
+    margin-right: 0;
+}
+
+.phase-tabview .p-tabview-nav li .p-tabview-nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    padding: 0.85rem 1.5rem;
+    margin-bottom: -2px;
+    transition: all 0.25s ease;
+    border-radius: 0;
+}
+
+.phase-tabview .p-tabview-nav li .p-tabview-nav-link:hover {
+    background: #f8f9fb;
+    border-bottom-color: #cbd5e0;
+}
+
+.phase-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    border-bottom-color: #e63946;
+    background: transparent;
+    color: #2d3748;
+}
+
+.phase-tabview .p-tabview-panels {
+    background: transparent;
+    padding: 1.5rem 0 0 0;
+    border: none;
+}
+
+/* Tab header custom template */
+.tab-header-custom {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+}
+
+.tab-header-icon {
+    font-size: 1.1rem;
+}
+
+.tab-header-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #4a5568;
+}
+
+.p-highlight .tab-header-label {
+    color: #2d3748;
+}
+
+.tab-header-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+/* Phase tab content */
+.phase-tab-content {
+    animation: fadeInTab 0.3s ease;
+}
+
+@keyframes fadeInTab {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.phase-description {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f8f9fb;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+.phase-tag {
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════ */
 @media (max-width: 768px) {
     .reserved-sidebar {
         width: 80px;
@@ -183,6 +369,26 @@ input,
 
     .reserved-sidebar .p-menuitem-link .p-menuitem-icon {
         margin-right: 0;
+        font-size: 1.2rem;
+    }
+
+    .reserved-content {
+        padding: 1rem;
+    }
+
+    .phase-tabview .p-tabview-nav li .p-tabview-nav-link {
+        padding: 0.7rem 0.75rem;
+    }
+
+    .tab-header-label {
+        font-size: 0.82rem;
+    }
+
+    .barcode-input-wrapper {
+        padding: 0.1rem 0.6rem;
+    }
+
+    .barcode-icon {
         font-size: 1.2rem;
     }
 }

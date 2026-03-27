@@ -66,6 +66,17 @@ const nonProfessionalConditionOptions = [
   { label: "Pensionato", value: "pensioner" }
 ];
 
+/**
+ * Determines the local AVIS (Merate/Brivio/Missaglia) based on the domicile town.
+ * If the domicile town matches "Brivio" or "Missaglia" (case-insensitive, trimmed),
+ * the corresponding AVIS is returned. Otherwise defaults to "Merate".
+ */
+function getLocalAvisFromDomicile(domicileTown: string): 'Merate' | 'Brivio' | 'Missaglia' {
+  const normalized = domicileTown.trim().toLowerCase();
+  if (normalized === 'brivio') return 'Brivio';
+  if (normalized === 'missaglia') return 'Missaglia';
+  return 'Merate';
+}
 
 
 interface FormState extends Donor {
@@ -718,6 +729,15 @@ const DonorSignup: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [step]);
+
+  // Auto-assign localAvis based on domicile town
+  useEffect(() => {
+    const effectiveDomicile = form.residenceSameAsDomicile ? form.town : (form.domicileTown || '');
+    const computed = getLocalAvisFromDomicile(effectiveDomicile || '');
+    if (computed !== form.localAvis) {
+      setForm(f => ({ ...f, localAvis: computed }));
+    }
+  }, [form.town, form.domicileTown, form.residenceSameAsDomicile]);
 
 
   const stepProps: StepProps = {

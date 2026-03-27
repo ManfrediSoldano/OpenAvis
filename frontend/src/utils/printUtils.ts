@@ -154,14 +154,15 @@ const TEMPLATE = `
       display: inline-block;
       border-bottom: 1px solid var(--avis-blue);
       min-width: 20mm;
-      height: 18px; /* higher to allow lifting text */
       vertical-align: bottom;
       font-size: 13.5px;
+      line-height: 1;
       color: #333;
       font-style: italic;
       padding-left: 3px;
       padding-right: 3px;
-      padding-bottom: 4.5px; /* lift text from line significantly */
+      padding-bottom: 1px;
+      padding-top: 10px;
     }
     .field-full {
       display: block;
@@ -170,12 +171,14 @@ const TEMPLATE = `
       min-height: 18px;
       margin: 1px 0 3px;
       font-size: 13.5px;
+      line-height: 1;
       color: #333;
       font-style: italic;
       overflow: hidden;
       white-space: nowrap;
       padding-left: 3px;
-      padding-bottom: 4.5px; /* lift text from line significantly */
+      padding-bottom: 1px;
+      padding-top: 6px;
     }
 
     /* ── Boxed cells (ISTAT / CF / CAP) ─────────────── */
@@ -312,11 +315,12 @@ const TEMPLATE = `
     .sign-line { 
       border-bottom: 1px solid var(--avis-blue); 
       margin-top: 4mm; 
-      height: 20px; 
       display: flex; 
       align-items: flex-end; 
-      padding-bottom: 4.5px;
+      padding-bottom: 1px;
+      padding-top: 10px;
       font-size: 11px; 
+      line-height: 1;
       color: #333; 
       font-style: italic;
     }
