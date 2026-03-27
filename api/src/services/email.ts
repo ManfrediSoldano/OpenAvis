@@ -53,7 +53,7 @@ export class EmailService {
                     
                     <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;">
                         <p style="margin: 5px 0;">
-                            Tel: <a href="tel:+390399902303" style="color: #d9534f; text-decoration: none;">039 9902303</a> | 
+                            Tel: <a href="tel:+390395986891" style="color: #d9534f; text-decoration: none;">039 5986891</a> | 
                             Email: <a href="mailto:info@avismerate.it" style="color: #d9534f; text-decoration: none;">info@avismerate.it</a>
                         </p>
                         <p style="margin: 5px 0;">

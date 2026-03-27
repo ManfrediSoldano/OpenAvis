@@ -15,6 +15,7 @@ import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import ScrollToTop from './components/common/ScrollToTop';
+import CookieBanner from './components/common/CookieBanner';
 
 const LoginPageRedirect: React.FC = () => {
   React.useEffect(() => {
@@ -52,6 +53,7 @@ const AppContent: React.FC = () => {
             </Routes>
           </main>
           {!isReservedArea && <Footer />}
+          <CookieBanner />
         </PrimeReactProvider>
       </div>
     </div>

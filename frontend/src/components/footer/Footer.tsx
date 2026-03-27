@@ -22,7 +22,7 @@ const Footer = () => (
     <div className="footer-section footer-contacts">
       <h4>CONTATTI</h4>
       <ul>
-        <li>Telefono: <a href="tel:+390399902303">039 9902303</a></li>
+        <li>Telefono: <a href="tel:+390395986891">039 5986891</a></li>
         <li>Email: <a href="mailto:info@avismerate.it">info@avismerate.it</a></li>
         <li>PEC: <a href="mailto:MERATE.COMUNALE@PEC.AVIS.IT">merate.comunale@pec.avis.it</a></li>
       </ul>
