@@ -163,7 +163,7 @@ const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
   <div className="donor-signup-container animated-fade-in">
     <div className="donor-step-title">Scelta del Centro Trasfusionale</div>
     <div className="donor-step-desc">
-      AVIS Merate coordina i donatori che afferiscono all'<b>Ospedale Mandic di Merate</b>.<br />
+      AVIS Merate coordina i donatori che donano presso l'<b>Ospedale Mandic di Merate</b>.<br />
       Dove preferisci effettuare le tue donazioni?
     </div>
 
@@ -589,7 +589,7 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
     <div className="donor-signup-container animated-fade-in">
       <div className="donor-step-title">Associazione di Appartenenza</div>
       <div className="donor-step-desc">
-        Puoi scegliere di iscriverti ad una associazione AVIS diversa da AVIS Merate tra quelle che affluiscono al Centro Trasfusiuonale di Merate.
+        Puoi scegliere di iscriverti a un'associazione (entità legale) diversa da AVIS Merate tra le AVIS che affluiscono al Centro Trasfusionale di Merate:
       </div>
 
       <div className="donor-center-options" style={{ marginBottom: '2rem' }}>

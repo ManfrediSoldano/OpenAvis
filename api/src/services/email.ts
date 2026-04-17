@@ -156,14 +156,14 @@ export class EmailService {
     async sendInternalNotification(donorData: { firstName: string, lastName: string, email: string, phone?: string }) {
         const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
         const internalEmail = process.env.INTERNAL_NOTIFICATION_EMAIL || "manfredi@avismerate.it";
-        
+
         let baseUrl = "http://localhost:5173";
         if (process.env.NODE_ENV === 'production') {
             baseUrl = "https://avismerate.it";
         } else if (process.env.NODE_ENV === 'beta') {
             baseUrl = "https://beta.avismerate.it";
         }
-        
+
         const reservedLink = `${baseUrl}/reserved`;
 
         if (!isProduction) {
@@ -174,15 +174,15 @@ export class EmailService {
         if (!this.client.beginSend) throw new Error("Email Client not initialized (Missing ACS_CONNECTION_STRING)");
 
         const htmlContent = `
-            <p>Attenzione! Si è appena registrato un nuovo utente sul sito web.</p>
-            <p>Ecco i dettagli del nuovo iscritto:</p>
+            <p>Si è registrato un nuovo aspirante sul sito web.</p>
+            <p>Ecco i dettagli del nuovo aspirante:</p>
             <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; margin: 20px 0;">
                 <p style="margin: 5px 0;"><strong>Nome:</strong> ${donorData.firstName}</p>
                 <p style="margin: 5px 0;"><strong>Cognome:</strong> ${donorData.lastName}</p>
                 <p style="margin: 5px 0;"><strong>Email:</strong> ${donorData.email}</p>
                 <p style="margin: 5px 0;"><strong>Telefono:</strong> ${donorData.phone || 'Non fornito'}</p>
             </div>
-            <p>Puoi gestire la pratica e scaricare il documento tramite il link qui sotto:</p>
+            <p>Puoi gestire la pratica e scaricare il documento autogenrato tramite il link qui sotto:</p>
             <p style="text-align: center; margin: 30px 0;">
                 <a href="${reservedLink}" style="background-color: #d9534f; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Accedi all'Area Riservata</a>
             </p>
@@ -192,7 +192,7 @@ export class EmailService {
         const emailMessage = {
             senderAddress: this.senderAddress,
             content: {
-                subject: `Nuovo Iscritto sul sito - ${donorData.firstName} ${donorData.lastName}`,
+                subject: `Un nuovo aspirante si è iscritto sul sito - ${donorData.firstName} ${donorData.lastName}`,
                 plainText: `Nuovo iscritto: ${donorData.firstName} ${donorData.lastName}, Email: ${donorData.email}, Telefono: ${donorData.phone || 'N/D'}. Gestisci su: ${reservedLink}`,
                 html: this.getTemplate("Nuovo Iscritto", htmlContent)
             },
