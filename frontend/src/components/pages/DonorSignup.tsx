@@ -625,24 +625,24 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
               <div style={{ padding: '0.5rem' }}>
                 <div style={{ fontWeight: 700, marginBottom: '0.5rem', color: '#005a91', fontSize: '1.1rem' }}>
                   <i className="pi pi-info-circle" style={{ marginRight: '0.5rem' }}></i>
-                  Informativa Gestione Consorelle
+                  Informativa Gestione Dati tra associazioni
                 </div>
                 <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>
                   AVIS Comunale Merate gestisce operativamente gli aspiranti alla donazione e le attività di raccolta anche per conto delle AVIS consorelle di <b>Brivio</b> e <b>Missaglia</b>.<br />
-                  Selezionando questa sede, i tuoi dati personali saranno trattati da AVIS Merate e condivisi con la sede legale prescelta ai fini della gestione del rapporto associativo e delle donazioni, in conformità al <b>Regolamento UE 2016/679 (GDPR)</b>.
+                  Selezionando questa sede, i tuoi dati personali saranno trattati da AVIS Merate (in qualità di <b>Responsabile del Trattamento dati</b>) e condivisi con l'associazione prescelta ai fini della gestione del rapporto associativo e delle donazioni, in conformità al <b>Regolamento UE 2016/679 (GDPR)</b>.
                 </p>
               </div>
             )}
           />
-          <div className="flex align-items-center mt-3 p-3" style={{ background: '#f8fbff', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
+          <div className="flex align-items-center mt-4 p-2" style={{ border: 'none', background: 'transparent' }}>
             <Checkbox
               inputId="consorelleAccepted"
               checked={form.consorelleAccepted}
               onChange={e => setForm(f => ({ ...f, consorelleAccepted: e.checked ?? false }))}
               className={(!form.consorelleAccepted && error === 'CONSORELLE_ERR') ? 'p-invalid' : ''}
             />
-            <label htmlFor="consorelleAccepted" style={{ marginLeft: '1rem', cursor: 'pointer', fontWeight: 500, color: '#333' }}>
-              Ho compreso che la mia candidatura sarà gestita operativamente da AVIS Merate per conto della sede scelta.
+            <label htmlFor="consorelleAccepted" style={{ marginLeft: '1rem', cursor: 'pointer', fontWeight: 500, color: '#444', fontSize: '0.92rem' }}>
+              Dichiaro di aver compreso che <b>AVIS Merate</b> agirà come Responsabile del Trattamento dei dati per la gestione operativa della mia candidatura per conto della sede scelta.
             </label>
           </div>
         </div>
