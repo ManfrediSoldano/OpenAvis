@@ -53,6 +53,19 @@ export async function signup(request: HttpRequest, context: InvocationContext): 
             // Continue anyway - donor is saved
         }
 
+        // Send internal notification
+        try {
+            await emailService.sendInternalNotification({
+                firstName: donorData.firstName,
+                lastName: donorData.lastName,
+                email: donorData.email,
+                phone: donorData.phone
+            });
+        } catch (notificationError) {
+            context.error("Failed to send internal notification email:", notificationError);
+            // Continue anyway - don't block the user
+        }
+
         context.log(`[Signup] Donor saved: ${donorData.email}`);
 
         return {
