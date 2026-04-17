@@ -16,6 +16,7 @@ import './functions/seedNews';
 import './functions/getDonors';
 import './functions/updateDonor';
 import './functions/sendConvocation';
+import './functions/logAction';
 
 // All functions are registered via app.http() calls in their respective files
 export { };

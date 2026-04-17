@@ -1,5 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DatabaseService } from "../services/database";
+import { serverLogAction } from "../utils/authUtils";
 
 export async function updateDonor(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Updating donor...`);
@@ -23,6 +24,11 @@ export async function updateDonor(request: HttpRequest, context: InvocationConte
 
         const dbService = new DatabaseService();
         const updatedItem = await dbService.saveDonor(donorData);
+
+        // Server-side logging
+        const action = donorData.id ? 'donor_update' : 'donor_create';
+        const metadata = donorData.phase ? { phase: donorData.phase } : undefined;
+        await serverLogAction(request, action as any, donorData.email, metadata);
 
         return {
             status: 200,

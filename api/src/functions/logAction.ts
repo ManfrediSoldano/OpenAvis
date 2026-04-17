@@ -1,14 +1,14 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { DatabaseService } from "../services/database";
 import { AccessLog } from "../../../shared/models/accessLog";
+import { getPrincipal } from "../utils/authUtils";
 
 export async function logAction(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    const principalHeader = request.headers.get("x-ms-client-principal");
-    if (!principalHeader) {
+    const principal = getPrincipal(request);
+    if (!principal) {
         return { status: 401, body: "Unauthorized" };
     }
 
-    const principal = JSON.parse(Buffer.from(principalHeader, "base64").toString("utf-8"));
     const userId = principal.userId;
     const userDetails = principal.userDetails;
 
@@ -41,5 +41,6 @@ export async function logAction(request: HttpRequest, context: InvocationContext
 app.http('logAction', {
     methods: ['POST'],
     authLevel: 'anonymous',
+    route: 'reserved/logAction',
     handler: logAction
 });

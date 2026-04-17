@@ -8,7 +8,7 @@ export const logAction = async (action: LogAction, targetId?: string, metadata?:
             metadata
         };
 
-        const response = await fetch('/api/logAction', {
+        const response = await fetch('/api/reserved/logAction', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

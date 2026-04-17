@@ -136,9 +136,6 @@ const ReservedDashboard: React.FC = () => {
                         roles: data.clientPrincipal.userRoles
                     });
 
-                    // Log successful login
-                    logAction('login');
-
                     // Set initial section based on roles
                     if (!data.clientPrincipal.userRoles.includes('admin') &&
                         !data.clientPrincipal.userRoles.includes('candidates-manager') &&
@@ -205,7 +202,6 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Aspirante salvato' });
-                logAction(selectedDonor?.id ? 'donor_update' : 'donor_create', selectedDonor?.email);
                 setDonorDialog(false);
                 fetchDonors();
             } else {
@@ -246,7 +242,6 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Inviato', detail: 'Convocazione inviata con successo' });
-                logAction('donor_convocation_sent', donor.email);
                 fetchDonors();
             } else {
                 const err = await res.text();
@@ -270,7 +265,6 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Successo', detail: `${rowData.firstName} ${rowData.lastName} spostato/a in Idoneità` });
-                logAction('donor_phase_change', rowData.email, { phase: 'idoneita' });
                 fetchDonors();
             } else {
                 const err = await res.text();
@@ -313,20 +307,14 @@ const ReservedDashboard: React.FC = () => {
                     icon: 'pi pi-users',
                     visible: hasRole('candidates-manager'),
                     className: activeSection === 'candidati' ? 'active-menu-item' : '',
-                    command: () => {
-                        setActiveSection('candidati');
-                        logAction('page_view', 'candidati');
-                    }
+                    command: () => setActiveSection('candidati')
                 },
                 {
                     label: 'Notizie',
                     icon: 'pi pi-megaphone',
                     visible: hasRole('news-editor'),
                     className: activeSection === 'notizie' ? 'active-menu-item' : '',
-                    command: () => {
-                        setActiveSection('notizie');
-                        logAction('page_view', 'notizie');
-                    }
+                    command: () => setActiveSection('notizie')
                 }
             ]
         },
@@ -336,10 +324,7 @@ const ReservedDashboard: React.FC = () => {
                 {
                     label: 'Logout',
                     icon: 'pi pi-sign-out',
-                    command: async () => {
-                        await logAction('logout');
-                        window.location.href = '/logout';
-                    }
+                    command: () => window.location.href = '/logout'
                 }
             ]
         }
