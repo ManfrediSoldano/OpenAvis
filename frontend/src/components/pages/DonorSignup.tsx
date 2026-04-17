@@ -587,10 +587,9 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
 
   return (
     <div className="donor-signup-container animated-fade-in">
-      <div className="donor-step-title">Sede Legale di Appartenenza</div>
+      <div className="donor-step-title">Associazione di Appartenenza</div>
       <div className="donor-step-desc">
-        Puoi scegliere a quale delle nostre tre sedi AVIS consorelle iscriverti.<br />
-        Abbiamo pre-selezionato la sede più vicina al tuo comune, ma puoi modificarla.
+        Puoi scegliere di iscriverti ad una associazione AVIS diversa da AVIS Merate tra quelle che affluiscono al Centro Trasfusiuonale di Merate.
       </div>
 
       <div className="donor-center-options" style={{ marginBottom: '2rem' }}>
@@ -599,21 +598,21 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
           onClick={() => setForm(f => ({ ...f, localAvis: 'Merate', consorelleAccepted: false }))}
         >
           <i className="pi pi-building"></i>
-          <span>AVIS Merate</span>
-        </div>
-        <div
-          className={`donor-center-option ${form.localAvis === 'Brivio' ? 'selected' : ''}`}
-          onClick={() => setForm(f => ({ ...f, localAvis: 'Brivio' }))}
-        >
-          <i className="pi pi-building"></i>
-          <span>AVIS Brivio</span>
+          <span>AVIS Comunale di Merate ODV</span>
         </div>
         <div
           className={`donor-center-option ${form.localAvis === 'Missaglia' ? 'selected' : ''}`}
           onClick={() => setForm(f => ({ ...f, localAvis: 'Missaglia' }))}
         >
           <i className="pi pi-building"></i>
-          <span>AVIS Missaglia</span>
+          <span>AVIS Comunale di Missaglia ODV</span>
+        </div>
+        <div
+          className={`donor-center-option ${form.localAvis === 'Brivio' ? 'selected' : ''}`}
+          onClick={() => setForm(f => ({ ...f, localAvis: 'Brivio' }))}
+        >
+          <i className="pi pi-building"></i>
+          <span>AVIS Comunale di Brivio ODV</span>
         </div>
       </div>
 
