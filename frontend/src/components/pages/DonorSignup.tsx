@@ -80,9 +80,6 @@ function getLocalAvisFromDomicile(domicileTown: string): 'Merate' | 'Brivio' | '
 
 
 interface FormState extends Donor {
-  age: number | null;
-  weight: number | null;
-  noPermanentExclusion: boolean;
   donateInMerate: boolean | null;
   transfusionCenter: string;
   residenceSameAsDomicile: boolean;
@@ -116,50 +113,46 @@ const InputWithIcon: React.FC<{ icon: string; children: React.ReactNode }> = ({ 
 );
 
 
-const Step1: React.FC<StepProps> = ({ form, setForm, setStep }) => (
-  <div className="donor-signup-container">
-    <div className="donor-step-banner">
+const Step1: React.FC<StepProps> = ({ setStep }) => (
+  <div className="donor-signup-container animated-fade-in">
+    <div className="donor-step-title" style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>
+      Informativa sui requisiti per la donazione
+    </div>
+    <div className="donor-step-desc" style={{ marginBottom: '2rem' }}>
+      Per diventare donatore AVIS è necessario possedere alcuni requisiti fondamentali di base.
+    </div>
+
+    <div className="requirements-grid">
+      <div className="requirement-card">
+        <i className="pi pi-calendar" />
+        <h3>Età</h3>
+        <p>Per la prima donazione è necessario avere un'età compresa tra 18 e 60 anni.</p>
+        <div className="requirement-badge">18 - 60 anni</div>
+      </div>
+
+      <div className="requirement-card">
+        <i className="pi pi-box" />
+        <h3>Peso</h3>
+        <p>Per poter donare in sicurezza è necessario pesare almeno 50 kg.</p>
+        <div className="requirement-badge">Minimo 50 kg</div>
+      </div>
+    </div>
+
+    <div className="donor-step-desc" style={{ marginTop: '2rem', fontSize: '1rem' }}>
+      Esistono altri criteri di idoneità legati allo stato di salute e allo stile di vita.<br />
+      <a href={exclusionPdf} target="_blank" rel="noopener noreferrer" className="requirements-link">
+        <i className="pi pi-external-link" style={{ marginRight: '5px' }} />
+        Consulta i criteri di esclusione (PDF)
+      </a>
+    </div>
+
+    <div className="medical-warning">
       <i className="pi pi-info-circle" />
-      Le risposte in questa schermata non saranno salvate da AVIS, servono solo per guidarti nella compilazione. Solo il medico può valutare l'idoneità definitiva.
+      <span>L'idoneità definitiva alla donazione sarà verificata da un <strong>medico professionista</strong> durante il colloquio e gli accertamenti sanitari obbligatori.</span>
     </div>
-    <div className="donor-step-title">Controllo dei requisiti</div>
-    <div className="donor-step-desc">Per candidarti devi avere tra 18 e 60 anni, pesare almeno 50kg e non avere criteri di esclusione permanente. <a href={exclusionPdf} target="_blank" rel="noopener noreferrer">Consulta i criteri di esclusione</a>.</div>
-    <div className="donor-step-form-row">
-      <span>
-        <FloatLabel>
-          <label htmlFor="age-check">Età</label>
-          <InputNumber
-            id="age-check"
-            value={form.age}
-            onValueChange={e => setForm(f => ({ ...f, age: e.value ?? null }))}
-            min={18}
-            max={70}
-            showButtons
-            suffix=" anni"
-          />
-        </FloatLabel>
-      </span>
-      <span>
-        <FloatLabel>
-          <label htmlFor="weight-check">Peso*</label>
-          <InputNumber
-            id="weight-check"
-            value={form.weight}
-            onValueChange={e => setForm(f => ({ ...f, weight: e.value ?? null }))}
-            min={50}
-            max={200}
-            showButtons
-            suffix=" kg"
-          />
-        </FloatLabel>
-      </span>
-    </div>
-    <div style={{ margin: '1rem 0', textAlign: 'center' }}>
-      <Checkbox inputId="noPermanentExclusion" checked={form.noPermanentExclusion} onChange={e => setForm(f => ({ ...f, noPermanentExclusion: e.checked || false }))} />
-      <label htmlFor="noPermanentExclusion" style={{ marginLeft: 8 }}>Dichiaro di non avere criteri di esclusione permanente</label>
-    </div>
+
     <div className="donor-step-actions">
-      <Button label="Avanti" icon="pi pi-arrow-right" disabled={!(form.age && form.weight && form.noPermanentExclusion)} onClick={() => setStep(2)} />
+      <Button label="Ho capito, procedi" icon="pi pi-arrow-right" onClick={() => setStep(2)} className="p-button-lg" />
     </div>
   </div>
 );
@@ -660,7 +653,7 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpEr
             setIsSubmitting(true);
             setOtpError("");
             // Final Submit: Data + OTP
-            const { age: _age, weight: _weight, noPermanentExclusion: _npe, ...dataToSend } = form;
+            const dataToSend = form;
             const res = await client.post('/api/signup', { ...dataToSend, otp });
             if (res.data.success) {
               setSuccess(true);
@@ -695,9 +688,6 @@ const DonorSignup: React.FC = () => {
   const [otp, setOtp] = useState<string>("");
   const [otpError, setOtpError] = useState("");
   const [form, setForm] = useState<FormState>({
-    age: null,
-    weight: null,
-    noPermanentExclusion: false,
     donateInMerate: true,
     transfusionCenter: "",
     firstName: "",
