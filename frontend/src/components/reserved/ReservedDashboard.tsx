@@ -377,7 +377,9 @@ const ReservedDashboard: React.FC = () => {
     };
 
     const handlePrint = (donor: any) => {
-        logAction('document_print', donor.email);
+        logAction('document_print', donor.email, { 
+            donorName: `${donor.firstName} ${donor.lastName}` 
+        });
         printModule(donor, 'completo');
     };
 
