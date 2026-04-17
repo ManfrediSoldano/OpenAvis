@@ -17,6 +17,7 @@ import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { printModule } from '../../utils/printUtils';
 import { searchComuni } from 'italian-locations';
+import { logAction } from '../../api/loggingService';
 
 interface UserInfo {
     clientPrincipal: {
@@ -135,6 +136,9 @@ const ReservedDashboard: React.FC = () => {
                         roles: data.clientPrincipal.userRoles
                     });
 
+                    // Log successful login
+                    logAction('login');
+
                     // Set initial section based on roles
                     if (!data.clientPrincipal.userRoles.includes('admin') &&
                         !data.clientPrincipal.userRoles.includes('candidates-manager') &&
@@ -201,6 +205,7 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Successo', detail: 'Aspirante salvato' });
+                logAction(selectedDonor?.id ? 'donor_update' : 'donor_create', selectedDonor?.email);
                 setDonorDialog(false);
                 fetchDonors();
             } else {
@@ -241,6 +246,7 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Inviato', detail: 'Convocazione inviata con successo' });
+                logAction('donor_convocation_sent', donor.email);
                 fetchDonors();
             } else {
                 const err = await res.text();
@@ -264,6 +270,7 @@ const ReservedDashboard: React.FC = () => {
 
             if (res.ok) {
                 toast.current?.show({ severity: 'success', summary: 'Successo', detail: `${rowData.firstName} ${rowData.lastName} spostato/a in Idoneità` });
+                logAction('donor_phase_change', rowData.email, { phase: 'idoneita' });
                 fetchDonors();
             } else {
                 const err = await res.text();
@@ -306,14 +313,20 @@ const ReservedDashboard: React.FC = () => {
                     icon: 'pi pi-users',
                     visible: hasRole('candidates-manager'),
                     className: activeSection === 'candidati' ? 'active-menu-item' : '',
-                    command: () => setActiveSection('candidati')
+                    command: () => {
+                        setActiveSection('candidati');
+                        logAction('page_view', 'candidati');
+                    }
                 },
                 {
                     label: 'Notizie',
                     icon: 'pi pi-megaphone',
                     visible: hasRole('news-editor'),
                     className: activeSection === 'notizie' ? 'active-menu-item' : '',
-                    command: () => setActiveSection('notizie')
+                    command: () => {
+                        setActiveSection('notizie');
+                        logAction('page_view', 'notizie');
+                    }
                 }
             ]
         },
@@ -323,7 +336,10 @@ const ReservedDashboard: React.FC = () => {
                 {
                     label: 'Logout',
                     icon: 'pi pi-sign-out',
-                    command: () => window.location.href = '/logout'
+                    command: async () => {
+                        await logAction('logout');
+                        window.location.href = '/logout';
+                    }
                 }
             ]
         }
@@ -375,6 +391,11 @@ const ReservedDashboard: React.FC = () => {
         );
     };
 
+    const handlePrint = (donor: any) => {
+        logAction('document_print', donor.email);
+        printModule(donor, 'completo');
+    };
+
     const actionCell = (rowData: any) => {
         return (
             <div className="flex gap-2 align-items-center">
@@ -384,7 +405,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
             </div>
         );
     };
@@ -398,7 +419,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
             </div>
         );
     };
@@ -412,7 +433,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-arrow-right"
                     rounded

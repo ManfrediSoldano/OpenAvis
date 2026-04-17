@@ -7,6 +7,7 @@ export class DatabaseService {
     private donorsContainerId: string = "donors";
     private otpsContainerId: string = "otps";
     private newsContainerId: string = "news";
+    private logsContainerId: string = "logs";
 
     constructor() {
         const endpoint = process.env.COSMOS_DB_ENDPOINT;
@@ -284,5 +285,22 @@ export class DatabaseService {
             console.error(`Error incrementing likes for ${id}:`, error);
             return null;
         }
+    }
+
+    /**
+     * Log user activity to Cosmos DB
+     */
+    async logAccess(logEntry: any) {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.logsContainerId,
+            partitionKey: { paths: ["/userId"] }
+        });
+
+        if (!logEntry.id) logEntry.id = crypto.randomUUID();
+        if (!logEntry.timestamp) logEntry.timestamp = new Date().toISOString();
+
+        const { resource } = await container.items.create(logEntry);
+        return resource;
     }
 }
