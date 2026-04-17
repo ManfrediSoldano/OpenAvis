@@ -84,6 +84,7 @@ interface FormState extends Donor {
   transfusionCenter: string;
   residenceSameAsDomicile: boolean;
   privacyAccepted: boolean;
+  consorelleAccepted: boolean;
 }
 
 
@@ -148,7 +149,7 @@ const Step1: React.FC<StepProps> = ({ setStep }) => (
 
     <div className="medical-warning">
       <i className="pi pi-info-circle" />
-      <span>L'idoneità definitiva alla donazione sarà verificata da un <strong>medico professionista</strong> durante il colloquio e gli accertamenti sanitari obbligatori.</span>
+      <span>L'idoneità definitiva alla donazione potrà essere confermata solo dal medico durante la prima visita.</span>
     </div>
 
     <div className="donor-step-actions">
@@ -159,43 +160,74 @@ const Step1: React.FC<StepProps> = ({ setStep }) => (
 
 
 const Step2: React.FC<StepProps> = ({ form, setForm, setStep }) => (
-  <div className="donor-signup-container">
-    <div className="donor-step-title">Dove vuoi donare?</div>
-    <div className="donor-step-desc">Preferisci donare a Merate o in un altro centro trasfusionale?</div>
-    <div className="donor-center-options">
+  <div className="donor-signup-container animated-fade-in">
+    <div className="donor-step-title">Scelta del Centro Trasfusionale</div>
+    <div className="donor-step-desc">
+      AVIS Merate coordina i donatori che afferiscono all'<b>Ospedale Mandic di Merate</b>.<br />
+      Dove preferisci effettuare le tue donazioni?
+    </div>
+
+    <div className="donor-center-options" style={{ marginBottom: '2rem' }}>
       <div
         className={`donor-center-option ${form.donateInMerate === true ? 'selected' : ''}`}
         onClick={() => setForm(f => ({ ...f, donateInMerate: true, transfusionCenter: "" }))}
+        style={{ width: '250px', height: '150px' }}
       >
-        <i className="pi pi-home"></i>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <span style={{ fontWeight: 600 }}>Merate</span>
-          <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Ospedale Mandic</span>
+        <i className="pi pi-home" style={{ fontSize: '2.5rem' }}></i>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontWeight: 700, fontSize: '1.2rem' }}>Merate</div>
+          <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Ospedale Mandic</div>
         </div>
       </div>
+
       <div
         className={`donor-center-option ${form.donateInMerate === false ? 'selected' : ''}`}
         onClick={() => setForm(f => ({ ...f, donateInMerate: false }))}
+        style={{ width: '250px', height: '150px' }}
       >
-        <i className="pi pi-map-marker"></i>
-        <span>Altro centro</span>
+        <i className="pi pi-map-marker" style={{ fontSize: '2.5rem' }}></i>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontWeight: 700, fontSize: '1.2rem' }}>Altro centro</div>
+          <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Fuori zona Merate</div>
+        </div>
       </div>
     </div>
+
     {form.donateInMerate === false && (
-      <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
-        <Message severity="warn" text="Attenzione: sarai reindirizzato verso il sito dell'AVIS della zona selezionata." style={{ marginBottom: '1rem', width: '100%' }} />
-        <label>Scegli il centro trasfusionale:</label>
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '0.7rem', justifyContent: 'center' }}>
-          {transfusionCenters.map(center => (
-            <Button key={center.value} label={center.label} onClick={() => window.open(center.url, '_blank')} className="p-button-secondary" />
-          ))}
+      <div className="animated-fade-in" style={{ maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+        <Message
+          severity="warn"
+          content={() => (
+            <div className="flex align-items-center">
+              <i className="pi pi-exclamation-triangle" style={{ fontSize: '1.5rem', marginRight: '1rem' }}></i>
+              <div style={{ textAlign: 'left' }}>
+                <b>Attenzione:</b> Verrai reindirizzato al portale dell'AVIS competente per il territorio scelto.
+              </div>
+            </div>
+          )}
+          style={{ width: '100%', marginBottom: '1.5rem' }}
+        />
+        <div className="p-field" style={{ textAlign: 'center' }}>
+          <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 600 }}>Scegli il centro trasfusionale di riferimento:</label>
+          <div className="flex flex-wrap justify-content-center gap-2">
+            {transfusionCenters.map(center => (
+              <Button
+                key={center.value}
+                label={center.label}
+                icon="pi pi-external-link"
+                onClick={() => window.open(center.url, '_blank')}
+                className="p-button-outlined p-button-secondary"
+              />
+            ))}
+          </div>
         </div>
       </div>
     )}
+
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(1)} />
       {form.donateInMerate === true && (
-        <Button label="Avanti" icon="pi pi-arrow-right" onClick={() => setStep(3)} />
+        <Button label="Avanti" icon="pi pi-arrow-right" onClick={() => setStep(3)} className="p-button-raised" />
       )}
     </div>
   </div>
@@ -544,30 +576,107 @@ const Step4: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setErr
     </div>
     <div className="donor-step-actions">
       <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(3)} />
-      <Button label="Invia il codice" icon="pi pi-send" onClick={() => {
-        // Optimistic update: Go to next step immediately
-        // Fire request in background
-        setLoading(true);
-        setError("");
-        client.post('/api/send-otp', { email: form.email })
-          .then(() => setAck(true))
-          .catch((err: any) => {
-            console.error("Send OTP failed", err);
-            // We can show the error in the next step or handle it globally
-            // For now, we log it. The user can click "Resend" in the next step.
-          })
-          .finally(() => setLoading(false));
-
-        setStep(5);
-      }} />
+      <Button label="Avanti" icon="pi pi-arrow-right" onClick={() => setStep(5)} />
     </div>
-    {loading && <Message severity="info" text="Invio codice OTP in corso..." />}
-    {error && <Message severity="error" text={error} />}
   </div >
 );
 
 
-const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => {
+const Step5: React.FC<StepProps> = ({ form, setForm, setStep, setLoading, setError, setAck, loading, error }) => {
+  const needsConsorelleWarning = form.localAvis === 'Brivio' || form.localAvis === 'Missaglia';
+
+  return (
+    <div className="donor-signup-container animated-fade-in">
+      <div className="donor-step-title">Sede Legale di Appartenenza</div>
+      <div className="donor-step-desc">
+        Puoi scegliere a quale delle nostre tre sedi AVIS consorelle iscriverti.<br />
+        Abbiamo pre-selezionato la sede più vicina al tuo comune, ma puoi modificarla.
+      </div>
+
+      <div className="donor-center-options" style={{ marginBottom: '2rem' }}>
+        <div
+          className={`donor-center-option ${form.localAvis === 'Merate' ? 'selected' : ''}`}
+          onClick={() => setForm(f => ({ ...f, localAvis: 'Merate', consorelleAccepted: false }))}
+        >
+          <i className="pi pi-building"></i>
+          <span>AVIS Merate</span>
+        </div>
+        <div
+          className={`donor-center-option ${form.localAvis === 'Brivio' ? 'selected' : ''}`}
+          onClick={() => setForm(f => ({ ...f, localAvis: 'Brivio' }))}
+        >
+          <i className="pi pi-building"></i>
+          <span>AVIS Brivio</span>
+        </div>
+        <div
+          className={`donor-center-option ${form.localAvis === 'Missaglia' ? 'selected' : ''}`}
+          onClick={() => setForm(f => ({ ...f, localAvis: 'Missaglia' }))}
+        >
+          <i className="pi pi-building"></i>
+          <span>AVIS Missaglia</span>
+        </div>
+      </div>
+
+      {needsConsorelleWarning && (
+        <div className="animated-fade-in" style={{ maxWidth: '800px', margin: '0 auto 2rem auto', textAlign: 'left' }}>
+          <Message
+            severity="info"
+            className="w-full"
+            content={() => (
+              <div style={{ padding: '0.5rem' }}>
+                <div style={{ fontWeight: 700, marginBottom: '0.5rem', color: '#005a91', fontSize: '1.1rem' }}>
+                  <i className="pi pi-info-circle" style={{ marginRight: '0.5rem' }}></i>
+                  Informativa Gestione Consorelle
+                </div>
+                <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>
+                  AVIS Comunale Merate gestisce operativamente gli aspiranti alla donazione e le attività di raccolta anche per conto delle AVIS consorelle di <b>Brivio</b> e <b>Missaglia</b>.<br />
+                  Selezionando questa sede, i tuoi dati personali saranno trattati da AVIS Merate e condivisi con la sede legale prescelta ai fini della gestione del rapporto associativo e delle donazioni, in conformità al <b>Regolamento UE 2016/679 (GDPR)</b>.
+                </p>
+              </div>
+            )}
+          />
+          <div className="flex align-items-center mt-3 p-3" style={{ background: '#f8fbff', borderRadius: '10px', border: '1px solid #e0e0e0' }}>
+            <Checkbox
+              inputId="consorelleAccepted"
+              checked={form.consorelleAccepted}
+              onChange={e => setForm(f => ({ ...f, consorelleAccepted: e.checked ?? false }))}
+              className={(!form.consorelleAccepted && error === 'CONSORELLE_ERR') ? 'p-invalid' : ''}
+            />
+            <label htmlFor="consorelleAccepted" style={{ marginLeft: '1rem', cursor: 'pointer', fontWeight: 500, color: '#333' }}>
+              Ho compreso che la mia candidatura sarà gestita operativamente da AVIS Merate per conto della sede scelta.
+            </label>
+          </div>
+        </div>
+      )}
+
+      <div className="donor-step-actions">
+        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} />
+        <Button
+          label="Invia il codice"
+          icon="pi pi-send"
+          disabled={needsConsorelleWarning && !form.consorelleAccepted}
+          onClick={() => {
+            setLoading(true);
+            setError("");
+            client.post('/api/send-otp', { email: form.email })
+              .then(() => setAck(true))
+              .catch((err: any) => {
+                console.error("Send OTP failed", err);
+              })
+              .finally(() => setLoading(false));
+
+            setStep(6);
+          }}
+        />
+      </div>
+      {loading && <Message severity="info" text="Invio codice OTP in corso..." style={{ marginTop: '1rem' }} />}
+      {error && <Message severity="error" text={error} style={{ marginTop: '1rem' }} />}
+    </div>
+  );
+};
+
+
+const Step6: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpError, setOtpError, setSuccess }) => {
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
   const [resending, setResending] = useState(false);
@@ -646,7 +755,7 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpEr
       </div>
 
       <div className="donor-step-actions">
-        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(4)} disabled={isSubmitting} />
+        <Button label="Indietro" icon="pi pi-arrow-left" className="p-button-text" onClick={() => setStep(5)} disabled={isSubmitting} />
         <Button label="Conferma Iscrizione" icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"} loading={isSubmitting} disabled={!form.privacyAccepted} onClick={async () => {
           if (!form.privacyAccepted) return;
           try {
@@ -657,7 +766,7 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpEr
             const res = await client.post('/api/signup', { ...dataToSend, otp });
             if (res.data.success) {
               setSuccess(true);
-              setStep(6);
+              setStep(7);
             }
           } catch (err: any) {
             console.error("Signup verify failed", err);
@@ -672,7 +781,7 @@ const Step5: React.FC<StepProps> = ({ form, setForm, setStep, otp, setOtp, otpEr
 };
 
 
-const Step6: React.FC<StepProps> = ({ navigate }) => (
+const Step7: React.FC<StepProps> = ({ navigate }) => (
   <div className="donor-signup-container" style={{ textAlign: 'center' }}>
     <div className="donor-step-title">Grazie per la tua candidatura!</div>
     <div className="donor-step-desc">Abbiamo ricevuto la tua richiesta. Riceverai una mail di conferma a breve.</div>
@@ -709,7 +818,8 @@ const DonorSignup: React.FC = () => {
     otherAssociations: "",
     localAvis: 'Merate',
     residenceSameAsDomicile: true,
-    privacyAccepted: false
+    privacyAccepted: false,
+    consorelleAccepted: false
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -749,6 +859,8 @@ const DonorSignup: React.FC = () => {
         return <Step5 {...stepProps} />;
       case 6:
         return <Step6 {...stepProps} />;
+      case 7:
+        return <Step7 {...stepProps} />;
       default:
         return null;
     }
