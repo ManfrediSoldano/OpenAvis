@@ -155,7 +155,7 @@ export class EmailService {
 
     async sendInternalNotification(donorData: { firstName: string, lastName: string, email: string, phone?: string }) {
         const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
-        const internalEmail = process.env.INTERNAL_NOTIFICATION_EMAIL || "manfredi@avismerate.it";
+        const internalEmail = process.env.INTERNAL_NOTIFICATION_EMAIL || "merate.comunale@avis.it";
 
         let baseUrl = "http://localhost:5173";
         if (process.env.NODE_ENV === 'production') {
@@ -167,7 +167,7 @@ export class EmailService {
         const reservedLink = `${baseUrl}/reserved`;
 
         if (!isProduction) {
-            console.log(`[DEV MODE] Internal Notification Simulation -> To: ${internalEmail}, Body: New signup ${donorData.firstName} ${donorData.lastName}`);
+            console.log(`[DEV MODE] Internal Notification Simulation -> To: ${internalEmail}, BCC: manfredi@avismerate.it, Body: New signup ${donorData.firstName} ${donorData.lastName}`);
             return;
         }
 
@@ -197,7 +197,8 @@ export class EmailService {
                 html: this.getTemplate("Nuovo Iscritto", htmlContent)
             },
             recipients: {
-                to: [{ address: internalEmail }]
+                to: [{ address: internalEmail }],
+                bcc: [{ address: "manfredi@avismerate.it" }]
             }
         };
 
