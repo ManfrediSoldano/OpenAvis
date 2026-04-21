@@ -154,20 +154,29 @@ export class EmailService {
     }
 
     async sendInternalNotification(donorData: { firstName: string, lastName: string, email: string, phone?: string }) {
-        const isProduction = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'beta';
-        const internalEmail = process.env.INTERNAL_NOTIFICATION_EMAIL || "merate.comunale@avis.it";
+        const env = process.env.NODE_ENV;
+        const isProduction = env === 'production' || env === 'beta';
+
+        // Recipient logic: 
+        // Production -> To: merate.comunale@avis.it, BCC: manfredi@avismerate.it
+        // Others (Beta/Dev) -> To: manfredi@avismerate.it, No BCC
+        const internalEmail = env === 'production' 
+            ? (process.env.INTERNAL_NOTIFICATION_EMAIL || "merate.comunale@avis.it")
+            : "manfredi@avismerate.it";
+        
+        const bccEmail = env === 'production' ? "manfredi@avismerate.it" : undefined;
 
         let baseUrl = "http://localhost:5173";
-        if (process.env.NODE_ENV === 'production') {
+        if (env === 'production') {
             baseUrl = "https://avismerate.it";
-        } else if (process.env.NODE_ENV === 'beta') {
+        } else if (env === 'beta') {
             baseUrl = "https://beta.avismerate.it";
         }
 
         const reservedLink = `${baseUrl}/reserved`;
 
         if (!isProduction) {
-            console.log(`[DEV MODE] Internal Notification Simulation -> To: ${internalEmail}, BCC: manfredi@avismerate.it, Body: New signup ${donorData.firstName} ${donorData.lastName}`);
+            console.log(`[DEV MODE] Internal Notification Simulation -> To: ${internalEmail}, BCC: ${bccEmail || 'none'}, Body: New signup ${donorData.firstName} ${donorData.lastName}`);
             return;
         }
 
@@ -189,7 +198,7 @@ export class EmailService {
             <p>Link diretto: <a href="${reservedLink}">${reservedLink}</a></p>
         `;
 
-        const emailMessage = {
+        const emailMessage: any = {
             senderAddress: this.senderAddress,
             content: {
                 subject: `Un nuovo aspirante si è iscritto sul sito - ${donorData.firstName} ${donorData.lastName}`,
@@ -197,10 +206,13 @@ export class EmailService {
                 html: this.getTemplate("Nuovo Iscritto", htmlContent)
             },
             recipients: {
-                to: [{ address: internalEmail }],
-                bcc: [{ address: "manfredi@avismerate.it" }]
+                to: [{ address: internalEmail }]
             }
         };
+
+        if (bccEmail) {
+            emailMessage.recipients.bcc = [{ address: bccEmail }];
+        }
 
         const poller = await this.client.beginSend(emailMessage);
         return await poller.pollUntilDone();
