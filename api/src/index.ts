@@ -17,6 +17,10 @@ import './functions/getDonors';
 import './functions/updateDonor';
 import './functions/sendConvocation';
 import './functions/logAction';
+import './functions/createNews';
+import './functions/updateNews';
+import './functions/deleteNews';
+import './functions/uploadFile';
 
 // All functions are registered via app.http() calls in their respective files
 export { };
