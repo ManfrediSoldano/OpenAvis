@@ -15,13 +15,13 @@ import { retrieveNews, NewsHighlight, NewsDetail } from '../../services/newsServ
 import './ManageNews.css';
 
 interface ManageNewsProps {
-    toastRef: React.RefObject<Toast>;
+    toastRef: React.RefObject<Toast | null>;
 }
 
 const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
     const [newsList, setNewsList] = useState<NewsHighlight[]>([]);
     const [loading, setLoading] = useState(false);
-    const [expandedRows, setExpandedRows] = useState<any[] | null>(null);
+    const [expandedRows, setExpandedRows] = useState<any>(undefined);
     const [editingNews, setEditingNews] = useState<{ [key: string]: NewsDetail }>({});
     
     // For new news dialog
