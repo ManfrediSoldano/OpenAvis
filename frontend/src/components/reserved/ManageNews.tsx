@@ -214,38 +214,72 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
         }
     };
 
+    const removeAttachment = (isNew: boolean, newsId: string | undefined, index: number) => {
+        if (isNew) {
+            setNewNews(prev => {
+                const newAttachments = [...(prev.attachments || [])];
+                newAttachments.splice(index, 1);
+                return { ...prev, attachments: newAttachments };
+            });
+        } else if (newsId) {
+            setEditingNews(prev => {
+                const newAttachments = [...(prev[newsId].attachments || [])];
+                newAttachments.splice(index, 1);
+                return { ...prev, [newsId]: { ...prev[newsId], attachments: newAttachments } };
+            });
+        }
+    };
+
+    const renderAttachments = (attachments: {name: string, url: string}[] | undefined, isNew: boolean, newsId?: string) => {
+        if (!attachments || attachments.length === 0) return null;
+        return (
+            <div className="mt-3">
+                <span className="font-bold block mb-2 text-sm">Allegati Caricati:</span>
+                <div className="flex flex-wrap gap-2">
+                    {attachments.map((att, idx) => (
+                        <div key={idx} className="flex align-items-center surface-card border-1 border-300 border-round p-2">
+                            <i className="pi pi-file mr-2 text-primary"></i>
+                            <a href={att.url} target="_blank" rel="noopener noreferrer" className="mr-2 text-color text-sm text-overflow-ellipsis" style={{maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden'}} title={att.name}>{att.name}</a>
+                            <Button icon="pi pi-times" rounded text severity="danger" size="small" onClick={() => removeAttachment(isNew, newsId, idx)} aria-label="Rimuovi" style={{width: '2rem', height: '2rem'}} />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
     const rowExpansionTemplate = (data: NewsHighlight) => {
         const detail = editingNews[data.id];
         if (!detail) return <div className="p-3">Caricamento dettagli...</div>;
 
         return (
             <div className="p-3 surface-ground border-round">
-                <div className="grid">
-                    <div className="col-12 mb-3 flex justify-content-between align-items-center">
-                        <div className="flex-1 flex align-items-center gap-3">
-                            <InputText 
-                                value={detail.title} 
-                                onChange={(e) => setEditingNews(prev => ({ ...prev, [data.id]: { ...detail, title: e.target.value } }))}
-                                className="w-8 font-bold text-xl" 
+                <div className="grid p-fluid">
+                    <div className="col-12 md:col-8 mb-3">
+                        <label className="font-bold block mb-1">Titolo</label>
+                        <InputText 
+                            value={detail.title} 
+                            onChange={(e) => setEditingNews(prev => ({ ...prev, [data.id]: { ...detail, title: e.target.value } }))}
+                            className="font-bold text-xl" 
+                        />
+                    </div>
+                    <div className="col-12 md:col-4 mb-3 flex flex-column justify-content-end">
+                        <div className="flex align-items-center mb-2">
+                            <Checkbox 
+                                inputId={`highlight-${data.id}`} 
+                                checked={detail.isHighlight || false} 
+                                onChange={(e) => setEditingNews(prev => ({ ...prev, [data.id]: { ...detail, isHighlight: e.checked ?? false } }))} 
                             />
-                            <div className="flex align-items-center">
-                                <Checkbox 
-                                    inputId={`highlight-${data.id}`} 
-                                    checked={detail.isHighlight || false} 
-                                    onChange={(e) => setEditingNews(prev => ({ ...prev, [data.id]: { ...detail, isHighlight: e.checked ?? false } }))} 
-                                />
-                                <label htmlFor={`highlight-${data.id}`} className="ml-2 font-bold cursor-pointer">In Evidenza (Highlight)</label>
-                            </div>
+                            <label htmlFor={`highlight-${data.id}`} className="ml-2 font-bold cursor-pointer">In Evidenza</label>
                         </div>
-                        <div className="flex gap-2">
-                            <Button icon="pi pi-save" label="Salva" severity="success" onClick={() => handleUpdate(data.id)} />
-                            <Button icon="pi pi-trash" label="Elimina" severity="danger" onClick={() => handleDelete(data.id)} />
+                        <div className="flex gap-2 w-full">
+                            <Button icon="pi pi-save" label="Salva" severity="success" onClick={() => handleUpdate(data.id)} className="flex-1" />
+                            <Button icon="pi pi-trash" label="Elimina" severity="danger" onClick={() => handleDelete(data.id)} className="flex-1" />
                         </div>
                     </div>
-                    
                     <div className="col-12 mb-3">
                         <div className="flex align-items-center gap-3 mb-2">
-                            <span className="font-bold">Carica File/Immagine:</span>
+                            <span className="font-bold">Aggiungi File/Immagine:</span>
                             <FileUpload 
                                 mode="basic" 
                                 auto 
@@ -254,7 +288,8 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
                                 chooseLabel="Seleziona File" 
                             />
                         </div>
-                        <small className="text-secondary">Le immagini verranno aggiunte al testo, i file agli allegati.</small>
+                        <small className="text-secondary block">Le immagini verranno aggiunte al testo, i file agli allegati.</small>
+                        {renderAttachments(detail.attachments, false, data.id)}
                     </div>
 
                     <div className="col-12" data-color-mode="light">
@@ -330,7 +365,7 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
                     </div>
                     <div className="col-12 mb-3">
                         <div className="flex align-items-center gap-3 mb-2">
-                            <span className="font-bold">Carica File/Immagine:</span>
+                            <span className="font-bold">Aggiungi File/Immagine:</span>
                             <FileUpload 
                                 mode="basic" 
                                 auto 
@@ -339,7 +374,8 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
                                 chooseLabel="Seleziona File" 
                             />
                         </div>
-                        <small className="text-secondary">Le immagini verranno inserite automaticamente nel testo.</small>
+                        <small className="text-secondary block">Le immagini verranno inserite automaticamente nel testo.</small>
+                        {renderAttachments(newNews.attachments, true)}
                     </div>
                     <div className="col-12" data-color-mode="light">
                         <label className="font-bold mb-2 block">Contenuto (Markdown)</label>
