@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/gsap": "^1.20.2",
+    "@uiw/react-md-editor": "^4.1.0",
     "axios": "^1.13.2",
     "codice-fiscale-js": "^2.3.23",
     "framer-motion": "^12.23.12",

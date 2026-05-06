@@ -7,6 +7,9 @@ export type LogAction =
     | 'donor_phase_change' 
     | 'document_print' 
     | 'news_interact'
+    | 'news_create'
+    | 'news_update'
+    | 'news_delete'
     | 'page_view';
 
 export interface AccessLog {

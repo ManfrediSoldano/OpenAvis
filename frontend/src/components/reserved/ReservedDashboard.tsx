@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import './ReservedDashboard.css';
 import { Donor, DonorPhase } from '../../../../shared/models/donor';
+import ManageNews from './ManageNews';
 
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -612,15 +613,7 @@ const ReservedDashboard: React.FC = () => {
                         )}
 
                         {activeSection === 'notizie' && hasRole('news-editor') && (
-                            <section className="dashboard-section">
-                                <h2 className="section-title"><i className="pi pi-megaphone mr-2"></i>Gestione Notizie</h2>
-                                <p className="section-description text-secondary">Area dedicata alla creazione e modifica delle notizie visualizzate nella homepage.</p>
-                                <div className="placeholder-content">
-                                    <i className="pi pi-file-edit text-400" style={{ fontSize: '3rem' }}></i>
-                                    <p>L'interfaccia di editing notizie sarà disponibile a breve.</p>
-                                    <Button label="Nuova Notizia" icon="pi pi-plus" severity="danger" />
-                                </div>
-                            </section>
+                            <ManageNews toastRef={toast} />
                         )}
                     </div>
                 </main>

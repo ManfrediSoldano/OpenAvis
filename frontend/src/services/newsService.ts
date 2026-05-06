@@ -5,6 +5,7 @@ export interface NewsHighlight {
     imageUrl: string;
     title: string;
     subtitle: string;
+    isHighlight?: boolean;
 }
 
 export interface NewsDetail {
@@ -23,6 +24,7 @@ export interface NewsDetail {
     date: string;
     views?: number;
     likes?: number;
+    isHighlight?: boolean;
 }
 
 

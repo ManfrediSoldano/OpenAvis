@@ -246,6 +246,37 @@ export class DatabaseService {
     }
 
     /**
+     * Update an existing news item
+     */
+    async updateNews(newsItem: any) {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.newsContainerId,
+            partitionKey: { paths: ["/id"] }
+        });
+
+        const { resource } = await container.items.upsert(newsItem);
+        return resource;
+    }
+
+    /**
+     * Delete a news item
+     */
+    async deleteNews(id: string) {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.newsContainerId);
+
+            const { resource } = await container.item(id, id).delete();
+            return resource;
+        } catch (error: any) {
+            console.error(`Error deleting news ${id}:`, error);
+            throw error;
+        }
+    }
+
+    /**
      * Increment views for a news item
      */
     async incrementNewsView(id: string) {
