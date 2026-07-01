@@ -160,10 +160,11 @@ export class EmailService {
         // Recipient logic: 
         // Production -> To: merate.comunale@avis.it, BCC: manfredi@avismerate.it
         // Others (Beta/Dev) -> To: manfredi@avismerate.it, No BCC
-        const internalEmail = env === 'production' 
-            ? (process.env.INTERNAL_NOTIFICATION_EMAIL || "merate.comunale@avis.it")
+        const internalEmail = env === 'production'
+            // TODO: remove || "manfredi@avis.it" for production    
+            ? (process.env.INTERNAL_NOTIFICATION_EMAIL || "manfredi@avis.it")
             : "manfredi@avismerate.it";
-        
+
         const bccEmail = env === 'production' ? "manfredi@avismerate.it" : undefined;
 
         let baseUrl = "http://localhost:5173";
