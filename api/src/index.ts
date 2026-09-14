@@ -12,7 +12,6 @@ import './functions/getHighlights';
 import './functions/getNewsList';
 import './functions/retrieveNews';
 import './functions/interactNews';
-import './functions/seedNews';
 import './functions/getDonors';
 import './functions/updateDonor';
 import './functions/sendConvocation';
