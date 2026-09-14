@@ -216,3 +216,101 @@
 .donor-center-option.selected i {
   color: #0075bf;
 }
+
+/* Requirements Step Styles */
+.requirements-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.requirement-card {
+  background: #f8fbff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 280px;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.requirement-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  border-color: #0075bf;
+}
+
+.requirement-card i {
+  font-size: 2.5rem;
+  color: #0075bf;
+  margin-bottom: 1rem;
+}
+
+.requirement-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.requirement-card p {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 1.5rem;
+}
+
+.requirement-badge {
+  background: #0075bf;
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.requirements-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #0075bf;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.requirements-link:hover {
+  border-bottom-color: #0075bf;
+}
+
+.medical-warning {
+  background: #fff8e1;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: left;
+}
+
+.medical-warning i {
+  font-size: 1.5rem;
+  color: #ffc107;
+}
+
+.animated-fade-in {
+  animation: fadeInSteps 0.6s ease-out;
+}
+
+@keyframes fadeInSteps {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

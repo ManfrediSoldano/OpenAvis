@@ -1,0 +1,12 @@
+.manage-news-container {
+    padding: 1rem;
+}
+
+.manage-news-container .w-mde {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.manage-news-container .p-fileupload-buttonbar {
+    padding: 0.5rem;
+}

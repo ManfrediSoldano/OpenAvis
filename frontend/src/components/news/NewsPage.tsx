@@ -12,6 +12,22 @@ import { motion } from 'framer-motion';
 const NewsPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+
+    // Helper per formattare la data in stile italiano
+    const formatDate = (dateStr: string) => {
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr; 
+
+            return new Intl.DateTimeFormat('it-IT', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }).format(date);
+        } catch (e) {
+            return dateStr;
+        }
+    };
     const [newsDetail, setNewsDetail] = useState<NewsDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [likes, setLikes] = useState(0);
@@ -154,7 +170,7 @@ const NewsPage: React.FC = () => {
                         />
                         <span className="font-bold">{newsDetail.author.name}</span>
                     </div>
-                    <span className="news-date">| {newsDetail.date}</span>
+                    <span className="news-date">| {formatDate(newsDetail.date)}</span>
                 </div>
             </header>
 

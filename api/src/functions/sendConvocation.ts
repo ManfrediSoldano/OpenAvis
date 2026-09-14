@@ -2,16 +2,16 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { DatabaseService } from "../services/database";
 import { EmailService } from "../services/email";
 import { Donor } from "../../../shared/models/donor";
+import { serverLogAction, getPrincipal } from "../utils/authUtils";
 
 export async function sendConvocation(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     context.log(`Sending convocation email...`);
 
     // Security check
-    const principalHeader = request.headers.get("x-ms-client-principal");
-    if (!principalHeader) {
+    const principal = getPrincipal(request);
+    if (!principal) {
         return { status: 401, body: "Unauthorized" };
     }
-    const principal = JSON.parse(Buffer.from(principalHeader, "base64").toString("utf-8"));
     const roles = principal.userRoles || [];
     if (!roles.includes("admin") && !roles.includes("candidates-manager")) {
         return { status: 403, body: "Forbidden" };
@@ -39,6 +39,8 @@ export async function sendConvocation(request: HttpRequest, context: InvocationC
             donor.convocationDate = convocationDate;
             donor.convocationStatus = 'sent';
             await dbService.saveDonor(donor);
+
+            await serverLogAction(request, 'donor_convocation_sent', email);
 
             return {
                 status: 200,

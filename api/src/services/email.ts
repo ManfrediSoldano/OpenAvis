@@ -53,7 +53,7 @@ export class EmailService {
                     
                     <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd;">
                         <p style="margin: 5px 0;">
-                            Tel: <a href="tel:+390399902303" style="color: #d9534f; text-decoration: none;">039 9902303</a> | 
+                            Tel: <a href="tel:+390395986891" style="color: #d9534f; text-decoration: none;">039 5986891</a> | 
                             Email: <a href="mailto:info@avismerate.it" style="color: #d9534f; text-decoration: none;">info@avismerate.it</a>
                         </p>
                         <p style="margin: 5px 0;">
@@ -148,6 +148,72 @@ export class EmailService {
                 to: [{ address: toEmail }]
             }
         };
+
+        const poller = await this.client.beginSend(emailMessage);
+        return await poller.pollUntilDone();
+    }
+
+    async sendInternalNotification(donorData: { firstName: string, lastName: string, email: string, phone?: string }) {
+        const env = process.env.NODE_ENV;
+        const isProduction = env === 'production' || env === 'beta';
+
+        // Recipient logic: 
+        // Production -> To: merate.comunale@avis.it, BCC: manfredi@avismerate.it
+        // Others (Beta/Dev) -> To: manfredi@avismerate.it, No BCC
+        const internalEmail = env === 'production'
+            // TODO: remove || "manfredi@avis.it" for production    
+            ? (process.env.INTERNAL_NOTIFICATION_EMAIL || "manfredi@avis.it")
+            : "manfredi@avismerate.it";
+
+        const bccEmail = env === 'production' ? "manfredi@avismerate.it" : undefined;
+
+        let baseUrl = "http://localhost:5173";
+        if (env === 'production') {
+            baseUrl = "https://avismerate.it";
+        } else if (env === 'beta') {
+            baseUrl = "https://beta.avismerate.it";
+        }
+
+        const reservedLink = `${baseUrl}/reserved`;
+
+        if (!isProduction) {
+            console.log(`[DEV MODE] Internal Notification Simulation -> To: ${internalEmail}, BCC: ${bccEmail || 'none'}, Body: New signup ${donorData.firstName} ${donorData.lastName}`);
+            return;
+        }
+
+        if (!this.client.beginSend) throw new Error("Email Client not initialized (Missing ACS_CONNECTION_STRING)");
+
+        const htmlContent = `
+            <p>Si è registrato un nuovo aspirante sul sito web.</p>
+            <p>Ecco i dettagli del nuovo aspirante:</p>
+            <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; margin: 20px 0;">
+                <p style="margin: 5px 0;"><strong>Nome:</strong> ${donorData.firstName}</p>
+                <p style="margin: 5px 0;"><strong>Cognome:</strong> ${donorData.lastName}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> ${donorData.email}</p>
+                <p style="margin: 5px 0;"><strong>Telefono:</strong> ${donorData.phone || 'Non fornito'}</p>
+            </div>
+            <p>Puoi gestire la pratica e scaricare il documento autogenrato tramite il link qui sotto:</p>
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="${reservedLink}" style="background-color: #d9534f; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Accedi all'Area Riservata</a>
+            </p>
+            <p>Link diretto: <a href="${reservedLink}">${reservedLink}</a></p>
+        `;
+
+        const emailMessage: any = {
+            senderAddress: this.senderAddress,
+            content: {
+                subject: `Un nuovo aspirante si è iscritto sul sito - ${donorData.firstName} ${donorData.lastName}`,
+                plainText: `Nuovo iscritto: ${donorData.firstName} ${donorData.lastName}, Email: ${donorData.email}, Telefono: ${donorData.phone || 'N/D'}. Gestisci su: ${reservedLink}`,
+                html: this.getTemplate("Nuovo Iscritto", htmlContent)
+            },
+            recipients: {
+                to: [{ address: internalEmail }]
+            }
+        };
+
+        if (bccEmail) {
+            emailMessage.recipients.bcc = [{ address: bccEmail }];
+        }
 
         const poller = await this.client.beginSend(emailMessage);
         return await poller.pollUntilDone();

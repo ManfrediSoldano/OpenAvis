@@ -2,8 +2,8 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { DatabaseService } from "../services/database";
 import { serverLogAction } from "../utils/authUtils";
 
-export async function updateDonor(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-    context.log(`Updating donor...`);
+export async function deleteNews(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
+    context.log(`Deleting news...`);
 
     // Security check
     const principalHeader = request.headers.get("x-ms-client-principal");
@@ -12,30 +12,34 @@ export async function updateDonor(request: HttpRequest, context: InvocationConte
     }
     const principal = JSON.parse(Buffer.from(principalHeader, "base64").toString("utf-8"));
     const roles = principal.userRoles || [];
-    if (!roles.includes("admin") && !roles.includes("candidates-manager")) {
+    if (!roles.includes("admin") && !roles.includes("news-editor")) {
         return { status: 403, body: "Forbidden" };
     }
 
     try {
-        const donorData = await request.json() as any;
-        if (!donorData.email) {
-            return { status: 400, body: "Email is required" };
+        const id = request.query.get("id");
+        if (!id) {
+            return { status: 400, body: "News ID is required" };
         }
 
         const dbService = new DatabaseService();
-        const updatedItem = await dbService.saveDonor(donorData);
+        
+        const existingNews = await dbService.getNews(id);
+        if (!existingNews) {
+            return { status: 404, body: "News not found" };
+        }
+
+        await dbService.deleteNews(id);
 
         // Server-side logging
-        const action = donorData.id ? 'donor_update' : 'donor_create';
-        const metadata = donorData.phase ? { phase: donorData.phase } : undefined;
-        await serverLogAction(request, action as any, donorData.email, metadata);
+        await serverLogAction(request, 'news_delete', id, { title: existingNews.title });
 
         return {
             status: 200,
-            jsonBody: updatedItem
+            jsonBody: { message: "News deleted successfully" }
         };
     } catch (error: any) {
-        context.error("Error updating donor:", error);
+        context.error("Error deleting news:", error);
         return {
             status: 500,
             body: error.message || "Internal Server Error"
@@ -43,9 +47,9 @@ export async function updateDonor(request: HttpRequest, context: InvocationConte
     }
 }
 
-app.http('updateDonor', {
-    methods: ['POST', 'PUT'],
+app.http('deleteNews', {
+    methods: ['DELETE'],
     authLevel: 'anonymous',
-    route: 'updateDonor',
-    handler: updateDonor
+    route: 'deleteNews',
+    handler: deleteNews
 });

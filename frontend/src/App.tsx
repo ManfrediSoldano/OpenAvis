@@ -11,10 +11,16 @@ import NewsPage from './components/news/NewsPage';
 import NewsListPage from './components/news/NewsListPage';
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import ReservedDashboard from './components/reserved/ReservedDashboard';
+<<<<<<< HEAD
+import { SurveyExternalPage } from './components/survey/SurveyExternalPage';
+=======
+import ChiSiamoPage from './components/pages/ChiSiamoPage';
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 import { PrimeReactProvider } from 'primereact/api';
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { ProgressSpinner } from 'primereact/progressspinner';
 import ScrollToTop from './components/common/ScrollToTop';
+import CookieBanner from './components/common/CookieBanner';
 
 const LoginPageRedirect: React.FC = () => {
   React.useEffect(() => {
@@ -45,6 +51,14 @@ const AppContent: React.FC = () => {
               <Route path="/diventa-donatore" element={<DonorSignup />} />
               <Route path="/news" element={<NewsListPage />} />
               <Route path="/news/:id" element={<NewsPage />} />
+<<<<<<< HEAD
+              <Route path="/survey/:id" element={<SurveyExternalPage />} />
+=======
+              <Route path="/storia" element={<ChiSiamoPage />} />
+              <Route path="/organi" element={<ChiSiamoPage />} />
+              <Route path="/convenzioni" element={<ChiSiamoPage />} />
+              <Route path="/chi-siamo" element={<Navigate to="/storia" replace />} />
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/reserved" element={<ReservedDashboard />} />
               <Route path="/login" element={<LoginPageRedirect />} />
@@ -52,6 +66,7 @@ const AppContent: React.FC = () => {
             </Routes>
           </main>
           {!isReservedArea && <Footer />}
+          <CookieBanner />
         </PrimeReactProvider>
       </div>
     </div>

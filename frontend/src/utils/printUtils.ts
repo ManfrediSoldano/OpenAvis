@@ -639,7 +639,7 @@ const TEMPLATE = `
   <p>Il Responsabile della protezione, è indicato nella pagina web https://www.avisprovincialelecco.it/images/privacy/lettera-per-dpo.pdf e può essere contattato via e-mail o via posta utilizzando i dati di contatto presenti nella medesima pagina web.</p>
 
   <div class="section-title">3. Finalità del trattamento e base giuridica</div>
-  <p>I Suoi dati personali saranno trattati for le seguenti finalità:</p>
+  <p>I Suoi dati personali saranno trattati per le seguenti finalità:</p>
   <p>a) consentire e gestire la Sua adesione/iscrizione (anche mediante inserimento nelle anagrafiche e nei database informatici gestiti dell'Associazione);</p>
   <p>b) programmare e gestire le attività relative alla donazione e raccolta di sangue e plasma con riferimento al controllo dell'idoneità, alla Sua reperibilità e alla conservazione dei dati clinici ai sensi di legge, ove applicabili;</p>
   <p>c) adempimento di obblighi di legge e/o di regolamenti e rispetto procedure amministrative interne;</p>

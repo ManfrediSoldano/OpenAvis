@@ -1,5 +1,6 @@
 export type ConvocationStatus = 'not_sent' | 'sent' | 'error';
-export type DonorPhase = 'non_convocato' | 'convocato' | 'idoneita';
+export type DonorPhase = 'non_convocato' | 'convocato' | 'idoneita' | 'gestito_esternamente';
+
 
 export interface Donor {
     [key: string]: any;

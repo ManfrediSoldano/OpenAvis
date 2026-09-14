@@ -14,7 +14,8 @@ export async function getNewsList(request: HttpRequest, context: InvocationConte
                 id: h.id,
                 imageUrl: h.imageUrl,
                 title: h.title,
-                subtitle: h.subtitle
+                subtitle: h.subtitle,
+                isHighlight: h.isHighlight
             }))
         };
     } catch (error) {

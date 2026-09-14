@@ -16,6 +16,22 @@ import './functions/seedNews';
 import './functions/getDonors';
 import './functions/updateDonor';
 import './functions/sendConvocation';
+<<<<<<< HEAD
+import './functions/getSurveys';
+import './functions/getSurveyById';
+import './functions/saveSurvey';
+import './functions/deleteSurvey';
+import './functions/submitSurveyResponse';
+import './functions/getSurveyResponses';
+import './functions/exportSurveyResponses';
+import './functions/markDonorExternal';
+=======
+import './functions/logAction';
+import './functions/createNews';
+import './functions/updateNews';
+import './functions/deleteNews';
+import './functions/uploadFile';
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 
 // All functions are registered via app.http() calls in their respective files
 export { };

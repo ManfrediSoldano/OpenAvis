@@ -1,0 +1,416 @@
+.chisiamo-page {
+  background-color: #f8f9fa;
+  padding-bottom: 4rem;
+}
+
+.chisiamo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+/* TabView Customization */
+.chisiamo-tabs {
+  margin-top: 1rem;
+}
+
+.chisiamo-tabs .p-tabview-nav {
+  display: flex;
+  justify-content: center;
+  border-bottom: 2px solid #e9ecef;
+  margin-bottom: 2.5rem;
+  background: transparent;
+}
+
+.chisiamo-tabs .p-tabview-nav li {
+  margin-right: 1.5rem;
+}
+
+.chisiamo-tabs .p-tabview-nav li .p-tabview-nav-link {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6c757d;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 1rem 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.chisiamo-tabs .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  color: #e30613;
+  border-color: #e30613;
+}
+
+.chisiamo-tabs .p-tabview-nav li:not(.p-highlight):hover .p-tabview-nav-link {
+  color: #0075be;
+  border-color: rgba(0, 117, 190, 0.3);
+}
+
+.chisiamo-tabs .p-tabview-panels {
+  background: transparent;
+  padding: 0;
+}
+
+/* Tab 1: Storia Timeline */
+.timeline-section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0075be;
+  margin-bottom: 1rem;
+}
+
+.timeline-section-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+/* PrimeReact Timeline Customizations */
+.chisiamo-timeline .p-timeline-event {
+  min-height: 120px;
+}
+
+.timeline-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  z-index: 1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.timeline-marker:hover {
+  transform: scale(1.15);
+}
+
+.timeline-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  border-left: 4px solid #e30613;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.timeline-year {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+  background: linear-gradient(135deg, #e30613 0%, #a5000a 100%);
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  box-shadow: 0 3px 8px rgba(227, 6, 19, 0.2);
+}
+
+.timeline-card:nth-child(even) .timeline-year {
+  background: linear-gradient(135deg, #0075be 0%, #004d80 100%);
+  box-shadow: 0 3px 8px rgba(0, 117, 190, 0.2);
+}
+
+.timeline-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333333;
+}
+
+.timeline-desc {
+  font-size: 1.05rem;
+  color: #555555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Tab 2: Organi Associativi */
+.organs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.organ-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid #0075be;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.organ-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.organ-card.highlighted {
+  border-top-color: #e30613;
+}
+
+.organ-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.organ-icon {
+  font-size: 1.8rem;
+  color: #0075be;
+  background: #f0f7fc;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.organ-card.highlighted .organ-icon {
+  color: #e30613;
+  background: #fef0f1;
+}
+
+.organ-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333333;
+  margin: 0;
+}
+
+.organ-desc {
+  font-size: 1rem;
+  color: #666666;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.organ-members {
+  border-top: 1px solid #e9ecef;
+  padding-top: 1.2rem;
+}
+
+.members-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #888888;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.members-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.members-list li {
+  font-size: 1rem;
+  color: #444444;
+}
+
+.members-list li strong {
+  color: #111111;
+}
+
+/* Tab 3: Convenzioni Placeholder */
+.convenzioni-alert {
+  background: #eef7fc;
+  border-left: 4px solid #0075be;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.convenzioni-alert-icon {
+  font-size: 2rem;
+  color: #0075be;
+}
+
+.convenzioni-alert-content h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  color: #005baa;
+}
+
+.convenzioni-alert-content p {
+  margin: 0;
+  font-size: 1rem;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.convenzioni-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.convenzione-preview-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px dashed #ced4da;
+  transition: all 0.3s ease;
+}
+
+.convenzione-preview-card:hover {
+  border-color: #0075be;
+  box-shadow: 0 8px 20px rgba(0, 117, 190, 0.08);
+  transform: translateY(-3px);
+}
+
+.convenzione-preview-icon {
+  font-size: 2.2rem;
+  color: #adb5bd;
+  margin-bottom: 1.2rem;
+  display: inline-block;
+  background: #f8f9fa;
+  width: 4rem;
+  height: 4rem;
+  line-height: 4rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.convenzione-preview-card:hover .convenzione-preview-icon {
+  color: #0075be;
+  background: #f0f7fc;
+}
+
+.convenzione-preview-card h5 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.6rem 0;
+  color: #495057;
+}
+
+.convenzione-preview-card p {
+  font-size: 0.95rem;
+  color: #6c757d;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .chisiamo-tabs .p-tabview-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .chisiamo-tabs .p-tabview-nav li {
+    margin-right: 0;
+  }
+
+  .chisiamo-tabs .p-tabview-nav li .p-tabview-nav-link {
+    text-align: center;
+    padding: 0.8rem 1rem;
+  }
+
+  .timeline-section-title {
+    font-size: 1.8rem;
+  }
+
+  .timeline-card {
+    padding: 1.2rem;
+  }
+
+  .timeline-title {
+    font-size: 1.2rem;
+  }
+
+  .timeline-desc {
+    font-size: 0.95rem;
+  }
+
+  .organs-grid,
+  .convenzioni-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .convenzioni-alert {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+}
+
+/* Stats row */
+.runts-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.runt-stat-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  text-align: center;
+  border-top: 4px solid #e30613;
+  transition: transform 0.2s ease;
+}
+
+.runt-stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.runt-stat-card:nth-child(even) {
+  border-top-color: #0075be;
+}
+
+.runt-stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #333333;
+  margin-bottom: 0.3rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.runt-stat-label {
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 600;
+}

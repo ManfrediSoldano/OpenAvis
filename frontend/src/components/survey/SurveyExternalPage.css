@@ -1,0 +1,159 @@
+.survey-external-page {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.survey-hero-image {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.survey-news-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.survey-news-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+}
+
+.survey-news-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.survey-markdown-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #334155;
+    margin-bottom: 2.5rem;
+}
+
+.survey-markdown-body p {
+    margin-bottom: 1.2rem;
+}
+
+.survey-attachments-box {
+    background: #f1f5f9;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.survey-attachments-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.survey-attachment-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    color: #0284c7;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 0.75rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.survey-attachment-chip:hover {
+    border-color: #0284c7;
+    background: #f0f9ff;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+}
+
+.survey-embedded-panel {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.survey-form-header {
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+
+.survey-form-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.survey-field-row {
+    margin-bottom: 1.75rem;
+}
+
+.survey-field-label {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.survey-field-help {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.survey-submitted-banner {
+    background: #ecfdf5;
+    border: 2px solid #10b981;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.survey-submitted-icon {
+    font-size: 3.5rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .survey-external-page {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
+    .survey-news-title {
+        font-size: 1.8rem;
+    }
+    .survey-embedded-panel {
+        padding: 1.5rem;
+    }
+}

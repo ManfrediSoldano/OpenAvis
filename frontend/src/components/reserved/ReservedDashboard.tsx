@@ -9,6 +9,7 @@ import { Toast } from 'primereact/toast';
 import { TabView, TabPanel } from 'primereact/tabview';
 import './ReservedDashboard.css';
 import { Donor, DonorPhase } from '../../../../shared/models/donor';
+import ManageNews from './ManageNews';
 
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
@@ -17,6 +18,11 @@ import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { printModule } from '../../utils/printUtils';
 import { searchComuni } from 'italian-locations';
+<<<<<<< HEAD
+import { SurveyManager } from './SurveyManager';
+=======
+import { logAction } from '../../api/loggingService';
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 
 interface UserInfo {
     clientPrincipal: {
@@ -88,14 +94,15 @@ const donorFields = [
 ];
 
 /** Maps phase value to a display configuration */
-const PHASE_CONFIG: Record<DonorPhase, { label: string; icon: string; color: string; severity: 'info' | 'warning' | 'success' }> = {
+const PHASE_CONFIG: Record<DonorPhase, { label: string; icon: string; color: string; severity: 'info' | 'warning' | 'success' | 'secondary' }> = {
     non_convocato: { label: 'Non ancora convocato', icon: 'pi pi-clock', color: '#6366f1', severity: 'info' },
     convocato: { label: 'Convocato', icon: 'pi pi-envelope', color: '#f59e0b', severity: 'warning' },
     idoneita: { label: 'Idoneità', icon: 'pi pi-check-circle', color: '#22c55e', severity: 'success' },
+    gestito_esternamente: { label: 'Gestito Fuori Portale', icon: 'pi pi-check-square', color: '#64748b', severity: 'secondary' },
 };
 
 const ReservedDashboard: React.FC = () => {
-    const [activeSection, setActiveSection] = useState<'candidati' | 'notizie'>('candidati');
+    const [activeSection, setActiveSection] = useState<'candidati' | 'notizie' | 'sondaggi'>('candidati');
     const [user, setUser] = useState<{ details: string, roles: string[] } | null>(null);
     const [loading, setLoading] = useState(true);
     const [donors, setDonors] = useState<Donor[]>([]);
@@ -107,8 +114,10 @@ const ReservedDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [barcodeFilter, setBarcodeFilter] = useState('');
     const [markingIdoneita, setMarkingIdoneita] = useState<string | null>(null);
+    const [markingExternal, setMarkingExternal] = useState<string | null>(null);
     const toast = useRef<Toast>(null);
     const barcodeInputRef = useRef<HTMLInputElement>(null);
+
 
     const hasRole = (role: string) => user?.roles.includes('admin') || user?.roles.includes(role);
 
@@ -276,7 +285,35 @@ const ReservedDashboard: React.FC = () => {
         }
     };
 
+    const markAsExternal = async (rowData: Donor) => {
+        setMarkingExternal(rowData.email);
+        try {
+            const res = await fetch('/api/markDonorExternal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: rowData.email })
+            });
+
+            if (res.ok) {
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Gestito Fuori Portale',
+                    detail: `${rowData.firstName} ${rowData.lastName} segnato/a come gestito al di fuori del portale`
+                });
+                fetchDonors();
+            } else {
+                const err = await res.text();
+                toast.current?.show({ severity: 'error', summary: 'Errore', detail: err });
+            }
+        } catch (e) {
+            toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Errore di rete' });
+        } finally {
+            setMarkingExternal(null);
+        }
+    };
+
     const updateDonorField = (name: string, value: any) => {
+
         setSelectedDonor((prev: any) => {
             const updated = { ...prev, [name]: value };
 
@@ -314,6 +351,13 @@ const ReservedDashboard: React.FC = () => {
                     visible: hasRole('news-editor'),
                     className: activeSection === 'notizie' ? 'active-menu-item' : '',
                     command: () => setActiveSection('notizie')
+                },
+                {
+                    label: 'Sondaggi & Form',
+                    icon: 'pi pi-file-edit',
+                    visible: hasRole('news-editor') || hasRole('survey-manager') || hasRole('admin'),
+                    className: activeSection === 'sondaggi' ? 'active-menu-item' : '',
+                    command: () => setActiveSection('sondaggi')
                 }
             ]
         },
@@ -375,6 +419,13 @@ const ReservedDashboard: React.FC = () => {
         );
     };
 
+    const handlePrint = (donor: any) => {
+        logAction('document_print', donor.email, { 
+            donorName: `${donor.firstName} ${donor.lastName}` 
+        });
+        printModule(donor, 'completo');
+    };
+
     const actionCell = (rowData: any) => {
         return (
             <div className="flex gap-2 align-items-center">
@@ -384,7 +435,20 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
+<<<<<<< HEAD
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button
+                    icon="pi pi-check-square"
+                    rounded
+                    severity="help"
+                    onClick={() => markAsExternal(rowData)}
+                    loading={markingExternal === rowData.email}
+                    tooltip="Segna aspirante come gestito al fuori del portale"
+                    className="p-button-sm shadow-2"
+                />
+=======
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
             </div>
         );
     };
@@ -398,7 +462,20 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
+<<<<<<< HEAD
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button
+                    icon="pi pi-check-square"
+                    rounded
+                    severity="help"
+                    onClick={() => markAsExternal(rowData)}
+                    loading={markingExternal === rowData.email}
+                    tooltip="Segna aspirante come gestito al fuori del portale"
+                    className="p-button-sm shadow-2"
+                />
+=======
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
             </div>
         );
     };
@@ -412,7 +489,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-arrow-right"
                     rounded
@@ -420,6 +497,15 @@ const ReservedDashboard: React.FC = () => {
                     onClick={() => markAsIdoneita(rowData)}
                     loading={markingIdoneita === rowData.email}
                     tooltip="Segna come Idoneità"
+                    className="p-button-sm shadow-2"
+                />
+                <Button
+                    icon="pi pi-check-square"
+                    rounded
+                    severity="help"
+                    onClick={() => markAsExternal(rowData)}
+                    loading={markingExternal === rowData.email}
+                    tooltip="Segna aspirante come gestito al fuori del portale"
                     className="p-button-sm shadow-2"
                 />
             </div>
@@ -430,6 +516,7 @@ const ReservedDashboard: React.FC = () => {
     const nonConvocatiDonors = donors.filter(d => getDonorPhase(d) === 'non_convocato');
     const convocatiDonors = donors.filter(d => getDonorPhase(d) === 'convocato');
     const idoneitaDonors = donors.filter(d => getDonorPhase(d) === 'idoneita');
+    const gestitoEsternamenteDonors = donors.filter(d => getDonorPhase(d) === 'gestito_esternamente');
 
     // Apply barcode (tax code) filter
     const filterByBarcode = (list: Donor[]) => {
@@ -441,6 +528,8 @@ const ReservedDashboard: React.FC = () => {
     const filteredNonConvocati = filterByBarcode(nonConvocatiDonors);
     const filteredConvocati = filterByBarcode(convocatiDonors);
     const filteredIdoneita = filterByBarcode(idoneitaDonors);
+    const filteredGestitoEsternamente = filterByBarcode(gestitoEsternamenteDonors);
+
 
     // Tab header template with count badge
     const tabHeaderTemplate = (phase: DonorPhase, count: number) => {
@@ -541,7 +630,7 @@ const ReservedDashboard: React.FC = () => {
                                                 className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                                 emptyMessage="Nessun aspirante da convocare."
                                                 sortField="lastName" sortOrder={1}>
-                                                <Column body={actionCell} style={{ width: '120px' }} header="Azioni" />
+                                                <Column body={actionCell} style={{ width: '160px' }} header="Azioni" />
                                                 <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                                 <Column field="firstName" header="Nome" sortable />
                                                 <Column field="taxCode" header="Codice Fiscale" sortable />
@@ -587,7 +676,7 @@ const ReservedDashboard: React.FC = () => {
                                                 className="p-datatable-sm shadow-1 border-round overflow-hidden"
                                                 emptyMessage="Nessun aspirante in fase di idoneità."
                                                 sortField="lastName" sortOrder={1}>
-                                                <Column body={idoneitaActionCell} style={{ width: '120px' }} header="Azioni" />
+                                                <Column body={idoneitaActionCell} style={{ width: '160px' }} header="Azioni" />
                                                 <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
                                                 <Column field="firstName" header="Nome" sortable />
                                                 <Column field="taxCode" header="Codice Fiscale" sortable />
@@ -599,19 +688,41 @@ const ReservedDashboard: React.FC = () => {
                                         </div>
                                     </TabPanel>
 
+                                    {/* Tab 4: Gestito Fuori Portale */}
+                                    <TabPanel header={tabHeaderTemplate('gestito_esternamente', filteredGestitoEsternamente.length)}>
+                                        <div className="phase-tab-content">
+                                            <div className="phase-description">
+                                                <Tag severity="secondary" value="Gestito Fuori Portale" icon="pi pi-check-square" className="phase-tag" />
+                                                <span>Aspiranti contrassegnati come gestiti al di fuori del portale.</span>
+                                            </div>
+                                            <DataTable value={filteredGestitoEsternamente} loading={loadingDonors} paginator rows={10}
+                                                className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                                                emptyMessage="Nessun aspirante gestito al di fuori del portale."
+                                                sortField="lastName" sortOrder={1}>
+                                                <Column body={actionCell} style={{ width: '160px' }} header="Azioni" />
+                                                <Column field="lastName" header="Cognome" body={(r) => <b>{r.lastName}</b>} sortable />
+                                                <Column field="firstName" header="Nome" sortable />
+                                                <Column field="taxCode" header="Codice Fiscale" sortable />
+                                                <Column field="email" header="Email" />
+                                                <Column field="localAvis" header="AVIS Comunale" sortable />
+                                                <Column field="managedExternallyAt" header="Data Gestione"
+                                                    body={(rowData) => rowData.managedExternallyAt ? new Date(rowData.managedExternallyAt).toLocaleString('it-IT') : '-'} sortable />
+                                            </DataTable>
+                                        </div>
+                                    </TabPanel>
+
                                 </TabView>
+
                             </section>
                         )}
 
                         {activeSection === 'notizie' && hasRole('news-editor') && (
+                            <ManageNews toastRef={toast} />
+                        )}
+
+                        {activeSection === 'sondaggi' && (
                             <section className="dashboard-section">
-                                <h2 className="section-title"><i className="pi pi-megaphone mr-2"></i>Gestione Notizie</h2>
-                                <p className="section-description text-secondary">Area dedicata alla creazione e modifica delle notizie visualizzate nella homepage.</p>
-                                <div className="placeholder-content">
-                                    <i className="pi pi-file-edit text-400" style={{ fontSize: '3rem' }}></i>
-                                    <p>L'interfaccia di editing notizie sarà disponibile a breve.</p>
-                                    <Button label="Nuova Notizia" icon="pi pi-plus" severity="danger" />
-                                </div>
+                                <SurveyManager userEmail={user?.details} />
                             </section>
                         )}
                     </div>

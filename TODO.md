@@ -1,0 +1,2 @@
+- Email that sends it should be Aspiranti@
+- Option of not existing data.

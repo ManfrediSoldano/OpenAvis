@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/gsap": "^1.20.2",
+    "@uiw/react-md-editor": "^4.1.0",
     "axios": "^1.13.2",
     "codice-fiscale-js": "^2.3.23",
     "framer-motion": "^12.23.12",
@@ -44,6 +45,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9"
   }

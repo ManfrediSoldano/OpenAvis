@@ -1,5 +1,6 @@
 import { CosmosClient } from "@azure/cosmos";
 import { OtpDocument } from "../models/otp";
+import { Survey, SurveyResponse, AuditLog } from "../models/survey";
 
 export class DatabaseService {
     private client: CosmosClient;
@@ -7,6 +8,13 @@ export class DatabaseService {
     private donorsContainerId: string = "donors";
     private otpsContainerId: string = "otps";
     private newsContainerId: string = "news";
+<<<<<<< HEAD
+    private surveysContainerId: string = "surveys";
+    private surveyResponsesContainerId: string = "survey_responses";
+    private auditLogsContainerId: string = "audit_logs";
+=======
+    private logsContainerId: string = "logs";
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 
     constructor() {
         const endpoint = process.env.COSMOS_DB_ENDPOINT;
@@ -245,6 +253,37 @@ export class DatabaseService {
     }
 
     /**
+     * Update an existing news item
+     */
+    async updateNews(newsItem: any) {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.newsContainerId,
+            partitionKey: { paths: ["/id"] }
+        });
+
+        const { resource } = await container.items.upsert(newsItem);
+        return resource;
+    }
+
+    /**
+     * Delete a news item
+     */
+    async deleteNews(id: string) {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.newsContainerId);
+
+            const { resource } = await container.item(id, id).delete();
+            return resource;
+        } catch (error: any) {
+            console.error(`Error deleting news ${id}:`, error);
+            throw error;
+        }
+    }
+
+    /**
      * Increment views for a news item
      */
     async incrementNewsView(id: string) {
@@ -285,4 +324,194 @@ export class DatabaseService {
             return null;
         }
     }
+
+    /**
+<<<<<<< HEAD
+     * Audit Log method for tracking all internal administrative actions
+     */
+    async saveAuditLog(user: string, action: string, resourceId?: string, details?: any): Promise<AuditLog | null> {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+            const { container } = await database.containers.createIfNotExists({
+                id: this.auditLogsContainerId,
+                partitionKey: { paths: ["/user"] }
+            });
+
+            const logDoc: AuditLog = {
+                id: crypto.randomUUID(),
+                timestamp: new Date().toISOString(),
+                user: user || "anonymous-internal",
+                action,
+                resourceId,
+                details
+            };
+
+            const { resource } = await container.items.create(logDoc);
+            console.log(`[AUDIT] Action logged: ${action} by ${user} on resource ${resourceId || 'N/A'}`);
+            return resource || null;
+        } catch (error) {
+            console.error("[AUDIT] Error saving audit log:", error);
+            return null;
+        }
+    }
+
+    /**
+     * Save/Update Survey (Internal Action - Audited)
+     */
+    async saveSurvey(surveyData: Partial<Survey>, user: string): Promise<Survey | null> {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.surveysContainerId,
+            partitionKey: { paths: ["/id"] }
+        });
+
+        const now = new Date().toISOString();
+        if (!surveyData.id) {
+            surveyData.id = crypto.randomUUID();
+            surveyData.createdAt = now;
+        }
+        surveyData.updatedAt = now;
+        if (surveyData.isActive === undefined) surveyData.isActive = true;
+        if (surveyData.allowMultipleSubmissions === undefined) surveyData.allowMultipleSubmissions = true;
+        if (!surveyData.fields) surveyData.fields = [];
+
+        const { resource } = await container.items.upsert(surveyData as Survey);
+        await this.saveAuditLog(user, surveyData.createdAt === now ? 'CREATE_SURVEY' : 'UPDATE_SURVEY', surveyData.id, { title: surveyData.title });
+        return (resource as unknown as Survey) || null;
+    }
+
+    /**
+     * Get all surveys (Internal view)
+     */
+    async getAllSurveys(): Promise<Survey[]> {
+        if (!this.databaseId || !this.client) return [];
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.surveysContainerId);
+            const querySpec = {
+                query: "SELECT * FROM c ORDER BY c.createdAt DESC"
+            };
+            const { resources } = await container.items.query<Survey>(querySpec).fetchAll();
+            return resources;
+        } catch (error) {
+            console.error("Error fetching all surveys:", error);
+            return [];
+        }
+    }
+
+    /**
+     * Get specific survey by ID
+     */
+    async getSurveyById(id: string): Promise<Survey | null> {
+        if (!this.databaseId || !this.client) return null;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.surveysContainerId);
+            const querySpec = {
+                query: "SELECT * FROM c WHERE c.id = @id",
+                parameters: [{ name: "@id", value: id }]
+            };
+            const { resources } = await container.items.query<Survey>(querySpec).fetchAll();
+            return resources.length > 0 ? (resources[0] as Survey) : null;
+        } catch (error) {
+            console.error(`Error retrieving survey ${id}:`, error);
+            return null;
+        }
+    }
+
+    /**
+     * Delete survey (Internal Action - Audited)
+     */
+    async deleteSurvey(id: string, user: string): Promise<boolean> {
+        if (!this.databaseId || !this.client) return false;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.surveysContainerId);
+            await container.item(id, id).delete();
+            await this.saveAuditLog(user, 'DELETE_SURVEY', id);
+            return true;
+        } catch (error) {
+            console.error(`Error deleting survey ${id}:`, error);
+            return false;
+        }
+    }
+
+    /**
+     * Check if user has submitted survey (for single-submission enforcement)
+     */
+    async hasUserSubmittedSurvey(surveyId: string, userIdentifier: string): Promise<boolean> {
+        if (!this.databaseId || !this.client || !userIdentifier) return false;
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.surveyResponsesContainerId);
+            const querySpec = {
+                query: "SELECT * FROM c WHERE c.surveyId = @surveyId AND c.userIdentifier = @userIdentifier",
+                parameters: [
+                    { name: "@surveyId", value: surveyId },
+                    { name: "@userIdentifier", value: userIdentifier }
+                ]
+            };
+            const { resources } = await container.items.query(querySpec).fetchAll();
+            return resources.length > 0;
+        } catch (error) {
+            console.error("Error checking existing user survey submission:", error);
+            return false;
+        }
+    }
+
+    /**
+     * Save external survey response submission
+     */
+    async saveSurveyResponse(response: Partial<SurveyResponse>): Promise<SurveyResponse | null> {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.surveyResponsesContainerId,
+            partitionKey: { paths: ["/surveyId"] }
+        });
+
+        if (!response.id) response.id = crypto.randomUUID();
+        if (!response.submittedAt) response.submittedAt = new Date().toISOString();
+
+        const { resource } = await container.items.create(response as SurveyResponse);
+        return (resource as unknown as SurveyResponse) || null;
+    }
+
+    /**
+     * Get all responses for a specific survey (Internal Action - Audited)
+     */
+    async getSurveyResponses(surveyId: string, user: string): Promise<SurveyResponse[]> {
+        if (!this.databaseId || !this.client) return [];
+        try {
+            const database = this.client.database(this.databaseId);
+            const container = database.container(this.surveyResponsesContainerId);
+            const querySpec = {
+                query: "SELECT * FROM c WHERE c.surveyId = @surveyId ORDER BY c.submittedAt DESC",
+                parameters: [{ name: "@surveyId", value: surveyId }]
+            };
+            const { resources } = await container.items.query<SurveyResponse>(querySpec).fetchAll();
+            await this.saveAuditLog(user, 'VIEW_SURVEY_RESPONSES', surveyId, { count: resources.length });
+            return resources;
+        } catch (error) {
+            console.error(`Error fetching survey responses for ${surveyId}:`, error);
+            return [];
+        }
+=======
+     * Log user activity to Cosmos DB
+     */
+    async logAccess(logEntry: any) {
+        const { database } = await this.client.databases.createIfNotExists({ id: this.databaseId });
+        const { container } = await database.containers.createIfNotExists({
+            id: this.logsContainerId,
+            partitionKey: { paths: ["/userId"] }
+        });
+
+        if (!logEntry.id) logEntry.id = crypto.randomUUID();
+        if (!logEntry.timestamp) logEntry.timestamp = new Date().toISOString();
+
+        const { resource } = await container.items.create(logEntry);
+        return resource;
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
+    }
 }
+
