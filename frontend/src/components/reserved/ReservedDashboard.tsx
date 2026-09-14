@@ -432,9 +432,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-check-square"
                     rounded
@@ -444,12 +442,6 @@ const ReservedDashboard: React.FC = () => {
                     tooltip="Segna aspirante come gestito al fuori del portale"
                     className="p-button-sm shadow-2"
                 />
-=======
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
-=======
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
             </div>
         );
     };
@@ -463,9 +455,7 @@ const ReservedDashboard: React.FC = () => {
                     setSelectedDonor(donor);
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
-<<<<<<< HEAD
-<<<<<<< HEAD
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-check-square"
                     rounded
@@ -475,12 +465,6 @@ const ReservedDashboard: React.FC = () => {
                     tooltip="Segna aspirante come gestito al fuori del portale"
                     className="p-button-sm shadow-2"
                 />
-=======
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
-=======
-                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
             </div>
         );
     };
