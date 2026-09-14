@@ -8,13 +8,10 @@ export class DatabaseService {
     private donorsContainerId: string = "donors";
     private otpsContainerId: string = "otps";
     private newsContainerId: string = "news";
-<<<<<<< HEAD
     private surveysContainerId: string = "surveys";
     private surveyResponsesContainerId: string = "survey_responses";
     private auditLogsContainerId: string = "audit_logs";
-=======
     private logsContainerId: string = "logs";
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 
     constructor() {
         const endpoint = process.env.COSMOS_DB_ENDPOINT;
@@ -326,7 +323,6 @@ export class DatabaseService {
     }
 
     /**
-<<<<<<< HEAD
      * Audit Log method for tracking all internal administrative actions
      */
     async saveAuditLog(user: string, action: string, resourceId?: string, details?: any): Promise<AuditLog | null> {
@@ -496,7 +492,9 @@ export class DatabaseService {
             console.error(`Error fetching survey responses for ${surveyId}:`, error);
             return [];
         }
-=======
+    }
+
+    /**
      * Log user activity to Cosmos DB
      */
     async logAccess(logEntry: any) {
@@ -511,7 +509,6 @@ export class DatabaseService {
 
         const { resource } = await container.items.create(logEntry);
         return resource;
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
     }
 }
 

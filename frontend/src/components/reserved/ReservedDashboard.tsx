@@ -18,11 +18,8 @@ import { Calendar } from 'primereact/calendar';
 import { Tag } from 'primereact/tag';
 import { printModule } from '../../utils/printUtils';
 import { searchComuni } from 'italian-locations';
-<<<<<<< HEAD
 import { SurveyManager } from './SurveyManager';
-=======
 import { logAction } from '../../api/loggingService';
->>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 
 interface UserInfo {
     clientPrincipal: {
@@ -436,6 +433,7 @@ const ReservedDashboard: React.FC = () => {
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-check-square"
@@ -446,6 +444,9 @@ const ReservedDashboard: React.FC = () => {
                     tooltip="Segna aspirante come gestito al fuori del portale"
                     className="p-button-sm shadow-2"
                 />
+=======
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 =======
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
 >>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
@@ -463,6 +464,7 @@ const ReservedDashboard: React.FC = () => {
                     setDonorDialog(true);
                 }} tooltip="Modifica" className="p-button-sm" />
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => printModule(rowData, 'completo')} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
                 <Button
                     icon="pi pi-check-square"
@@ -473,6 +475,9 @@ const ReservedDashboard: React.FC = () => {
                     tooltip="Segna aspirante come gestito al fuori del portale"
                     className="p-button-sm shadow-2"
                 />
+=======
+                <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
+>>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
 =======
                 <Button icon="pi pi-print" rounded severity="danger" onClick={() => handlePrint(rowData)} tooltip="Stampa Modulo Completo" className="p-button-sm shadow-2" />
 >>>>>>> deab6b41dbb7aa611a1c78627b830a48089b9d30
