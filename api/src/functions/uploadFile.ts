@@ -13,7 +13,7 @@ export async function uploadFile(request: HttpRequest, context: InvocationContex
     }
     const principal = JSON.parse(Buffer.from(principalHeader, "base64").toString("utf-8"));
     const roles = principal.userRoles || [];
-    if (!roles.includes("admin") && !roles.includes("news-editor")) {
+    if (!roles.includes("admin") && !roles.includes("news-editor") && !roles.includes("survey-manager")) {
         return { status: 403, body: "Forbidden" };
     }
 

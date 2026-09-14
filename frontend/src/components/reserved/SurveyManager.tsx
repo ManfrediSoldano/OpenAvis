@@ -11,6 +11,8 @@ import { Tag } from 'primereact/tag';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { TabView, TabPanel } from 'primereact/tabview';
+import { FileUpload } from 'primereact/fileupload';
+import { Chips } from 'primereact/chips';
 import ReactMarkdown from 'react-markdown';
 
 import { Survey, SurveyField, SurveyFieldType, SurveyResponse } from '../../types/survey';
@@ -51,6 +53,7 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
     const [globalFilter, setGlobalFilter] = useState<string>('');
 
     const toast = useRef<Toast>(null);
+    const [uploadingImage, setUploadingImage] = useState<boolean>(false);
 
     const loadSurveysList = async () => {
         setLoading(true);
@@ -74,6 +77,7 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
 
     const handleCreateNew = () => {
         setEditingSurvey({
+            id: '',
             title: '',
             descriptionMarkdown: '',
             imageUrl: '',
@@ -91,6 +95,32 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
             ]
         });
         setViewMode('editor');
+    };
+
+    const handleImageUpload = async (event: any) => {
+        const file = event.files[0];
+        if (!file) return;
+        const formData = new FormData();
+        formData.append('file', file);
+        setUploadingImage(true);
+        try {
+            const res = await fetch('/api/uploadFile', {
+                method: 'POST',
+                body: formData
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setEditingSurvey(prev => ({ ...prev, imageUrl: data.url }));
+                toast.current?.show({ severity: 'success', summary: 'Immagine Caricata', detail: 'Immagine di copertina caricata con successo' });
+            } else {
+                toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Caricamento immagine fallito' });
+            }
+            event.options.clear();
+        } catch (e) {
+            toast.current?.show({ severity: 'error', summary: 'Errore', detail: 'Errore di rete durante il caricamento' });
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const handleEdit = (survey: Survey) => {
@@ -163,6 +193,14 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
         }
         if (!editingSurvey.fields || editingSurvey.fields.length === 0) {
             toast.current?.show({ severity: 'warn', summary: 'Attenzione', detail: 'Aggiungi almeno un campo al sondaggio' });
+            return;
+        }
+        if (editingSurvey.id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(editingSurvey.id)) {
+            toast.current?.show({
+                severity: 'warn',
+                summary: 'ID non valido',
+                detail: 'Usa solo lettere minuscole, numeri e trattini, senza trattini iniziali o finali.'
+            });
             return;
         }
 
@@ -341,8 +379,25 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
 
                     <TabView>
                         <TabPanel header="Informazioni & Contenuto News" leftIcon="pi pi-info-circle mr-2">
-                            <div className="grid p-fluid mt-2">
-                                <div className="col-12 mb-3">
+                            <div className="survey-editor-form">
+                                <div className="survey-form-field">
+                                    <label className="font-bold block mb-2">ID Sondaggio (slug URL)</label>
+                                    <InputText 
+                                        value={editingSurvey.id || ''} 
+                                        onChange={(e) => setEditingSurvey(prev => ({
+                                            ...prev,
+                                            id: e.target.value
+                                                .toLowerCase()
+                                                .replace(/[^a-z0-9-]+/g, '-')
+                                                .replace(/-{2,}/g, '-')
+                                                .replace(/^-+/, '')
+                                        }))}
+                                        placeholder="es. sondaggio-donatori-2026 (lascia vuoto per auto-generare)" 
+                                    />
+                                    <small className="text-secondary">Questo ID verrà usato nel link pubblico: /survey/<b>{editingSurvey.id || '(auto)'}</b></small>
+                                </div>
+
+                                <div className="survey-form-field">
                                     <label className="font-bold block mb-2">Titolo Sondaggio / Notizia *</label>
                                     <InputText 
                                         value={editingSurvey.title || ''} 
@@ -351,27 +406,56 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                                     />
                                 </div>
 
-                                <div className="col-12 md:col-6 mb-3">
-                                    <label className="font-bold block mb-2">URL Immagine di Copertina</label>
-                                    <InputText 
-                                        value={editingSurvey.imageUrl || ''} 
-                                        onChange={(e) => setEditingSurvey(prev => ({ ...prev, imageUrl: e.target.value }))}
-                                        placeholder="https://..." 
-                                    />
-                                </div>
+                                <div className="survey-form-row">
+                                    <div className="survey-form-field" style={{ flex: 1 }}>
+                                        <label className="font-bold block mb-2">Immagine di Copertina</label>
+                                        {editingSurvey.imageUrl && (
+                                            <div className="survey-image-preview">
+                                                <img src={editingSurvey.imageUrl} alt="Anteprima" />
+                                                <Button 
+                                                    icon="pi pi-times" 
+                                                    rounded 
+                                                    text 
+                                                    severity="danger" 
+                                                    className="survey-image-remove" 
+                                                    onClick={() => setEditingSurvey(prev => ({ ...prev, imageUrl: '' }))} 
+                                                    tooltip="Rimuovi immagine" 
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="flex align-items-center gap-3 mt-2">
+                                            <FileUpload 
+                                                mode="basic" 
+                                                auto 
+                                                customUpload 
+                                                uploadHandler={handleImageUpload}
+                                                accept="image/*" 
+                                                chooseLabel={uploadingImage ? 'Caricamento...' : 'Carica Immagine'}
+                                                disabled={uploadingImage}
+                                            />
+                                            <span className="text-secondary">oppure</span>
+                                            <InputText 
+                                                value={editingSurvey.imageUrl || ''} 
+                                                onChange={(e) => setEditingSurvey(prev => ({ ...prev, imageUrl: e.target.value }))}
+                                                placeholder="Incolla URL immagine..." 
+                                                className="flex-1"
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="col-12 md:col-6 mb-3">
-                                    <label className="font-bold block mb-2">Impostazioni Compilazione</label>
-                                    <div className="flex align-items-center gap-3 mt-2">
-                                        <InputSwitch 
-                                            checked={editingSurvey.allowMultipleSubmissions ?? true} 
-                                            onChange={(e) => setEditingSurvey(prev => ({ ...prev, allowMultipleSubmissions: e.value || false }))} 
-                                        />
-                                        <span>Consenti risposte multiple da parte dello stesso utente</span>
+                                    <div className="survey-form-field" style={{ flex: 1 }}>
+                                        <label className="font-bold block mb-2">Impostazioni Compilazione</label>
+                                        <div className="flex align-items-center gap-3 mt-2">
+                                            <InputSwitch 
+                                                checked={editingSurvey.allowMultipleSubmissions ?? true} 
+                                                onChange={(e) => setEditingSurvey(prev => ({ ...prev, allowMultipleSubmissions: e.value || false }))} 
+                                            />
+                                            <span>Consenti risposte multiple da parte dello stesso utente</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="col-12 mb-3">
+                                <div className="survey-form-field">
                                     <label className="font-bold block mb-2">Descrizione / Articolo Markdown</label>
                                     <InputTextarea 
                                         value={editingSurvey.descriptionMarkdown || ''} 
@@ -380,7 +464,7 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                                         placeholder="Scrivi qui il contenuto in Markdown che accompagnerà il sondaggio (stile pagina news)..." 
                                     />
                                     {editingSurvey.descriptionMarkdown && (
-                                        <div className="mt-2">
+                                        <div className="mt-3">
                                             <span className="text-xs font-bold text-secondary">Anteprima Markdown:</span>
                                             <div className="markdown-preview-box mt-1">
                                                 <ReactMarkdown>{editingSurvey.descriptionMarkdown}</ReactMarkdown>
@@ -459,57 +543,65 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                                             </div>
                                         </div>
 
-                                        <div className="grid p-fluid">
-                                            <div className="col-12 md:col-6 mb-2">
-                                                <label className="text-sm font-bold block mb-1">Etichetta Domanda *</label>
-                                                <InputText value={field.label} onChange={(e) => updateField(index, { label: e.target.value })} placeholder="Inserisci il testo della domanda" />
-                                            </div>
+                                        <div className="field-builder-body">
+                                            <div className="field-builder-row">
+                                                <div className="field-builder-col" style={{ flex: 3 }}>
+                                                    <label className="text-sm font-bold block mb-2">Etichetta Domanda *</label>
+                                                    <InputText value={field.label} onChange={(e) => updateField(index, { label: e.target.value })} placeholder="Inserisci il testo della domanda" className="w-full" />
+                                                </div>
 
-                                            <div className="col-12 md:col-4 mb-2">
-                                                <label className="text-sm font-bold block mb-1">Tipo di Dato / Componente *</label>
-                                                <Dropdown 
-                                                    value={field.type} 
-                                                    options={FIELD_TYPE_OPTIONS} 
-                                                    onChange={(e) => updateField(index, { type: e.value })}
-                                                    optionLabel="label"
-                                                    optionValue="value"
-                                                />
-                                            </div>
+                                                <div className="field-builder-col" style={{ flex: 2 }}>
+                                                    <label className="text-sm font-bold block mb-2">Tipo di Dato / Componente *</label>
+                                                    <Dropdown 
+                                                        value={field.type} 
+                                                        options={FIELD_TYPE_OPTIONS} 
+                                                        onChange={(e) => updateField(index, { type: e.value })}
+                                                        optionLabel="label"
+                                                        optionValue="value"
+                                                        className="w-full"
+                                                    />
+                                                </div>
 
-                                            <div className="col-12 md:col-2 mb-2 flex align-items-center pt-3">
-                                                <div className="flex align-items-center gap-2">
-                                                    <InputSwitch checked={field.required} onChange={(e) => updateField(index, { required: e.value || false })} />
-                                                    <label className="text-sm font-bold">Obbligatorio</label>
+                                                <div className="field-builder-col flex align-items-end" style={{ flex: 0, minWidth: '140px' }}>
+                                                    <div className="flex align-items-center gap-2" style={{ paddingBottom: '0.5rem' }}>
+                                                        <InputSwitch checked={field.required} onChange={(e) => updateField(index, { required: e.value || false })} />
+                                                        <label className="text-sm font-bold">Obbligatorio</label>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div className="col-12 md:col-6 mb-2">
-                                                <label className="text-sm font-bold block mb-1">Testo di Aiuto (opzionale)</label>
-                                                <InputText value={field.helpText || ''} onChange={(e) => updateField(index, { helpText: e.target.value })} placeholder="Descrizione o istruzioni aggiuntive" />
-                                            </div>
+                                            <div className="field-builder-row">
+                                                <div className="field-builder-col" style={{ flex: 1 }}>
+                                                    <label className="text-sm font-bold block mb-2">Testo di Aiuto (opzionale)</label>
+                                                    <InputText value={field.helpText || ''} onChange={(e) => updateField(index, { helpText: e.target.value })} placeholder="Descrizione o istruzioni aggiuntive" className="w-full" />
+                                                </div>
 
-                                            <div className="col-12 md:col-6 mb-2">
-                                                <label className="text-sm font-bold block mb-1">Placeholder (opzionale)</label>
-                                                <InputText value={field.placeholder || ''} onChange={(e) => updateField(index, { placeholder: e.target.value })} placeholder="Testo segnaposto" />
+                                                <div className="field-builder-col" style={{ flex: 1 }}>
+                                                    <label className="text-sm font-bold block mb-2">Placeholder (opzionale)</label>
+                                                    <InputText value={field.placeholder || ''} onChange={(e) => updateField(index, { placeholder: e.target.value })} placeholder="Testo segnaposto" className="w-full" />
+                                                </div>
                                             </div>
 
                                             {/* Options for select, multiselect, radio, checkbox */}
                                             {['select', 'multiselect', 'radio', 'checkbox'].includes(field.type) && (
-                                                <div className="col-12 mb-2">
-                                                    <label className="text-sm font-bold block mb-1">Opzioni Selezionabili (seperate da virgola o Invio)</label>
-                                                    <InputText 
-                                                        value={(field.options || []).map(o => o.label).join(', ')}
-                                                        onChange={(e) => {
-                                                            const rawOpts = e.target.value.split(',');
-                                                            const options = rawOpts.map(opt => {
-                                                                const trimmed = opt.trim();
-                                                                return { label: trimmed, value: trimmed };
-                                                            }).filter(o => o.label.length > 0);
-                                                            updateField(index, { options });
-                                                        }}
-                                                        placeholder="Opzione 1, Opzione 2, Opzione 3"
-                                                    />
-                                                    <small className="text-secondary">Es: Si, No, Forse</small>
+                                                <div className="field-builder-row">
+                                                    <div className="field-builder-col" style={{ flex: 1 }}>
+                                                        <label className="text-sm font-bold block mb-2">Opzioni Selezionabili (premi Invio per aggiungere)</label>
+                                                        <Chips 
+                                                            value={(field.options || []).map(o => o.label)}
+                                                            onChange={(e) => {
+                                                                const values = (e.value || [])
+                                                                    .map((v: string) => v.trim())
+                                                                    .filter((v: string, optionIndex: number, allValues: string[]) => v && allValues.indexOf(v) === optionIndex);
+                                                                const options = values.map((v: string) => ({ label: v, value: v }));
+                                                                updateField(index, { options });
+                                                            }}
+                                                            separator=","
+                                                            placeholder="Scrivi un'opzione e premi Invio o virgola"
+                                                            className="w-full"
+                                                        />
+                                                        <small className="text-secondary mt-1 block">Es: Scrivi "Sì" e premi Invio, poi "No" e premi Invio</small>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>

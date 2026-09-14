@@ -30,6 +30,17 @@ export const SurveyExternalPage: React.FC = () => {
     const [alreadySubmittedLocal, setAlreadySubmittedLocal] = useState<boolean>(false);
 
     const toast = useRef<Toast>(null);
+    const submittedBanner = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!submitted) return;
+
+        // The completed form collapses substantially. Bring its acknowledgement
+        // back below the sticky site menu after React has rendered it.
+        requestAnimationFrame(() => {
+            submittedBanner.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }, [submitted]);
 
     useEffect(() => {
         const loadData = async () => {
@@ -339,7 +350,7 @@ export const SurveyExternalPage: React.FC = () => {
                         <p className="font-bold text-lg m-0">Questo sondaggio è attualmente chiuso.</p>
                     </div>
                 ) : submitted || (alreadySubmittedLocal && !survey.allowMultipleSubmissions) ? (
-                    <div className="survey-submitted-banner">
+                    <div ref={submittedBanner} className="survey-submitted-banner" tabIndex={-1}>
                         <i className="pi pi-check-circle survey-submitted-icon"></i>
                         <h3 className="text-2xl font-bold text-slate-800 mb-2">Risposta Registrata!</h3>
                         <p className="text-slate-600 m-0">

@@ -24,6 +24,9 @@ export async function saveSurvey(request: HttpRequest, context: InvocationContex
         if (!body || !body.title) {
             return { status: 400, body: "Title is required" };
         }
+        if (body.id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.id)) {
+            return { status: 400, body: "Survey ID must contain only lowercase letters, numbers and single hyphens" };
+        }
 
         const dbService = new DatabaseService();
         const savedSurvey = await dbService.saveSurvey(body, userDetails);

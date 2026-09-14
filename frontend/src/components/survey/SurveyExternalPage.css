@@ -1,7 +1,7 @@
 .survey-external-page {
     max-width: 900px;
     margin: 2rem auto;
-    padding: 0 1.5rem;
+    padding: 0 1.5rem 6rem;
 }
 
 .survey-hero-image {
@@ -137,6 +137,7 @@
     padding: 3rem 2rem;
     text-align: center;
     margin-top: 2rem;
+    scroll-margin-top: 104px;
 }
 
 .survey-submitted-icon {

@@ -115,3 +115,75 @@
     border-radius: 8px;
     min-height: 100px;
 }
+
+.survey-editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 1rem 0.25rem 0.5rem;
+}
+
+.survey-form-row,
+.field-builder-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.survey-form-field,
+.field-builder-col {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.survey-form-field > .p-inputtext,
+.survey-form-field > .p-inputtextarea,
+.survey-form-field .p-chips,
+.survey-form-field .p-chips-multiple-container,
+.field-builder-col .p-chips,
+.field-builder-col .p-chips-multiple-container {
+    width: 100%;
+}
+
+.field-builder-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.survey-image-preview {
+    position: relative;
+    width: min(100%, 520px);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.survey-image-preview img {
+    display: block;
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+}
+
+.survey-image-remove {
+    position: absolute !important;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(255, 255, 255, 0.92) !important;
+}
+
+@media (max-width: 900px) {
+    .survey-form-row,
+    .field-builder-row {
+        flex-direction: column;
+    }
+
+    .survey-form-row > *,
+    .field-builder-row > * {
+        width: 100%;
+    }
+}
