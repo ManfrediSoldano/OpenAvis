@@ -138,6 +138,18 @@
     gap: 0.35rem;
 }
 
+.survey-manager-container label,
+.survey-manager-container .p-tabview-nav-link,
+.survey-manager-container .p-datatable thead th {
+    color: #334155;
+    font-weight: 700;
+}
+
+.survey-manager-container .section-header-title,
+.survey-manager-container .field-builder-card label {
+    font-weight: 800;
+}
+
 .survey-form-field > .p-inputtext,
 .survey-form-field > .p-inputtextarea,
 .survey-form-field .p-chips,

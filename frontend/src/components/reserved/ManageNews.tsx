@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { FileUpload, FileUploadUploadEvent } from 'primereact/fileupload';
+import { FileUpload } from 'primereact/fileupload';
 import { Checkbox } from 'primereact/checkbox';
 import { InputSwitch } from 'primereact/inputswitch';
 import MDEditor from '@uiw/react-md-editor';
@@ -28,6 +27,11 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
     const [showNewDialog, setShowNewDialog] = useState(false);
     const [newNews, setNewNews] = useState<Partial<NewsDetail>>({ title: '', contentMarkdown: '', author: { name: 'Admin', avatarUrl: '' }, isHighlight: false });
     const [saving, setSaving] = useState(false);
+
+    const closeNewEditor = () => {
+        setShowNewDialog(false);
+        setNewNews({ title: '', contentMarkdown: '', author: { name: 'Admin', avatarUrl: '' }, isHighlight: false });
+    };
 
     useEffect(() => {
         fetchNews();
@@ -76,8 +80,7 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
             });
             if (res.ok) {
                 toastRef.current?.show({ severity: 'success', summary: 'Successo', detail: 'Notizia creata' });
-                setShowNewDialog(false);
-                setNewNews({ title: '', contentMarkdown: '', author: { name: 'Admin', avatarUrl: '' }, isHighlight: false });
+                closeNewEditor();
                 fetchNews();
             } else {
                 toastRef.current?.show({ severity: 'error', summary: 'Errore', detail: 'Creazione fallita' });
@@ -306,91 +309,113 @@ const ManageNews: React.FC<ManageNewsProps> = ({ toastRef }) => {
 
     return (
         <div className="manage-news-container">
-            <div className="flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 className="m-0"><i className="pi pi-megaphone mr-2"></i>Gestione Notizie</h2>
-                    <p className="text-secondary mt-1">Crea, modifica e pubblica notizie.</p>
+            <div className="news-top-bar">
+                <div className="news-heading">
+                    <i className="pi pi-megaphone news-heading-icon"></i>
+                    <div>
+                        <h2>Gestione Notizie</h2>
+                        <p>Crea, modifica e pubblica notizie.</p>
+                    </div>
                 </div>
-                <Button label="Nuova Notizia" icon="pi pi-plus" severity="danger" onClick={() => setShowNewDialog(true)} />
+                <Button
+                    label={showNewDialog ? 'Elenco Notizie' : 'Nuova Notizia'}
+                    icon={showNewDialog ? 'pi pi-list' : 'pi pi-plus'}
+                    severity={showNewDialog ? 'secondary' : 'danger'}
+                    onClick={() => showNewDialog ? closeNewEditor() : setShowNewDialog(true)}
+                />
             </div>
 
-            <DataTable 
-                value={newsList} 
-                expandedRows={expandedRows} 
-                onRowToggle={(e) => setExpandedRows(e.data)}
-                onRowExpand={onRowExpand}
-                rowExpansionTemplate={rowExpansionTemplate}
-                dataKey="id"
-                className="shadow-1 border-round"
-                loading={loading}
-                emptyMessage="Nessuna notizia trovata."
-            >
-                <Column expander style={{ width: '5rem' }} />
-                <Column field="title" header="Titolo" sortable />
-                <Column field="subtitle" header="Sottotitolo" />
-                <Column 
-                    field="isHighlight" 
-                    header="In Evidenza" 
-                    body={(rowData) => (
-                        <div className="flex align-items-center justify-content-center" onClick={(e) => e.stopPropagation()}>
-                            <InputSwitch 
-                                checked={rowData.isHighlight || false} 
-                                onChange={(e) => handleToggleHighlight(rowData.id, e.value || false)} 
-                            />
-                        </div>
-                    )} 
-                    style={{ width: '8rem', textAlign: 'center' }} 
-                />
-            </DataTable>
-
-            <Dialog header="Nuova Notizia" visible={showNewDialog} style={{ width: '80vw' }} onHide={() => setShowNewDialog(false)} maximized>
-                <div className="grid p-fluid">
-                    <div className="col-12 mb-3">
-                        <label className="font-bold">Titolo</label>
-                        <InputText value={newNews.title} onChange={(e) => setNewNews({ ...newNews, title: e.target.value })} />
+            {!showNewDialog && (
+                <section className="news-panel-card" aria-labelledby="news-list-title">
+                    <div className="news-section-header">
+                        <h3 id="news-list-title"><i className="pi pi-table"></i> Tutte le Notizie</h3>
+                        <Button icon="pi pi-refresh" rounded text onClick={fetchNews} loading={loading} tooltip="Aggiorna elenco" />
                     </div>
-                    <div className="col-12 md:col-6 mb-3">
-                        <label className="font-bold">Autore (Nome)</label>
-                        <InputText value={newNews.author?.name} onChange={(e) => setNewNews({ ...newNews, author: { name: e.target.value, avatarUrl: newNews.author?.avatarUrl || '' } })} />
-                    </div>
-                    <div className="col-12 md:col-6 mb-3 flex align-items-end pb-2">
-                        <div className="flex align-items-center">
-                            <Checkbox 
-                                inputId="new-highlight" 
-                                checked={newNews.isHighlight || false} 
-                                onChange={(e) => setNewNews({ ...newNews, isHighlight: e.checked ?? false })} 
-                            />
-                            <label htmlFor="new-highlight" className="ml-2 font-bold cursor-pointer">Segna come Notizia in Evidenza (Highlight)</label>
-                        </div>
-                    </div>
-                    <div className="col-12 mb-3">
-                        <div className="flex align-items-center gap-3 mb-2">
-                            <span className="font-bold">Aggiungi File/Immagine:</span>
-                            <FileUpload 
-                                mode="basic" 
-                                auto 
-                                customUpload 
-                                uploadHandler={(e) => myUploader(e, true)} 
-                                chooseLabel="Seleziona File" 
-                            />
-                        </div>
-                        <small className="text-secondary block">Le immagini verranno inserite automaticamente nel testo.</small>
-                        {renderAttachments(newNews.attachments, true)}
-                    </div>
-                    <div className="col-12" data-color-mode="light">
-                        <label className="font-bold mb-2 block">Contenuto (Markdown)</label>
-                        <MDEditor
-                            value={newNews.contentMarkdown}
-                            onChange={(val) => setNewNews({ ...newNews, contentMarkdown: val || '' })}
-                            height={400}
+                    <DataTable
+                        value={newsList}
+                        expandedRows={expandedRows}
+                        onRowToggle={(e) => setExpandedRows(e.data)}
+                        onRowExpand={onRowExpand}
+                        rowExpansionTemplate={rowExpansionTemplate}
+                        dataKey="id"
+                        className="p-datatable-sm shadow-1 border-round overflow-hidden"
+                        loading={loading}
+                        emptyMessage="Nessuna notizia trovata. Clicca su 'Nuova Notizia' per crearne una."
+                    >
+                        <Column expander style={{ width: '5rem' }} />
+                        <Column field="title" header="Titolo" sortable body={(rowData) => <strong>{rowData.title}</strong>} />
+                        <Column field="subtitle" header="Sottotitolo" />
+                        <Column
+                            field="isHighlight"
+                            header="In Evidenza"
+                            body={(rowData) => (
+                                <div className="flex align-items-center justify-content-center" onClick={(e) => e.stopPropagation()}>
+                                    <InputSwitch checked={rowData.isHighlight || false} onChange={(e) => handleToggleHighlight(rowData.id, e.value || false)} />
+                                </div>
+                            )}
+                            style={{ width: '8rem', textAlign: 'center' }}
                         />
+                    </DataTable>
+                </section>
+            )}
+
+            {showNewDialog && (
+                <section className="news-panel-card news-create-panel" aria-labelledby="create-news-title">
+                    <div className="news-section-header">
+                        <div>
+                            <h3 id="create-news-title"><i className="pi pi-file-edit"></i> Crea Nuova Notizia</h3>
+                            <p>Completa le informazioni e il contenuto prima di pubblicare.</p>
+                        </div>
+                        <div className="news-header-actions">
+                            <Button label="Annulla" icon="pi pi-times" severity="secondary" text onClick={closeNewEditor} />
+                            <Button label="Salva Notizia" icon="pi pi-check" severity="danger" onClick={handleSaveNew} loading={saving} />
+                        </div>
                     </div>
-                    <div className="col-12 flex justify-content-end mt-4">
-                        <Button label="Annulla" icon="pi pi-times" severity="secondary" text onClick={() => setShowNewDialog(false)} className="mr-2" />
-                        <Button label="Salva Notizia" icon="pi pi-check" severity="danger" onClick={handleSaveNew} loading={saving} />
+
+                    <div className="news-editor-form p-fluid">
+                        <div className="news-form-section">
+                            <h4><i className="pi pi-info-circle"></i> Informazioni principali</h4>
+                            <div className="news-form-field">
+                                <label htmlFor="new-news-title">Titolo <strong>*</strong></label>
+                                <InputText id="new-news-title" value={newNews.title} onChange={(e) => setNewNews({ ...newNews, title: e.target.value })} placeholder="Inserisci il titolo della notizia" />
+                            </div>
+                            <div className="news-form-row">
+                                <div className="news-form-field">
+                                    <label htmlFor="new-news-author">Autore</label>
+                                    <InputText id="new-news-author" value={newNews.author?.name} onChange={(e) => setNewNews({ ...newNews, author: { name: e.target.value, avatarUrl: newNews.author?.avatarUrl || '' } })} />
+                                </div>
+                                <div className="news-setting-field">
+                                    <Checkbox inputId="new-highlight" checked={newNews.isHighlight || false} onChange={(e) => setNewNews({ ...newNews, isHighlight: e.checked ?? false })} />
+                                    <label htmlFor="new-highlight">Metti la notizia <strong>in evidenza</strong></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="news-form-section">
+                            <h4><i className="pi pi-paperclip"></i> Immagini e allegati</h4>
+                            <div className="news-upload-row">
+                                <div>
+                                    <strong>Aggiungi un file o un'immagine</strong>
+                                    <small>Le immagini vengono inserite nel testo; gli altri file vengono aggiunti agli allegati.</small>
+                                </div>
+                                <FileUpload mode="basic" auto customUpload uploadHandler={(e) => myUploader(e, true)} chooseLabel="Seleziona File" />
+                            </div>
+                            {renderAttachments(newNews.attachments, true)}
+                        </div>
+
+                        <div className="news-form-section" data-color-mode="light">
+                            <h4><i className="pi pi-align-left"></i> Contenuto della notizia <strong>*</strong></h4>
+                            <p className="news-section-help">Usa la barra degli strumenti per formattare il testo. Il contenuto supporta Markdown.</p>
+                            <MDEditor value={newNews.contentMarkdown} onChange={(val) => setNewNews({ ...newNews, contentMarkdown: val || '' })} height={400} />
+                        </div>
+
+                        <div className="news-form-actions">
+                            <Button label="Annulla" icon="pi pi-times" severity="secondary" outlined onClick={closeNewEditor} />
+                            <Button label="Salva Notizia" icon="pi pi-check" severity="danger" onClick={handleSaveNew} loading={saving} />
+                        </div>
                     </div>
-                </div>
-            </Dialog>
+                </section>
+            )}
         </div>
     );
 };
