@@ -95,20 +95,8 @@
     margin-bottom: 3rem;
 }
 
-.survey-form-header {
-    border-bottom: 2px solid #f1f5f9;
-    padding-bottom: 1rem;
-    margin-bottom: 2rem;
-}
-
-.survey-form-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #0f172a;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0;
+.survey-form {
+    width: 100%;
 }
 
 .survey-field-row {
@@ -128,6 +116,30 @@
     color: #64748b;
     margin-top: 0.25rem;
     display: block;
+}
+
+.survey-field-input {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+.survey-field-input > .p-inputtext,
+.survey-field-input > .p-inputtextarea,
+.survey-field-input > .p-dropdown,
+.survey-field-input > .p-multiselect,
+.survey-field-input > .p-calendar {
+    width: 100%;
+    min-height: 3.25rem;
+    box-sizing: border-box;
+}
+
+.survey-field-input > .p-inputtext,
+.survey-field-input > .p-inputtextarea,
+.survey-field-input .p-dropdown-label,
+.survey-field-input .p-multiselect-label,
+.survey-field-input .p-calendar .p-inputtext {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
 }
 
 .survey-submitted-banner {
@@ -155,6 +167,17 @@
         font-size: 1.8rem;
     }
     .survey-embedded-panel {
-        padding: 1.5rem;
+        padding: 1.25rem;
+    }
+    .survey-field-input > .p-inputtext,
+    .survey-field-input > .p-inputtextarea,
+    .survey-field-input > .p-dropdown,
+    .survey-field-input > .p-multiselect,
+    .survey-field-input > .p-calendar {
+        min-height: 3.5rem;
+    }
+    .survey-embedded-panel .p-button[type="submit"] {
+        width: 100%;
+        justify-content: center;
     }
 }

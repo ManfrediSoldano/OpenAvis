@@ -18,6 +18,30 @@ import { Survey, SurveyField } from '../../types/survey';
 import { fetchSurveyById, submitSurveyResponse } from '../../services/surveyService';
 import './SurveyExternalPage.css';
 
+const formatSurveyDate = (createdAt?: string) => {
+    if (!createdAt) return null;
+
+    const date = new Date(createdAt);
+    if (Number.isNaN(date.getTime())) return null;
+
+    return new Intl.DateTimeFormat('it-IT', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    }).format(date);
+};
+
+const getAuthorAvatarUrl = (name: string, avatarUrl?: string) => {
+    if (avatarUrl) return avatarUrl;
+
+    const params = new URLSearchParams({
+        name,
+        background: 'e63946',
+        color: 'fff'
+    });
+    return `https://ui-avatars.com/api/?${params.toString()}`;
+};
+
 export const SurveyExternalPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -282,6 +306,9 @@ export const SurveyExternalPage: React.FC = () => {
         );
     }
 
+    const authorName = survey.author?.name || 'AVIS Comunale Merate';
+    const publishedDate = formatSurveyDate(survey.createdAt);
+
     return (
         <div className="survey-external-page">
             <Toast ref={toast} />
@@ -296,13 +323,13 @@ export const SurveyExternalPage: React.FC = () => {
                 <h1 className="survey-news-title">{survey.title}</h1>
                 <div className="survey-news-meta">
                     <Avatar 
-                        image={survey.author?.avatarUrl || "/images/Logo_AVIS.png"} 
+                        image={getAuthorAvatarUrl(authorName, survey.author?.avatarUrl)}
                         shape="circle" 
                         size="normal" 
                     />
-                    <span className="font-bold">{survey.author?.name || "AVIS Comunale"}</span>
-                    <span>•</span>
-                    <span>{new Date(survey.createdAt).toLocaleDateString('it-IT')}</span>
+                    <span className="font-bold">{authorName}</span>
+                    {publishedDate && <span aria-hidden="true">•</span>}
+                    {publishedDate && <time dateTime={survey.createdAt}>{publishedDate}</time>}
                 </div>
             </header>
 
@@ -338,12 +365,6 @@ export const SurveyExternalPage: React.FC = () => {
 
             {/* EMBEDDED SURVEY FORM PANEL */}
             <div className="survey-embedded-panel">
-                <div className="survey-form-header">
-                    <h2 className="survey-form-title">
-                        <i className="pi pi-file-edit text-primary"></i> Compile il Sondaggio
-                    </h2>
-                </div>
-
                 {!survey.isActive ? (
                     <div className="text-center p-4 text-secondary">
                         <i className="pi pi-lock text-4xl mb-2 text-400"></i>
@@ -358,14 +379,14 @@ export const SurveyExternalPage: React.FC = () => {
                         </p>
                     </div>
                 ) : (
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} className="survey-form">
                         {survey.fields.map((field) => (
                             <div key={field.id} className="survey-field-row">
                                 <label className="survey-field-label">
                                     {field.label} {field.required && <span className="text-red-500">*</span>}
                                 </label>
                                 {field.helpText && <span className="survey-field-help">{field.helpText}</span>}
-                                <div className="mt-2">
+                                <div className="survey-field-input">
                                     {renderFieldInput(field)}
                                 </div>
                             </div>

@@ -363,17 +363,32 @@ export class DatabaseService {
         });
 
         const now = new Date().toISOString();
+        let isNewSurvey = false;
         if (!surveyData.id) {
             surveyData.id = crypto.randomUUID();
-            surveyData.createdAt = now;
+            isNewSurvey = true;
+        } else if (!surveyData.createdAt) {
+            try {
+                const { resource: existingSurvey } = await container.item(surveyData.id, surveyData.id).read<Survey>();
+                isNewSurvey = !existingSurvey;
+            } catch (error: any) {
+                if (error?.code === 404 || error?.statusCode === 404) {
+                    isNewSurvey = true;
+                } else {
+                    throw error;
+                }
+            }
         }
+        // Set the creation date only for a genuinely new record. Legacy records
+        // without it must not acquire an inferred creation date when edited.
+        if (isNewSurvey) surveyData.createdAt = now;
         surveyData.updatedAt = now;
         if (surveyData.isActive === undefined) surveyData.isActive = true;
         if (surveyData.allowMultipleSubmissions === undefined) surveyData.allowMultipleSubmissions = true;
         if (!surveyData.fields) surveyData.fields = [];
 
         const { resource } = await container.items.upsert(surveyData as Survey);
-        await this.saveAuditLog(user, surveyData.createdAt === now ? 'CREATE_SURVEY' : 'UPDATE_SURVEY', surveyData.id, { title: surveyData.title });
+        await this.saveAuditLog(user, isNewSurvey ? 'CREATE_SURVEY' : 'UPDATE_SURVEY', surveyData.id, { title: surveyData.title });
         return (resource as unknown as Survey) || null;
     }
 
