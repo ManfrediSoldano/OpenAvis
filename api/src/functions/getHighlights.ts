@@ -8,17 +8,16 @@ export async function getHighlights(request: HttpRequest, context: InvocationCon
     try {
         const highlights = await dbService.getHighlights();
 
-        // Transform to match the specific frontend requirement structure if needed
-        // Frontend expects: { id, imageUrl, title, subtitle }
-        // The DB item likely has these plus more.
-
         return {
             status: 200,
             jsonBody: highlights.map(h => ({
                 id: h.id,
                 imageUrl: h.imageUrl,
                 title: h.title,
-                subtitle: h.subtitle
+                subtitle: h.highlightType === 'survey'
+                    ? 'Partecipa al sondaggio'
+                    : h.subtitle,
+                contentType: h.highlightType
             }))
         };
     } catch (error) {

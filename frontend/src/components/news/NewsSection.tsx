@@ -5,7 +5,7 @@ import './NewsSection.css';
 import { Skeleton } from 'primereact/skeleton';
 
 const NewsSection: React.FC = () => {
-    const [news, setNews] = useState<NewsHighlight[]>([]);
+    const [highlights, setHighlights] = useState<NewsHighlight[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -13,9 +13,9 @@ const NewsSection: React.FC = () => {
         const fetchNews = async () => {
             try {
                 const data = await getHighlights();
-                setNews(data);
+                setHighlights(data);
             } catch (error) {
-                console.error("Error fetching news:", error);
+                console.error("Error fetching highlights:", error);
             } finally {
                 setLoading(false);
             }
@@ -45,7 +45,7 @@ const NewsSection: React.FC = () => {
     if (loading) {
         return (
             <section className="news-section">
-                <h2>Ultime Notizie</h2>
+                <h2>In evidenza</h2>
                 <div className="news-grid">
                     {renderSkeletons()}
                 </div>
@@ -53,30 +53,42 @@ const NewsSection: React.FC = () => {
         );
     }
 
-    if (news.length === 0) {
-        return null; // Don't show section if no news
+    if (highlights.length === 0) {
+        return null;
     }
 
     return (
         <section className="news-section">
-            <h2>Ultime Notizie</h2>
+            <h2>In evidenza</h2>
             <div className="news-grid">
-                {news.map((item) => (
+                {highlights.map((item) => {
+                    const isSurvey = item.contentType === 'survey';
+                    return (
                     <article
-                        key={item.id}
+                        key={`${item.contentType || 'news'}-${item.id}`}
                         className="news-card"
-                        onClick={() => navigate(`/news/${item.id}`)}
+                        onClick={() => navigate(isSurvey ? `/survey/${item.id}` : `/news/${item.id}`)}
                     >
                         <div className="news-image-container">
-                            <img src={item.imageUrl} alt={item.title} className="news-image" />
+                            {item.imageUrl ? (
+                                <img src={item.imageUrl} alt={item.title} className="news-image" />
+                            ) : (
+                                <div className="highlight-image-placeholder" aria-hidden="true">
+                                    <i className="pi pi-list-check"></i>
+                                </div>
+                            )}
+                            <span className={`highlight-type-badge ${isSurvey ? 'survey' : 'news'}`}>
+                                {isSurvey ? 'Sondaggio' : 'Notizia'}
+                            </span>
                         </div>
                         <div className="news-content">
                             <h3 className="news-title">{item.title}</h3>
                             <p className="news-subtitle">{item.subtitle}</p>
-                            <span className="news-link">Leggi tutto &rarr;</span>
+                            <span className="news-link">{isSurvey ? 'Partecipa' : 'Leggi tutto'} &rarr;</span>
                         </div>
                     </article>
-                ))}
+                    );
+                })}
             </div>
             <div className="news-footer" style={{ textAlign: 'center', marginTop: '2rem' }}>
                 <button

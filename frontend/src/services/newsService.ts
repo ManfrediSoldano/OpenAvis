@@ -6,6 +6,7 @@ export interface NewsHighlight {
     title: string;
     subtitle: string;
     isHighlight?: boolean;
+    contentType?: 'news' | 'survey';
 }
 
 export interface NewsDetail {

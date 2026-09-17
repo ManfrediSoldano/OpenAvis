@@ -165,30 +165,44 @@ export class DatabaseService {
         }
     }
     /**
-     * Get news highlights (latest 3 or flagged as highlights)
+     * Fill the three homepage highlight slots with active surveys first,
+     * followed by news. Each content type is ordered newest first.
      */
     async getHighlights() {
         if (!this.databaseId) return [];
         const database = this.client.database(this.databaseId);
-        const container = database.container(this.newsContainerId);
+        const surveysContainer = database.container(this.surveysContainerId);
+        const newsContainer = database.container(this.newsContainerId);
+
+        let surveys: any[] = [];
+        let news: any[] = [];
 
         try {
-            // Query for highlights, order by date descending, take top 3
-            // Note: In a real app, you might want to index 'date' or 'isHighlight'
-            const querySpec = {
-                query: "SELECT TOP 3 * FROM c WHERE c.isHighlight = true ORDER BY c.date DESC"
-            };
-
-            // If no highlights found, fallback to just latest 3? 
-            // For now let's strict to isHighlight per requirements, or maybe just latest if user wants "news"
-            // The requirement says "Ritorna 3 news fatte da..."
-
-            const { resources } = await container.items.query(querySpec).fetchAll();
-            return resources;
+            const result = await surveysContainer.items.query({
+                query: "SELECT TOP 3 * FROM c WHERE c.isHighlight = true AND c.isActive = true ORDER BY c.createdAt DESC"
+            }).fetchAll();
+            surveys = result.resources;
         } catch (error) {
-            console.error("Error fetching highlights:", error);
-            return [];
+            // Keep news highlights available even if the surveys container is
+            // temporarily unavailable or has not been provisioned yet.
+            console.error("Error fetching survey highlights:", error);
         }
+
+        if (surveys.length < 3) {
+            try {
+                const result = await newsContainer.items.query({
+                    query: "SELECT TOP 3 * FROM c WHERE c.isHighlight = true ORDER BY c.date DESC"
+                }).fetchAll();
+                news = result.resources;
+            } catch (error) {
+                console.error("Error fetching news highlights:", error);
+            }
+        }
+
+        return [
+            ...surveys.map(survey => ({ ...survey, highlightType: 'survey' as const })),
+            ...news.map(newsItem => ({ ...newsItem, highlightType: 'news' as const }))
+        ].slice(0, 3);
     }
 
     /**
@@ -384,6 +398,7 @@ export class DatabaseService {
         if (isNewSurvey) surveyData.createdAt = now;
         surveyData.updatedAt = now;
         if (surveyData.isActive === undefined) surveyData.isActive = true;
+        if (surveyData.isHighlight === undefined) surveyData.isHighlight = false;
         if (surveyData.allowMultipleSubmissions === undefined) surveyData.allowMultipleSubmissions = true;
         if (!surveyData.fields) surveyData.fields = [];
 

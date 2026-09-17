@@ -84,6 +84,7 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
             attachments: [],
             allowMultipleSubmissions: true,
             isActive: true,
+            isHighlight: false,
             fields: [
                 {
                     id: crypto.randomUUID(),
@@ -179,6 +180,22 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                 severity: 'info',
                 summary: 'Stato Aggiornato',
                 detail: `Sondaggio ${activeStatus ? 'attivato' : 'disattivato'}`
+            });
+            loadSurveysList();
+        } catch (err: any) {
+            toast.current?.show({ severity: 'error', summary: 'Errore', detail: err.message });
+        }
+    };
+
+    const handleToggleHighlight = async (survey: Survey, highlightStatus: boolean) => {
+        try {
+            await saveSurvey({ ...survey, isHighlight: highlightStatus });
+            toast.current?.show({
+                severity: 'info',
+                summary: 'Evidenza aggiornata',
+                detail: highlightStatus
+                    ? 'Il sondaggio può apparire nella homepage quando è attivo.'
+                    : 'Il sondaggio è stato rimosso dalle evidenze.'
             });
             loadSurveysList();
         } catch (err: any) {
@@ -349,6 +366,12 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                                     <Tag severity={r.isActive ? 'success' : 'secondary'} value={r.isActive ? 'Attivo' : 'Bozza'} />
                                 </div>
                             )} />
+                            <Column header="In evidenza" body={(r: Survey) => (
+                                <InputSwitch
+                                    checked={r.isHighlight ?? false}
+                                    onChange={(e) => handleToggleHighlight(r, e.value || false)}
+                                />
+                            )} />
                             <Column field="createdAt" header="Data Creazione" body={(r: Survey) => r.createdAt ? new Date(r.createdAt).toLocaleDateString('it-IT') : '-'} sortable />
                             <Column header="Azioni" style={{ width: '220px' }} body={(r: Survey) => (
                                 <div className="flex gap-2">
@@ -451,6 +474,13 @@ export const SurveyManager: React.FC<SurveyManagerProps> = ({ userEmail }) => {
                                                 onChange={(e) => setEditingSurvey(prev => ({ ...prev, allowMultipleSubmissions: e.value || false }))} 
                                             />
                                             <span>Consenti risposte multiple da parte dello stesso utente</span>
+                                        </div>
+                                        <div className="flex align-items-center gap-3 mt-3">
+                                            <InputSwitch
+                                                checked={editingSurvey.isHighlight ?? false}
+                                                onChange={(e) => setEditingSurvey(prev => ({ ...prev, isHighlight: e.value || false }))}
+                                            />
+                                            <span>Mostra il sondaggio tra le evidenze della homepage quando è attivo</span>
                                         </div>
                                     </div>
                                 </div>

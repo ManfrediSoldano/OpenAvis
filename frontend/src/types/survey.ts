@@ -45,6 +45,7 @@ export interface Survey {
     attachments?: SurveyAttachment[];
     allowMultipleSubmissions: boolean;
     isActive: boolean;
+    isHighlight?: boolean;
     fields: SurveyField[];
     createdAt: string;
     updatedAt: string;
