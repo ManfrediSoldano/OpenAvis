@@ -44,11 +44,16 @@ export async function deleteSurvey(id: string): Promise<boolean> {
     return data.success;
 }
 
-export async function submitSurveyResponse(surveyId: string, userIdentifier: string, answers: Record<string, any>): Promise<{ success: boolean; responseId?: string }> {
+export async function submitSurveyResponse(
+    surveyId: string,
+    userIdentifier: string,
+    answers: Record<string, any>,
+    privacyPolicyAccepted: boolean
+): Promise<{ success: boolean; responseId?: string }> {
     const res = await fetch('/api/submitSurveyResponse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ surveyId, userIdentifier, answers })
+        body: JSON.stringify({ surveyId, userIdentifier, answers, privacyPolicyAccepted })
     });
     if (!res.ok) {
         const errText = await res.text();

@@ -57,6 +57,8 @@ export interface SurveyResponse {
     submittedAt: string;
     userIdentifier?: string;
     answers: Record<string, any>;
+    privacyPolicyAccepted?: boolean;
+    privacyPolicyAcceptedAt?: string;
 }
 
 export interface AuditLog {

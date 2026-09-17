@@ -1,7 +1,7 @@
 .survey-external-page {
     max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1.5rem 6rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
 }
 
 .survey-hero-image {
@@ -23,7 +23,7 @@
     font-weight: 800;
     color: #0f172a;
     line-height: 1.25;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem;
 }
 
 .survey-news-meta {
@@ -92,7 +92,7 @@
     padding: 2.5rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
     margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 0;
 }
 
 .survey-form {
@@ -158,6 +158,43 @@
     margin-bottom: 1rem;
 }
 
+.survey-submitted-note {
+    color: #475569;
+    font-weight: 600;
+    margin: 0.75rem 0 0;
+}
+
+.survey-restart-button {
+    margin-top: 1.5rem;
+}
+
+.survey-privacy-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+    color: #334155;
+    line-height: 1.5;
+}
+
+.survey-privacy-consent .p-checkbox {
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+}
+
+.survey-privacy-consent label,
+.survey-privacy-consent a {
+    cursor: pointer;
+}
+
+.survey-privacy-consent a {
+    color: #0369a1;
+    font-weight: 600;
+}
+
 @media (max-width: 768px) {
     .survey-external-page {
         padding: 0 1rem;
@@ -168,6 +205,7 @@
     }
     .survey-embedded-panel {
         padding: 1.25rem;
+        margin-bottom: 3rem;
     }
     .survey-field-input > .p-inputtext,
     .survey-field-input > .p-inputtextarea,

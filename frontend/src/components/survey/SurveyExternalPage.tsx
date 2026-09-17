@@ -51,6 +51,7 @@ export const SurveyExternalPage: React.FC = () => {
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [answers, setAnswers] = useState<Record<string, any>>({});
+    const [privacyPolicyAccepted, setPrivacyPolicyAccepted] = useState<boolean>(false);
     const [alreadySubmittedLocal, setAlreadySubmittedLocal] = useState<boolean>(false);
 
     const toast = useRef<Toast>(null);
@@ -116,6 +117,16 @@ export const SurveyExternalPage: React.FC = () => {
             }
         }
 
+        if (!privacyPolicyAccepted) {
+            toast.current?.show({
+                severity: 'warn',
+                summary: 'Consenso richiesto',
+                detail: 'Devi accettare l\u2019informativa sulla privacy per inviare le risposte.',
+                life: 4000
+            });
+            return;
+        }
+
         setSubmitting(true);
         try {
             // Generate anonymous user token for tracking single submissions
@@ -125,7 +136,7 @@ export const SurveyExternalPage: React.FC = () => {
                 localStorage.setItem('openavis_user_id', userIdentifier);
             }
 
-            await submitSurveyResponse(id, userIdentifier, answers);
+            await submitSurveyResponse(id, userIdentifier, answers, privacyPolicyAccepted);
 
             // Record submission locally
             localStorage.setItem(`survey_submitted_${id}`, 'true');
@@ -147,6 +158,12 @@ export const SurveyExternalPage: React.FC = () => {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleRestartSurvey = () => {
+        setAnswers({});
+        setPrivacyPolicyAccepted(false);
+        setSubmitted(false);
     };
 
     const renderFieldInput = (field: SurveyField) => {
@@ -375,8 +392,23 @@ export const SurveyExternalPage: React.FC = () => {
                         <i className="pi pi-check-circle survey-submitted-icon"></i>
                         <h3 className="text-2xl font-bold text-slate-800 mb-2">Risposta Registrata!</h3>
                         <p className="text-slate-600 m-0">
-                            Grazie per aver completato il sondaggio. Il tuo contributo è fondamentale per AVIS.
+                            Grazie per aver completato il sondaggio.
                         </p>
+                        {!survey.allowMultipleSubmissions ? (
+                            <p className="survey-submitted-note">
+                                Puoi completare questo sondaggio una volta sola.
+                            </p>
+                        ) : (
+                            <Button
+                                type="button"
+                                label="Compila di nuovo"
+                                icon="pi pi-refresh"
+                                severity="success"
+                                outlined
+                                className="survey-restart-button"
+                                onClick={handleRestartSurvey}
+                            />
+                        )}
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="survey-form">
@@ -391,6 +423,22 @@ export const SurveyExternalPage: React.FC = () => {
                                 </div>
                             </div>
                         ))}
+
+                        <div className="survey-privacy-consent">
+                            <Checkbox
+                                inputId="survey-privacy-policy"
+                                checked={privacyPolicyAccepted}
+                                onChange={(e) => setPrivacyPolicyAccepted(e.checked === true)}
+                                required
+                            />
+                            <label htmlFor="survey-privacy-policy">
+                                Ho letto e accetto l’
+                                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                                    informativa sulla privacy
+                                </a>
+                                <span className="text-red-500" aria-hidden="true"> *</span>
+                            </label>
+                        </div>
 
                         <div className="mt-5 text-right">
                             <Button 

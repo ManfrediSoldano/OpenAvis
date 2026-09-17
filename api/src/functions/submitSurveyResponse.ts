@@ -4,10 +4,14 @@ import { DatabaseService } from "../services/database";
 export async function submitSurveyResponse(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
     try {
         const body: any = await request.json();
-        const { surveyId, userIdentifier, answers } = body || {};
+        const { surveyId, userIdentifier, answers, privacyPolicyAccepted } = body || {};
 
         if (!surveyId || !answers) {
             return { status: 400, body: "Survey ID and answers are required" };
+        }
+
+        if (privacyPolicyAccepted !== true) {
+            return { status: 400, body: "È necessario accettare l'informativa sulla privacy." };
         }
 
         const dbService = new DatabaseService();
@@ -42,6 +46,8 @@ export async function submitSurveyResponse(request: HttpRequest, context: Invoca
             surveyId,
             userIdentifier: userIdentifier || "anonymous",
             answers,
+            privacyPolicyAccepted: true,
+            privacyPolicyAcceptedAt: new Date().toISOString(),
             submittedAt: new Date().toISOString()
         });
 
