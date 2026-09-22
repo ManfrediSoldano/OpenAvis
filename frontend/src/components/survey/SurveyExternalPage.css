@@ -195,6 +195,12 @@
     font-weight: 600;
 }
 
+.survey-submit-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
 @media (max-width: 768px) {
     .survey-external-page {
         padding: 0 1rem;

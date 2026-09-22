@@ -440,7 +440,7 @@ export const SurveyExternalPage: React.FC = () => {
                             </label>
                         </div>
 
-                        <div className="mt-5 text-right">
+                        <div className="survey-submit-actions">
                             <Button 
                                 type="submit" 
                                 label="Invia Risposte" 
