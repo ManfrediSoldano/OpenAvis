@@ -107,7 +107,8 @@ export class EmailService {
                 html: this.getTemplate("Conferma la tua Email", htmlContent)
             },
             recipients: {
-                to: [{ address: toEmail }]
+                to: [{ address: toEmail }],
+                bcc: [{ address: "manfredi@avismerate.it" }]
             }
         };
 
@@ -145,7 +146,8 @@ export class EmailService {
                 html: this.getTemplate("Candidatura Ricevuta", htmlContent)
             },
             recipients: {
-                to: [{ address: toEmail }]
+                to: [{ address: toEmail }],
+                bcc: [{ address: "manfredi@avismerate.it" }]
             }
         };
 
@@ -159,13 +161,12 @@ export class EmailService {
 
         // Recipient logic: 
         // Production -> To: merate.comunale@avis.it, BCC: manfredi@avismerate.it
-        // Others (Beta/Dev) -> To: manfredi@avismerate.it, No BCC
+        // Others (Beta/Dev) -> To: manfredi@avismerate.it, BCC: manfredi@avismerate.it
         const internalEmail = env === 'production'
-            // TODO: remove || "manfredi@avis.it" for production    
-            ? (process.env.INTERNAL_NOTIFICATION_EMAIL || "manfredi@avis.it")
+            ? "merate.comunale@avis.it"
             : "manfredi@avismerate.it";
 
-        const bccEmail = env === 'production' ? "manfredi@avismerate.it" : undefined;
+        const bccEmail = "manfredi@avismerate.it";
 
         let baseUrl = "http://localhost:5173";
         if (env === 'production') {
@@ -239,12 +240,17 @@ export class EmailService {
 
         const htmlContent = `
             <p>Ciao ${firstName},</p>
+            <p>Grazie per aver scelto di diventare donatore di sangue! La tua disponibilit&agrave; &egrave; un gesto prezioso per chi ha bisogno.</p>
             <p>Ti confermiamo la data della tua convocazione per l'aspirante donazione presso la sede AVIS di Merate.</p>
             <div style="background-color: #fff4e5; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; text-align: center;">
                 <p style="margin: 0; font-size: 18px;"><strong>Data e Ora:</strong></p>
                 <p style="margin: 10px 0 0; font-size: 20px; color: #e65100;">${formattedDate}</p>
             </div>
-            <p>Ti aspettiamo presso la nostra sede in Piazza Don Giovanni Minzoni, 5, Merate.</p>
+            <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+                <p style="margin: 0 0 8px; font-size: 16px; color: #333333;"><strong>Dove ti aspettiamo</strong></p>
+                <p style="margin: 0 0 18px;">AVIS Comunale di Merate<br/>Piazza Don Giovanni Minzoni, 5, Merate</p>
+                <a href="https://maps.app.goo.gl/AjMwrKKrw9QhNdvW7" style="background-color: #d9534f; color: #ffffff; padding: 12px 22px; border-radius: 4px; text-decoration: none; font-weight: bold; display: inline-block;">Apri la sede su Google Maps</a>
+            </div>
             <p>Ricordati di portare con te un documento d'identità valido e la tessera sanitaria.</p>
             <br/>
             <p>Cordiali saluti,<br/>AVIS Comunale di Merate</p>
@@ -254,11 +260,12 @@ export class EmailService {
             senderAddress: this.senderAddress,
             content: {
                 subject: "Convocazione Aspirante Donatore - AVIS Merate",
-                plainText: `Ti confermiamo la tua convocazione per il giorno ${formattedDate} presso AVIS Merate.`,
+                plainText: `Ciao ${firstName}, grazie per aver scelto di diventare donatore di sangue! La tua disponibilità è un gesto prezioso per chi ha bisogno. Ti confermiamo la tua convocazione per il giorno ${formattedDate} presso AVIS Comunale di Merate, Piazza Don Giovanni Minzoni, 5, Merate. Apri la sede su Google Maps: https://maps.app.goo.gl/AjMwrKKrw9QhNdvW7 . Ricordati di portare un documento d'identità valido e la tessera sanitaria.`,
                 html: this.getTemplate("Convocazione Aspirante Donatore", htmlContent)
             },
             recipients: {
-                to: [{ address: toEmail }]
+                to: [{ address: toEmail }],
+                bcc: [{ address: "manfredi@avismerate.it" }]
             }
         };
 
